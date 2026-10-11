@@ -8,13 +8,13 @@ const quizTpl = (id, title) => `<!DOCTYPE html>
 <title>${title}</title><link rel="stylesheet" href="/css/hub.css"></head>
 <body><div class="page" id="app"></div>
 <script src="/js/tool.js"></script><script src="/js/quiz.js"></script>
-<script src="/js/qd-basic.js"></script><script src="/js/qd-frac.js"></script><script src="/js/qd-geo.js"></script>
+<script src="/js/qd-basic.js"></script><script src="/js/qd-frac.js"></script><script src="/js/qd-geo.js"></script><script src="/js/qd-g4.js"></script>
 <script>Quiz.start('${id}')</script></body></html>
 `;
 const seen = new Set();
 for (const [id, grades, topic, icon, name, desc, kw, kind] of R.list) {
   if (seen.has(id)) throw new Error('重复 id ' + id); seen.add(id);
-  out.push({ id, cat: 'math', grades, topic, icon, name, desc, kw, color: R.col[topic] });
+  out.push({ id, cat: 'math', grades, topic, icon, name, desc, kw, color: R.col[topic], tb: R.tb[id] ? R.tb[id][0] : undefined, unit: R.tb[id] ? R.tb[id][1] : undefined });
   if (kind === 'quiz') {
     const d = path.join(root, 'math', id); fs.mkdirSync(d, { recursive: true });
     fs.writeFileSync(path.join(d, 'index.html'), quizTpl(id, name));

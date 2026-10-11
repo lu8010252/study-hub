@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>平移、旋转和轴对称</title><link rel="stylesheet" href="/css/hub.css">
+<style>.oc{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin:12px auto}
+.oc button{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:6px}
+.oc button.good{border-color:var(--ok);background:#dcfce7}.oc button.badc{border-color:var(--bad);background:#fee2e2}
+.oc svg{width:100%;display:block}</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div style="color:var(--sub)" id="info"></div>
+<div class="qtext" id="qt" style="margin:6px 0"></div>
+<svg id="main" viewBox="0 0 128 128" style="width:100%;max-width:300px;background:#fff;border-radius:8px"></svg>
+<div style="color:var(--sub);font-size:14px">灰色虚线是原图形，下面哪一个是变换后的图形？（彩色的图形是选项）</div>
+<div class="oc" id="oc"></div>
+<div class="msg" id="m"></div><div class="exp" id="ex" style="display:none"></div>
+<div class="row" style="justify-content:center"><button class="btn ghost" id="rst">重新开始</button></div></div>
+<div class="panel"><b>小知识：</b><ul style="margin:6px 0 0 18px;line-height:1.8"><li><b>平移</b>：图形沿直线移动，形状、大小、方向都不变。数一数<b>每个顶点</b>移动了几格。</li><li><b>旋转</b>：绕一个点转动，形状大小不变，方向变了。顺时针就是和钟表指针转动的方向相同。</li><li><b>轴对称</b>：沿对称轴对折能完全重合，对应点到对称轴的距离相等。</li></ul></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('平移、旋转和轴对称');
+var $=function(i){return document.getElementById(i)};
+var U=16,G=8,N=5,i=0,ok=0,locked=false,cur;
+var SH=[[[0,0],[3,0],[3,1],[1,1],[1,3],[0,3]],[[0,0],[1,0],[1,1],[2,1],[2,2],[0,2]],[[0,0],[3,0],[0,2]],[[0,0],[2,0],[2,1],[3,1],[3,2],[0,2]],[[0,0],[2,0],[2,2],[1,2],[1,1],[0,1]]];
+function pick(a){return a[Hub.rnd(0,a.length-1)]}
+function mp(sh,f){return sh.map(f)}
+function inb(sh){return sh.every(function(p){return p[0]>=0&&p[0]<=G&&p[1]>=0&&p[1]<=G})}
+function key(sh){return sh.map(function(p){return p.join(',')}).sort().join(';')}
+function pts(sh){return sh.map(function(p){return (p[0]*U)+','+(p[1]*U)}).join(' ')}
+function grid(){var s='',k;for(k=0;k<=G;k++)s+='<line x1="'+k*U+'" y1="0" x2="'+k*U+'" y2="'+G*U+'" stroke="#e0e7ff"/><line x1="0" y1="'+k*U+'" x2="'+G*U+'" y2="'+k*U+'" stroke="#e0e7ff"/>';return s}
+function deco(q){var s='';
+  if(q.kind==='r')s+='<circle cx="'+q.O[0]*U+'" cy="'+q.O[1]*U+'" r="4" fill="#e5484d"/><text x="'+(q.O[0]*U+6)+'" y="'+(q.O[1]*U+14)+'" font-size="11" fill="#e5484d" font-weight="700">O</text>';
+  if(q.kind==='s')s+='<line x1="'+q.c*U+'" y1="0" x2="'+q.c*U+'" y2="'+G*U+'" stroke="#e5484d" stroke-width="2" stroke-dasharray="5 3"/>';
+  return s}
+function svgOf(q,cand){return '<svg viewBox="-2 -2 132 132">'+grid()+deco(q)+'<polygon points="'+pts(q.orig)+'" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>'+(cand?'<polygon points="'+pts(cand)+'" fill="rgba(99,102,241,.55)" stroke="#4338ca" stroke-width="2" stroke-linejoin="round"/>':'')+'</svg>'}
+function make(kind){
+  for(var t=0;t<400;t++){
+    var base=pick(SH),ox=Hub.rnd(0,G-1),oy=Hub.rnd(0,G-1),orig=mp(base,function(p){return [p[0]+ox,p[1]+oy]});
+    if(!inb(orig))continue;
+    var q={kind:kind,orig:orig},ans,wr=[];
+    if(kind==='t'){
+      var dx=Hub.rnd(-4,4),dy=Hub.rnd(-3,3);if(!dx&&!dy||(dx&&dy&&Math.random()<.5))continue;if(dx&&dy)dy=0;
+      var tr=function(a,b){return mp(orig,function(p){return [p[0]+a,p[1]+b]})};
+      ans=tr(dx,dy);
+      var d=dx?'左右':'上下';
+      var n=Math.abs(dx||dy),dir=dx?(dx>0?'右':'左'):(dy>0?'下':'上');
+      q.text='把图形向<b style="color:var(--p1)">'+dir+'</b>平移 <b style="color:var(--p1)">'+n+'</b> 格';
+      q.exp='每个顶点都向'+dir+'移动 '+n+' 格，形状大小方向都不变。';
+      wr=[tr(-dx,-dy),tr(dx+(dx?(Math.random()<.5?1:-1):0),dy+(dy?(Math.random()<.5?1:-1):0)),dx?tr(0,dx):tr(dy,0),tr(dx*2,dy*2)];
+      var ff=function(sh){return mp(sh,function(p){return [2*(orig[0][0])-p[0]+(p[0]-orig[0][0])*0,p[1]]})};
+    }else if(kind==='r'){
+      var O=orig[Hub.rnd(0,orig.length-1)].slice(),cw=Math.random()<.6;q.O=O;
+      var rot=function(c){return mp(orig,function(p){var a=p[0]-O[0],b=p[1]-O[1];return c?[O[0]-b,O[1]+a]:[O[0]+b,O[1]-a]})};
+      ans=rot(cw);
+      q.text='绕点 <b style="color:#e5484d">O</b> <b style="color:var(--p1)">'+(cw?'顺':'逆')+'时针</b>旋转 <b style="color:var(--p1)">90°</b>';
+      q.exp='旋转时 O 点不动，其余各点绕 O 转 90°。'+(cw?'顺时针':'逆时针')+'就是和钟表指针转动的方向'+(cw?'相同':'相反')+'。';
+      wr=[rot(!cw),mp(orig,function(p){return [2*O[0]-p[0],2*O[1]-p[1]]}),mp(orig,function(p){return [O[0]+(p[0]-O[0]),O[1]-(p[1]-O[1])]}),mp(ans,function(p){return [p[0]+1,p[1]]})];
+    }else{
+      var c=Hub.rnd(3,5);q.c=c;
+      var xs=orig.map(function(p){return p[0]});if(Math.max.apply(null,xs)>=c||c-Math.max.apply(null,xs)>3)continue;
+      var rf=function(cc){return mp(orig,function(p){return [2*cc-p[0],p[1]]})};
+      ans=rf(c);
+      q.text='画出图形关于<b style="color:#e5484d">红色虚线</b>的轴对称图形';
+      q.exp='对称点到对称轴的距离相等：每个顶点到红线的距离，在另一侧也要一样。';
+      wr=[rf(c+1),rf(c-1),mp(orig,function(p){return [p[0],2*Math.min.apply(null,orig.map(function(a){return a[1]}))+(Math.max.apply(null,orig.map(function(a){return a[1]}))-Math.min.apply(null,orig.map(function(a){return a[1]})))-p[1]]}).map(function(p){return [p[0]+2*(c-Math.max.apply(null,xs))+ (Math.max.apply(null,xs)-Math.min.apply(null,xs)) -0,p[1]]}),mp(orig,function(p){return [p[0]+2*(c-Math.max.apply(null,xs)),p[1]]})];
+    }
+    if(!inb(ans))continue;
+    var seen={};seen[key(ans)]=1;seen[key(orig)]=1;var out=[];
+    wr.forEach(function(w){var k=key(w);if(inb(w)&&!seen[k]&&out.length<3){seen[k]=1;out.push(w)}});
+    if(out.length<3)continue;
+    q.ans=ans;q.opts=[{k:'R',s:ans}].concat(out.map(function(w,ix){return {k:'W'+ix,s:w}})).sort(function(){return Math.random()-.5});
+    return q}
+  return make('t')}
+function show(){
+  var kinds=['t','t','r','s','s'];cur=make(kinds[i]);locked=false;
+  $('info').textContent='第 '+(i+1)+' / '+N+' 题 · 答对 '+ok;
+  $('qt').innerHTML=cur.text;$('main').innerHTML=grid()+deco(cur)+'<polygon points="'+pts(cur.orig)+'" fill="rgba(245,158,11,.6)" stroke="#b45309" stroke-width="2"/>';
+  $('main').setAttribute('viewBox','-2 -2 132 132');
+  $('oc').innerHTML=cur.opts.map(function(o){return '<button data-k="'+o.k+'">'+svgOf(cur,o.s)+'</button>'}).join('');
+  $('m').textContent='';$('m').className='msg';$('ex').style.display='none';
+}
+$('oc').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b||locked)return;locked=true;
+  var good=b.dataset.k==='R';if(good)ok++;Hub.beep(good);
+  [].forEach.call($('oc').querySelectorAll('button'),function(x){if(x.dataset.k==='R')x.classList.add('good');else if(x===b)x.classList.add('badc')});
+  $('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ 答对了！':'✘ 再想想';
+  if(!good){$('ex').innerHTML=cur.exp;$('ex').style.display='block'}
+  setTimeout(function(){i++;if(i>=N)fin();else show()},good?800:3200);
+});
+function fin(){var st=ok>=N?3:ok>=N-1?2:ok>=3?1:0;Hub.star('transform-shapes',st);
+  $('oc').innerHTML='';$('main').innerHTML='';$('qt').innerHTML='<div class="big">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</div>答对 '+ok+' / '+N;$('m').textContent='';$('ex').style.display='none';$('info').textContent=''}
+$('rst').onclick=function(){i=0;ok=0;show()};
+show();
+</script></body></html>

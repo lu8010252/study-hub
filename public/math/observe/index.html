@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>观察物体</title><link rel="stylesheet" href="/css/hub.css">
+<style>.oc{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin:12px auto}
+.oc button{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:8px;min-height:120px}
+.oc button.good{border-color:var(--ok);background:#dcfce7}.oc button.badc{border-color:var(--bad);background:#fee2e2}
+.oc svg{width:100%;height:110px}</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div style="color:var(--sub)" id="info"></div>
+<svg id="s3" viewBox="-130 -205 260 250" style="width:100%;max-width:420px"></svg>
+<div class="qtext" id="qt" style="margin-top:4px"></div>
+<div class="oc" id="oc"></div>
+<div class="msg" id="m"></div><div class="exp" id="ex" style="display:none"></div>
+<div class="row" style="justify-content:center"><button class="btn ghost" id="rst">重新开始</button></div></div>
+<div class="panel"><b>小知识：</b>从不同方向看同一堆小正方体，看到的图形可能不同。从<b>正面</b>看，数每一列最高有几层；从<b>左面</b>看，是从左面往右看，要注意前后顺序；从<b>上面</b>看，只看有没有小正方体（有就是一个正方形）。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('观察物体');
+var $=function(i){return document.getElementById(i)};
+var A=26,B=15,Hh=30,N=5,cur,i=0,ok=0,locked=false;
+function P(x,y,z){return [(x-y)*A,-(x+y)*B-z*Hh]}
+function poly(pts,f){return '<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="'+f+'" stroke="#334155" stroke-width="1.5" stroke-linejoin="round"/>'}
+/* h[y][x]: y=0 为最前排, x=0 为最左列 */
+function iso(h){
+  var cells=[],x,y,z;
+  for(y=0;y<3;y++)for(x=0;x<3;x++)for(z=0;z<h[y][x];z++)cells.push([x,y,z]);
+  cells.sort(function(a,b){return (b[0]+b[1])-(a[0]+a[1])||a[2]-b[2]});
+  var s='';
+  cells.forEach(function(c){var x=c[0],y=c[1],z=c[2];
+    s+=poly([P(x,y,z+1),P(x+1,y,z+1),P(x+1,y+1,z+1),P(x,y+1,z+1)],'#fde68a');
+    s+=poly([P(x,y,z),P(x+1,y,z),P(x+1,y,z+1),P(x,y,z+1)],'#f59e0b');
+    s+=poly([P(x,y,z),P(x,y+1,z),P(x,y+1,z+1),P(x,y,z+1)],'#d97706');});
+  var f=P(3.3,-0.7,0),l=P(-0.7,-0.7,0);
+  s+='<text x="'+(f[0]+14)+'" y="'+(f[1]+16)+'" font-size="15" font-weight="700" fill="#4f46e5" text-anchor="middle">正面</text>';
+  s+='<text x="'+(P(-0.3,0,0)[0]-22)+'" y="'+(P(-0.3,0,0)[1]+16)+'" font-size="15" font-weight="700" fill="#4f46e5" text-anchor="middle">左面</text>';
+  return s;
+}
+function frontV(h){var r=[],x,y;for(x=0;x<3;x++){var m=0;for(y=0;y<3;y++)m=Math.max(m,h[y][x]);r.push(m)}return r}
+function leftV(h){var r=[],y,x;for(y=2;y>=0;y--){var m=0;for(x=0;x<3;x++)m=Math.max(m,h[y][x]);r.push(m)}return r}
+function topV(h){var r=[],y,x;for(y=2;y>=0;y--){var row=[];for(x=0;x<3;x++)row.push(h[y][x]>0?1:0);r.push(row)}return r}
+function colsSvg(v){var u=26,s='',c,k;for(c=0;c<3;c++)for(k=0;k<v[c];k++)s+='<rect x="'+(8+c*u)+'" y="'+(86-(k+1)*u)+'" width="'+u+'" height="'+u+'" fill="#fde68a" stroke="#334155" stroke-width="1.5"/>';
+  return '<svg viewBox="0 0 94 94">'+s+'</svg>'}
+function topSvg(v){var u=26,s='',r,c;for(r=0;r<3;r++)for(c=0;c<3;c++)if(v[r][c])s+='<rect x="'+(8+c*u)+'" y="'+(8+r*u)+'" width="'+u+'" height="'+u+'" fill="#fde68a" stroke="#334155" stroke-width="1.5"/>';
+  return '<svg viewBox="0 0 94 94">'+s+'</svg>'}
+function total(h){var t=0;h.forEach(function(r){r.forEach(function(v){t+=v})});return t}
+function gen(){
+  var h,t;
+  do{h=[];t=0;for(var y=0;y<3;y++){h.push([]);for(var x=0;x<3;x++){var v=Math.random()<.35?0:Hub.rnd(1,3);h[y].push(v);t+=v}}}while(t<4||t>9||frontV(h).join('')==leftV(h).join('')||Math.max.apply(null,frontV(h))<2);
+  return h}
+var NAME={f:'正面',l:'左面',t:'上面'};
+function key(k,v){return JSON.stringify(v)}
+function make(){
+  var h=gen(),kinds=['f','l','t','c'],kd=kinds[i%4===3&&Math.random()<.5?3:Hub.rnd(0,2)];
+  if(i===N-1)kd='c';
+  var q={h:h,kd:kd};
+  if(kd==='c'){
+    var t=total(h),set=[String(t)];[-2,-1,1,2,3].forEach(function(d){if(t+d>0&&set.length<4&&Math.random()<.8)set.push(String(t+d))});
+    while(set.length<4){var d=String(Hub.rnd(Math.max(1,t-3),t+3));if(set.indexOf(d)<0)set.push(d)}
+    q.right=String(t);q.opts=set.map(function(v){return {k:v,html:'<div style="font-size:32px;font-weight:800;padding-top:30px">'+v+' 个</div>'}});
+    q.text='一共用了几个小正方体？';
+    var rows=[0,1,2].map(function(y){return h[y].join('+')+'='+h[y].reduce(function(a,b){return a+b})});
+    q.exp='按前、中、后三排数每列的层数：'+rows.join('；')+'，一共 '+t+' 个。';
+  }else{
+    var fn=kd==='f'?frontV:kd==='l'?leftV:topV,sv=kd==='t'?topSvg:colsSvg,right=fn(h),other=[],cands=[];
+    if(kd==='t'){
+      var tr=topV(h);
+      cands.push(tr.slice().reverse());cands.push(tr.map(function(r){return r.slice().reverse()}));
+      cands.push(tr.map(function(r){return r.slice()}).map(function(r,ri){return ri===0?r.map(function(v){return 1-v}):r}));
+      for(var a=0;a<9;a++){var c=tr.map(function(r){return r.slice()});var rr=Hub.rnd(0,2),cc=Hub.rnd(0,2);c[rr][cc]=1-c[rr][cc];cands.push(c)}
+    }else{
+      var o=kd==='f'?leftV(h):frontV(h);cands.push(o);cands.push(right.slice().reverse());
+      cands.push(right.map(function(v,ix){return v}));
+      for(var a2=0;a2<12;a2++){var c2=right.slice();var ci=Hub.rnd(0,2);c2[ci]=Math.max(1,Math.min(3,c2[ci]+(Math.random()<.5?-1:1)));cands.push(c2)}
+    }
+    var seen={};seen[key(0,right)]=1;var wr=[];
+    cands.forEach(function(c){var kk=key(0,c);if(!seen[kk]&&wr.length<3&&(kd==='t'?c.some(function(r){return r.some(function(v){return v})}):Math.max.apply(null,c)>0)){seen[kk]=1;wr.push(c)}});
+    var all=[right].concat(wr);
+    q.opts=all.map(function(v,ix){return {k:ix===0?'R':'W'+ix,html:sv(v)}});q.right='R';
+    q.text='从<b style="color:var(--p1)">'+NAME[kd]+'</b>看，看到的是哪一个？';
+    q.exp=kd==='f'?'从正面看，从左到右数每一列最高的层数：'+right.join('、')+'。':kd==='l'?'从左面看，是从后往前排列：从左到右每一列最高的层数依次是 '+right.join('、')+'。':'从上面看，有小正方体的位置画正方形，靠前的一排在下面。';
+  }
+  q.opts=Hub.shuffle?Hub.shuffle(q.opts):q.opts.sort(function(){return Math.random()-.5});
+  return q}
+function show(){
+  cur=make();locked=false;$('info').textContent='第 '+(i+1)+' / '+N+' 题 · 答对 '+ok;
+  $('s3').innerHTML=iso(cur.h);$('qt').innerHTML=cur.text;$('m').textContent='';$('m').className='msg';$('ex').style.display='none';
+  $('oc').innerHTML=cur.opts.map(function(o){return '<button data-k="'+o.k+'">'+o.html+'</button>'}).join('');
+}
+$('oc').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b||locked)return;locked=true;
+  var good=b.dataset.k===cur.right;if(good)ok++;Hub.beep(good);
+  [].forEach.call($('oc').querySelectorAll('button'),function(x){if(x.dataset.k===cur.right)x.classList.add('good');else if(x===b)x.classList.add('badc')});
+  $('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ 答对了！':'✘ 再想想';
+  if(!good){$('ex').innerHTML=cur.exp;$('ex').style.display='block'}
+  setTimeout(function(){i++;if(i>=N)fin();else show()},good?800:3200);
+});
+function fin(){var st=ok>=N?3:ok>=N-1?2:ok>=3?1:0;Hub.star('observe',st);
+  $('oc').innerHTML='';$('s3').innerHTML='';$('qt').innerHTML='<div class="big">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</div>答对 '+ok+' / '+N;$('m').textContent='';$('ex').style.display='none';$('info').textContent='';$('rst').textContent='再来一轮'}
+$('rst').onclick=function(){i=0;ok=0;$('rst').textContent='重新开始';show()};
+show();
+</script></body></html>
