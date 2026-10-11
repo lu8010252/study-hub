@@ -22,7 +22,7 @@ services:
     container_name: study-hub
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8040:8040"
     environment:
       - TZ=Asia/Shanghai
       - ADMIN_PIN=      # 家长密码，留空=不设；设置后英语模块清除/删除/导入需要输入
@@ -30,7 +30,7 @@ services:
       - ./data:/data
 ```
 
-`docker compose up -d`，访问 `http://服务器IP:8080`。更新：`docker compose pull && docker compose up -d`。
+`docker compose up -d`，访问 `http://服务器IP:8040`。更新：`docker compose pull && docker compose up -d`。
 镜像由 GitHub Actions 在每次推送 main 后自动构建（amd64 / arm64）。
 
 ## 路径
