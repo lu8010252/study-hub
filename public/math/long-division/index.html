@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>竖式除法试商</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="q"></div>
+<pre id="pre" style="font:700 26px/1.35 ui-monospace,Menlo,monospace;display:inline-block;text-align:left;margin:8px 0"></pre>
+<div id="ctl"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>试商方法：</b>把除数看成整十数试商。商大了（乘积比被除数大）就调小；商小了（余数不比除数小）就调大。每一步的余数必须比除数小。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('竖式除法试商');
+var $=function(i){return document.getElementById(i)};
+
+var D,d,digs,pos,rem,cur,q,qs,lines,sc=0,state;
+function gen(){do{D=Hub.rnd(120,999);d=Hub.rnd(12,48)}while(D<d*10||D%d===0&&Math.random()<.6);digs=String(D).split('').map(Number);
+  /* 取够除数的前几位 */var k=0,c=0;while(k<digs.length&&c<d){c=c*10+digs[k];k++}pos=k;cur=c;rem=0;qs='';lines=[];q=Math.min(9,Math.floor(cur/d));state='try';$('m').textContent='';render()}
+function render(){
+  $('pre').innerHTML='<span style="color:#4f46e5">商：'+(qs||'?')+'</span>\n'+d+' ⟌ '+D+(lines.length?'\n':'')+lines.join('\n');$('q').innerHTML=D+' ÷ '+d+' = ?';
+  if(state==='done'){$('ctl').innerHTML='';return}
+  var prod=d*q,msg,okq=false;
+  if(prod>cur)msg='<span style="color:#e5484d">'+d+'×'+q+'='+prod+'，比 '+cur+' 大，商大了，调小</span>';
+  else if(cur-prod>=d)msg='<span style="color:#e5484d">余数 '+(cur-prod)+' ≥ 除数 '+d+'，商小了，调大</span>';
+  else{msg='<span style="color:#22a06b">'+d+'×'+q+'='+prod+'，'+cur+'−'+prod+'='+(cur-prod)+' < '+d+' ✓</span>';okq=true}
+  $('ctl').innerHTML='<div class="qtext">现在要除的数：<b>'+cur+'</b>，试商：</div><div class="cc"><button class="btn ghost" data-q="-1">−</button><span class="big2" style="min-width:40px">'+q+'</span><button class="btn ghost" data-q="1">＋</button></div><div style="margin:6px 0">'+msg+'</div><button class="btn" data-ok="1"'+(okq?'':' disabled style="opacity:.4"')+'>确定</button>'}
+document.addEventListener('click',function(e){var t=e.target;if(t.dataset.q){q=Math.max(0,Math.min(9,q+ +t.dataset.q));render()}
+  if(t.dataset.ok){var prod=d*q;qs+=q;rem=cur-prod;lines.push('　'+cur+' − '+d+'×'+q+' = '+cur+' − '+prod+' = '+rem);
+    if(pos>=digs.length){state='done';$('m').className='msg ok';$('m').textContent='✔ '+D+' ÷ '+d+' = '+qs.replace(/^0+(?=\d)/,'')+(rem?' ……'+rem:'');sc++;Hub.beep(true);Hub.star('long-division',sc>=4?3:sc>=2?2:1);render();return}
+    cur=rem*10+digs[pos];pos++;q=Math.min(9,Math.floor(cur/d));lines.push('　落下 '+digs[pos-1]+'，'+rem+'→'+cur);render()}});
+$('nx').onclick=gen;gen();
+</script></body></html>

@@ -534,6 +534,169 @@
   "unit": "平移、旋转和轴对称"
  },
  {
+  "id": "laws-visual",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔁",
+  "name": "运算律点子图",
+  "desc": "分配律、交换律、结合律看得见",
+  "kw": "乘法分配律 交换律 结合律 点子图 运算定律",
+  "color": "#c7d2fe",
+  "tb": "四下",
+  "unit": "运算律"
+ },
+ {
+  "id": "average-level",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "统计与概率",
+  "icon": "⚖️",
+  "name": "移多补少求平均数",
+  "desc": "点柱子移一移，求平均数",
+  "kw": "平均数 移多补少 统计",
+  "color": "#fde68a",
+  "tb": "四下",
+  "unit": "统计"
+ },
+ {
+  "id": "triangle-sides",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "📐",
+  "name": "三角形的三边关系",
+  "desc": "拖小棒看能不能围成三角形",
+  "kw": "三角形 三边关系 两边之和 小棒",
+  "color": "#99f6e4",
+  "tb": "四下",
+  "unit": "三角形、平行四边形和梯形"
+ },
+ {
+  "id": "place-table",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔡",
+  "name": "数位顺序表",
+  "desc": "输入大数，看数位和读法",
+  "kw": "数位 顺序表 亿 万 读数 级 大数",
+  "color": "#c7d2fe",
+  "tb": "四下",
+  "unit": "认识多位数"
+ },
+ {
+  "id": "decimal-visual",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "0️⃣",
+  "name": "小数的意义",
+  "desc": "百格图认识 0.1 和 0.01",
+  "kw": "小数 十分位 百分位 百格图 意义",
+  "color": "#c7d2fe",
+  "tb": "四下",
+  "unit": "小数的意义和性质"
+ },
+ {
+  "id": "decimal-shift",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "↔️",
+  "name": "小数点移动",
+  "desc": "乘除 10、100、1000 的规律",
+  "kw": "小数点 移动 乘10 除以10 大小变化",
+  "color": "#c7d2fe",
+  "tb": "四下",
+  "unit": "小数的意义和性质"
+ },
+ {
+  "id": "perp-draw",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "⫽",
+  "name": "垂直与平行",
+  "desc": "转一转作垂线、平行线",
+  "kw": "垂直 平行 垂线 平行线 距离 相交",
+  "color": "#99f6e4",
+  "tb": "四上",
+  "unit": "垂直与平行"
+ },
+ {
+  "id": "long-division",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "➗",
+  "name": "竖式除法试商",
+  "desc": "一步步试商、调商",
+  "kw": "除法 试商 调商 竖式 两位数",
+  "color": "#c7d2fe",
+  "tb": "四上",
+  "unit": "两、三位数除以两位数"
+ },
+ {
+  "id": "quad-explore",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "▱",
+  "name": "平行四边形和梯形",
+  "desc": "拖动变形、认识高和上下底",
+  "kw": "平行四边形 梯形 高 上底 下底 不稳定",
+  "color": "#99f6e4",
+  "tb": "四下",
+  "unit": "三角形、平行四边形和梯形"
+ },
+ {
+  "id": "chicken-rabbit",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "应用与思维",
+  "icon": "🐔",
+  "name": "鸡兔同笼（列表法）",
+  "desc": "列表试一试，找规律",
+  "kw": "鸡兔同笼 列表 假设 策略 解决问题",
+  "color": "#fbcfe8",
+  "tb": "四上",
+  "unit": "解决问题的策略"
+ },
+ {
   "id": "clock",
   "cat": "math",
   "kind": "tool",

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>垂直与平行</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="p">作垂线</button><button class="btn ghost" data-m="l">作平行线</button></div>
+<div class="qtext" id="task"></div>
+<svg id="s" viewBox="0 0 360 300" style="width:100%;max-width:520px;background:#fff;border-radius:10px"></svg>
+<div id="info" class="big2"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一个</button></div></div>
+<div class="panel"><b>小知识：</b>两条直线相交成 <b>直角</b>，就说这两条直线互相<b>垂直</b>；在同一平面内<b>不相交</b>的两条直线互相<b>平行</b>。从直线外一点到这条直线所画的线段中，<b>垂直线段最短</b>，它的长叫做点到直线的距离。平行线之间的距离处处相等。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('垂直与平行');
+var $=function(i){return document.getElementById(i)};
+
+var mode='p',base,P,ang,done=0,solved=false,drag=false;
+function gen(){base=Hub.rnd(-40,40);P=[Hub.rnd(110,250),Hub.rnd(60,110)];ang=base+Hub.rnd(25,65)*(Math.random()<.5?-1:1);solved=false;$('m').textContent='';$('m').className='msg'}
+function rad(d){return d*Math.PI/180}
+function line(p,a,len,col,w,dash){var dx=Math.cos(rad(a))*len,dy=Math.sin(rad(a))*len;return '<line x1="'+(p[0]-dx)+'" y1="'+(p[1]-dy)+'" x2="'+(p[0]+dx)+'" y2="'+(p[1]+dy)+'" stroke="'+col+'" stroke-width="'+w+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+' stroke-linecap="round"/>'}
+function diff(){var d=((ang-base)%180+180)%180;return d}
+function draw(){var B0=[180,240],s=line(B0,base,300,'#334155',4);
+  var d=diff(),target=mode==='p'?90:0,off=Math.min(Math.abs(d-target),Math.abs(d-target-180),Math.abs(d-target+180));
+  var good=off<2.5;if(good&&!solved){solved=true;done++;Hub.star('perp-draw',done>=4?3:done>=2?2:1);Hub.beep(true);$('m').className='msg ok';$('m').textContent='✔ '+(mode==='p'?'这两条直线互相垂直！':'这两条直线互相平行！')+'（已完成 '+done+' 个）'}
+  var a2=good?(mode==='p'?base+90:base):ang;
+  s+=line(P,a2,300,good?'#22a06b':'#6366f1',4);
+  /* 距离(点到直线) */
+  var nx=-Math.sin(rad(base)),ny=Math.cos(rad(base)),dist=(P[0]-B0[0])*nx+(P[1]-B0[1])*ny,F=[P[0]-dist*nx,P[1]-dist*ny];
+  if(good)s+='<line x1="'+P[0]+'" y1="'+P[1]+'" x2="'+F[0]+'" y2="'+F[1]+'" stroke="#e5484d" stroke-width="3" stroke-dasharray="6 4"/>'+(mode==='p'?'<text x="'+((P[0]+F[0])/2+8)+'" y="'+((P[1]+F[1])/2)+'" fill="#e5484d" font-size="14">距离</text>':'<text x="'+((P[0]+F[0])/2+8)+'" y="'+((P[1]+F[1])/2)+'" fill="#e5484d" font-size="14">平行线间的距离</text>');
+  s+='<circle cx="'+P[0]+'" cy="'+P[1]+'" r="6" fill="#e5484d"/>';
+  var hx=P[0]+Math.cos(rad(a2))*90,hy=P[1]+Math.sin(rad(a2))*90;
+  s+='<circle id="h" cx="'+hx+'" cy="'+hy+'" r="16" fill="'+(good?'#22a06b':'#f59e0b')+'" stroke="#fff" stroke-width="3" style="cursor:grab"/><text x="'+hx+'" y="'+(hy+5)+'" text-anchor="middle" font-size="14" fill="#fff" pointer-events="none">⟳</text>';
+  $('s').innerHTML=s;$('info').textContent='夹角：'+Math.round(Math.min(d,180-d))+'°';
+  $('task').textContent=mode==='p'?'转动橙色圆点，让绿线和黑线互相垂直':'转动橙色圆点，让这条线和黑线互相平行'}
+function pt(e){var r=$('s').getBoundingClientRect();return [(e.clientX-r.left)/r.width*360,(e.clientY-r.top)/r.height*300]}
+$('s').addEventListener('pointerdown',function(e){if(e.target.id==='h'){drag=true;$('s').setPointerCapture(e.pointerId);solved=false}});
+$('s').addEventListener('pointermove',function(e){if(!drag)return;var q=pt(e);ang=Math.atan2(q[1]-P[1],q[0]-P[0])*180/Math.PI;draw()});
+['pointerup','pointercancel'].forEach(function(n){$('s').addEventListener(n,function(){drag=false})});
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==m)});gen();draw()}});
+$('nx').onclick=function(){gen();draw()};gen();draw();
+</script></body></html>

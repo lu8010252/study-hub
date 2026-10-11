@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>数位顺序表</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">输入一个数（最多 12 位），看它在数位顺序表里的位置，学读法</div>
+<input id="in" inputmode="numeric" maxlength="12" placeholder="例如 305200800" style="font-size:26px;text-align:center;width:100%;max-width:360px;border:2px solid var(--line);border-radius:12px;padding:8px">
+<div class="cc"><button class="btn ghost" id="rd">随机一个数</button></div>
+<div style="overflow-x:auto"><table id="tb" style="margin:8px auto;border-collapse:collapse"></table></div>
+<div class="big2" id="rdout" style="margin-top:8px"></div><div class="mut" id="ex"></div></div>
+<div class="panel"><b>小知识：</b>从右往左每四位是一级：个级（个、十、百、千）、万级（万、十万、百万、千万）、亿级（亿、十亿、百亿、千亿）。读数从高位读起，每级末尾的 0 不读，其它位上有一个或连续几个 0，都只读一个"零"。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('数位顺序表');
+var $=function(i){return document.getElementById(i)};
+
+var N=['零','一','二','三','四','五','六','七','八','九'],NM=['','十','百','千'];
+function g4(n){var d=[Math.floor(n/1000),Math.floor(n/100)%10,Math.floor(n/10)%10,n%10],s='',z=false,i;
+  for(i=0;i<4;i++){var x=d[i],u=NM[3-i];if(x===0){if(s)z=true}else{if(z){s+='零';z=false}s+=N[x]+u}}return s}
+function cn(str){var n=str.replace(/^0+/,'');if(!n)return '零';var gs=[],i=n.length;while(i>0){gs.unshift(+n.slice(Math.max(0,i-4),i));i-=4}
+  var U=['','万','亿'],out='',pend=false;gs.forEach(function(g,k){var idx=gs.length-1-k;if(g===0){pend=true;return}
+    if(out&&(pend||g<1000))out+='零';var t=g4(g);if(!out&&t.indexOf('一十')===0)t=t.slice(1);out+=t+U[idx];pend=false});return out}
+var HD=['千','百','十','个'];
+function draw(){var v=$('in').value.replace(/\D/g,'').slice(0,12);$('in').value=v;var p=('000000000000'+v).slice(-12),h='<tr>',i;
+  var lv=['亿级','万级','个级'];for(i=0;i<3;i++)h+='<th colspan="4" style="background:'+['#c7d2fe','#fde68a','#99f6e4'][i]+';padding:4px 10px;border:1px solid #fff">'+lv[i]+'</th>';
+  h+='</tr><tr>';['千亿','百亿','十亿','亿','千万','百万','十万','万','千','百','十','个'].forEach(function(t){h+='<td style="font-size:12px;color:#64748b;padding:2px 6px;border:1px solid var(--line)">'+t+'</td>'});
+  h+='</tr><tr>';var started=false;for(i=0;i<12;i++){if(p[i]!=='0')started=true;h+='<td style="font-size:26px;font-weight:800;padding:6px 8px;border:1px solid var(--line);color:'+(p[i]==='0'?'#cbd5e1':'#4f46e5')+'">'+(started||i===11?p[i]:'')+'</td>'}
+  $('tb').innerHTML=h+'</tr>';
+  if(!v){$('rdout').textContent='';$('ex').textContent='';return}
+  $('rdout').textContent='读作：'+cn(v);
+  var n=+v,e='';if(n>=10000){var w=Math.round(n/10000);e='≈ '+w.toLocaleString('zh')+' 万（四舍五入到万位）';if(n>=1e8){e+='；≈ '+(Math.round(n/1e6)/100)+' 亿（保留两位小数）'}}$('ex').textContent=e}
+$('in').addEventListener('input',draw);
+$('rd').onclick=function(){var l=Hub.rnd(5,12),s='',i;for(i=0;i<l;i++)s+=(Math.random()<.3&&i>0)?'0':Hub.rnd(1,9);$('in').value=s;draw()};
+$('in').value='305200800';draw();
+</script></body></html>

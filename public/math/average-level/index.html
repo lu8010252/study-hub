@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>移多补少求平均数</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div id="info" class="mut"></div><div class="qtext" style="margin:6px 0">点一个<b>高的</b>柱子，再点一个<b>矮的</b>柱子，从高的移 1 格给矮的。想想：让它们一样高，平均数是多少？</div>
+<svg id="s" viewBox="0 0 340 230" style="width:100%;max-width:520px"></svg>
+<div class="msg" id="m"></div><div class="chs" id="ch"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一组</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('移多补少求平均数');
+var $=function(i){return document.getElementById(i)};
+
+var n=5,vals,sel=-1,moves=0,avg,solved=0,asked=false;
+function gen(){do{vals=[];for(var i=0;i<n;i++)vals.push(Hub.rnd(2,10));var t=vals.reduce(function(a,b){return a+b},0)}while(t%n||vals.every(function(x){return x===t/n}));avg=t/n;sel=-1;moves=0;asked=false;$('m').textContent='';$('ch').innerHTML=''}
+function draw(){var U=18,W=340/n,s='',lv=vals.every(function(x){return x===avg}),i,k;
+  for(i=0;i<n;i++){for(k=0;k<vals[i];k++)s+='<rect x="'+(i*W+10)+'" y="'+(215-(k+1)*U)+'" width="'+(W-20)+'" height="'+(U-2)+'" rx="3" fill="'+(i===sel?'#f59e0b':'#6366f1')+'" opacity="'+(k===vals[i]-1&&i===sel?1:.85)+'"/>';
+    s+='<rect data-i="'+i+'" x="'+(i*W)+'" y="0" width="'+W+'" height="225" fill="transparent" style="cursor:pointer"/>';s+='<text x="'+(i*W+W/2)+'" y="228" text-anchor="middle" font-size="12" fill="#64748b">'+vals[i]+'</text>'}
+  if(lv)s+='<line x1="0" x2="340" y1="'+(215-avg*U)+'" y2="'+(215-avg*U)+'" stroke="#e5484d" stroke-dasharray="6 4" stroke-width="2"/>';
+  $('s').innerHTML=s;$('info').textContent='已移动 '+moves+' 次 · 已完成 '+solved+' 组'}
+$('s').addEventListener('pointerdown',function(e){var i=e.target.dataset.i;if(i===undefined||asked)return;i=+i;
+  if(sel<0){if(vals[i]>0)sel=i}else if(sel===i)sel=-1;else{if(vals[sel]-vals[i]>=2){vals[sel]--;vals[i]++;moves++;Hub.beep(true)}sel=-1}
+  draw();if(vals.every(function(x){return x===vals[0]})&&!asked)ask()});
+function ask(){asked=true;$('m').className='msg ok';$('m').textContent='一样高了！那么平均数是多少？';var o=[avg,avg+1,avg-1,avg+2].filter(function(x){return x>0});o.sort(function(){return Math.random()-.5});
+  $('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('')}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined)return;var good=+c===avg;Hub.beep(good);
+  if(good){solved++;Hub.star('average-level',solved>=3?3:solved>=2?2:1);$('m').textContent='✔ 平均数是 '+avg+'。移多补少后每个都是 '+avg;$('ch').innerHTML='';draw()}else{$('m').className='msg bad';$('m').textContent='✘ 再数数：现在每根柱子有几格？'}});
+$('nx').onclick=function(){gen();draw()};
+gen();draw();
+</script></body></html>

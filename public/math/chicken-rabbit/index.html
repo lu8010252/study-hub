@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>鸡兔同笼（列表法）</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="q"></div>
+<div class="cc"><button class="btn ghost" data-d="-1">鸡 −1</button><span class="big2" id="n" style="min-width:150px"></span><button class="btn ghost" data-d="1">鸡 +1</button></div>
+<div id="pic" style="font-size:22px;line-height:1.5;min-height:60px"></div>
+<div id="calc" class="qtext"></div><div class="msg" id="m"></div>
+<div style="max-height:200px;overflow:auto"><table id="tb" style="margin:6px auto;border-collapse:collapse"></table></div>
+<div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>列表法：</b>先猜鸡的只数，算出脚的只数，和题目比一比，再调整。鸡多一只、兔少一只，脚就少 2 只，所以每次调整都有规律。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('鸡兔同笼（列表法）');
+var $=function(i){return document.getElementById(i)};
+
+var H,F,n,sc=0,rows;
+function gen(){var r=Hub.rnd(2,7),c=Hub.rnd(2,9);H=r+c;F=c*2+r*4;n=Math.floor(H/2);if(n===c)n=(n+1)%(H+1);rows=[];$('m').textContent='';draw()}
+function feet(){return n*2+(H-n)*4}
+function draw(){var f=feet();$('q').innerHTML='笼子里有鸡和兔共 <b>'+H+'</b> 只，一共有 <b>'+F+'</b> 条腿。鸡、兔各有几只？';
+  $('n').textContent='鸡 '+n+' 只 · 兔 '+(H-n)+' 只';
+  $('pic').innerHTML='🐔'.repeat(n)+'<br>'+'🐰'.repeat(H-n);
+  $('calc').innerHTML=n+'×2 + '+(H-n)+'×4 = '+f+' 条腿　<b style="color:'+(f===F?'#22a06b':'#e5484d')+'">'+(f===F?'✔ 正好！':f>F?'多了 '+(f-F)+' 条':'少了 '+(F-f)+' 条')+'</b>';
+  var h='<tr>'+['鸡','兔','腿','和 '+F+' 比'].map(function(t){return '<th style="padding:3px 12px;border:1px solid var(--line)">'+t+'</th>'}).join('')+'</tr>';
+  rows.forEach(function(r){h+='<tr>'+[r[0],H-r[0],r[1],r[1]===F?'✔':r[1]>F?'多 '+(r[1]-F):'少 '+(F-r[1])].map(function(t){return '<td style="padding:3px 12px;border:1px solid var(--line)">'+t+'</td>'}).join('')+'</tr>'});
+  $('tb').innerHTML=h;
+  if(f===F){$('m').className='msg ok';$('m').textContent='✔ 鸡 '+n+' 只，兔 '+(H-n)+' 只。用了 '+rows.length+' 次试验';if(!draw.done){draw.done=1;sc++;Hub.beep(true);Hub.star('chicken-rabbit',sc>=3?3:sc>=2?2:1)}}else{$('m').textContent=f>F?'腿多了，要少一些兔（多一些鸡）':'腿少了，要多一些兔（少一些鸡）'}}
+document.addEventListener('click',function(e){var d=e.target.dataset.d;if(d){n=Math.max(0,Math.min(H,n+ +d));var f=feet();if(!rows.some(function(r){return r[0]===n}))rows.push([n,f]);draw.done=draw.done&&feet()===F?1:0;draw()}});
+$('nx').onclick=function(){draw.done=0;gen()};gen();
+</script></body></html>

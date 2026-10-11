@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>运算律点子图</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="d">乘法分配律</button><button class="btn ghost" data-m="c">乘法交换律</button><button class="btn ghost" data-m="a">乘法结合律</button></div>
+<svg id="s" viewBox="0 0 360 240" style="width:100%;max-width:520px"></svg>
+<div id="sl"></div>
+<div class="big2" id="eq"></div><div class="mut" id="tip" style="margin-top:6px"></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('运算律点子图');
+var $=function(i){return document.getElementById(i)};
+
+var mode='d',v={a:3,b:4,c:5},COL=['#6366f1','#f59e0b','#22a06b'];
+function sl(k,lab,mx){return '<div class="sl"><b>'+lab+' = '+v[k]+'</b><input type="range" min="1" max="'+mx+'" value="'+v[k]+'" data-k="'+k+'"></div>'}
+function dots(x0,y0,cols,rows,col,u){var s='',i,j;for(i=0;i<cols;i++)for(j=0;j<rows;j++)s+='<circle cx="'+(x0+i*u+u/2)+'" cy="'+(y0+j*u+u/2)+'" r="'+(u*.36)+'" fill="'+col+'"/>';return s}
+function draw(keep){
+  var s='',e='',t='',a=v.a,b=v.b,c=v.c,h='';
+  if(mode==='d'){var u=Math.min(26,330/(a+b+1),200/c);s=dots(10,10,a,c,COL[0],u)+dots(10+a*u+10,10,b,c,COL[1],u);
+    s+='<text x="10" y="'+(c*u+30)+'" fill="#334155" font-size="15">左边 '+a+' 列 + 右边 '+b+' 列，每列 '+c+' 个</text>';
+    e='('+a+' + '+b+') × '+c+' = '+a+' × '+c+' + '+b+' × '+c+' = '+(a+b)*c;t='把 ('+a+'+'+b+') 列点子分成两块，先分别数再相加，总数不变。';
+    h=sl('a','a',9)+sl('b','b',9)+sl('c','c',9)}
+  else if(mode==='c'){var u2=Math.min(26,330/Math.max(a,b)*.5,200/Math.max(a,b));s=dots(10,10,a,b,COL[0],u2)+dots(200,10,b,a,COL[1],u2);
+    s+='<text x="10" y="'+(Math.max(a,b)*u2+36)+'" fill="#334155" font-size="15">'+a+' 列 × '+b+' 行　　转一转：'+b+' 列 × '+a+' 行</text>';
+    e=a+' × '+b+' = '+b+' × '+a+' = '+a*b;t='把点子图转一个方向，点子总数不变：乘法交换律。';h=sl('a','a',9)+sl('b','b',9)}
+  else{var u3=Math.min(22,300/(a+1)/1.0,150/(b+1)),k,s2='';
+    for(k=0;k<c;k++)s2+=dots(10+k*8,10+k*8,a,b,COL[k%3],u3*0.9);s=s2;
+    e='('+a+' × '+b+') × '+c+' = '+a+' × ('+b+' × '+c+') = '+a*b*c;t='把 '+c+' 层 '+a+'×'+b+' 的点子堆起来，总数 = 每层 '+(a*b)+' 个 × '+c+' 层；也可以先算 '+b+'×'+c+' 再乘 '+a+'。';h=sl('a','a',6)+sl('b','b',6)+sl('c','c',5)}
+  $('s').innerHTML=s;$('eq').textContent=e;$('tip').textContent=t;if(!keep)$('sl').innerHTML=h;
+  [].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==mode)})}
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;draw()}});
+document.addEventListener('input',function(e){var k=e.target.dataset.k;if(k){v[k]=+e.target.value;var p=e.target.parentNode.firstChild;p.textContent=k+' = '+v[k];draw(true)}});
+draw();
+</script></body></html>
