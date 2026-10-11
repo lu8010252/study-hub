@@ -1,162 +1,8 @@
 [
  {
-  "id": "add10",
-  "cat": "math",
-  "grades": [
-   1
-  ],
-  "topic": "数与代数",
-  "icon": "🔢",
-  "name": "10以内加减法",
-  "desc": "5以内、10以内加减",
-  "kw": "加法 减法 一年级 凑数",
-  "color": "#c7d2fe"
- },
- {
-  "id": "add20",
-  "cat": "math",
-  "grades": [
-   1
-  ],
-  "topic": "数与代数",
-  "icon": "🔟",
-  "name": "20以内进位加、退位减",
-  "desc": "凑十法、破十法",
-  "kw": "进位 退位 凑十 破十",
-  "color": "#c7d2fe"
- },
- {
-  "id": "add100",
-  "cat": "math",
-  "grades": [
-   2
-  ],
-  "topic": "数与代数",
-  "icon": "💯",
-  "name": "100以内加减法",
-  "desc": "进位、退位、混合",
-  "kw": "两位数 竖式",
-  "color": "#c7d2fe"
- },
- {
-  "id": "mult-table",
-  "cat": "math",
-  "grades": [
-   2
-  ],
-  "topic": "数与代数",
-  "icon": "✖️",
-  "name": "乘法口诀",
-  "desc": "1~9 的口诀练习",
-  "kw": "九九乘法表 小九九 口诀",
-  "color": "#c7d2fe"
- },
- {
-  "id": "div-table",
-  "cat": "math",
-  "grades": [
-   2
-  ],
-  "topic": "数与代数",
-  "icon": "➗",
-  "name": "表内除法",
-  "desc": "用口诀求商",
-  "kw": "除法 口诀",
-  "color": "#c7d2fe"
- },
- {
-  "id": "div-rem",
-  "cat": "math",
-  "grades": [
-   2,
-   3
-  ],
-  "topic": "数与代数",
-  "icon": "🍰",
-  "name": "有余数的除法",
-  "desc": "商和余数",
-  "kw": "余数 平均分",
-  "color": "#c7d2fe"
- },
- {
-  "id": "add1000",
-  "cat": "math",
-  "grades": [
-   3
-  ],
-  "topic": "数与代数",
-  "icon": "🧮",
-  "name": "万以内加减法",
-  "desc": "三位数、四位数加减",
-  "kw": "竖式 进位 退位",
-  "color": "#c7d2fe"
- },
- {
-  "id": "mult-multi",
-  "cat": "math",
-  "grades": [
-   3,
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "✖️",
-  "name": "多位数乘法",
-  "desc": "两位数、三位数相乘",
-  "kw": "乘法 竖式",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "三位数乘两位数"
- },
- {
-  "id": "div-multi",
-  "cat": "math",
-  "grades": [
-   3,
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "➗",
-  "name": "多位数除法",
-  "desc": "除数是一位数、两位数",
-  "kw": "除法 试商 竖式",
-  "color": "#c7d2fe",
-  "tb": "四上",
-  "unit": "两、三位数除以两位数"
- },
- {
-  "id": "order-ops",
-  "cat": "math",
-  "grades": [
-   3,
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "🔀",
-  "name": "四则混合运算顺序",
-  "desc": "先乘除后加减、括号",
-  "kw": "运算顺序 括号 混合运算",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "运算律"
- },
- {
-  "id": "shortcut",
-  "cat": "math",
-  "grades": [
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "⚡",
-  "name": "简便运算",
-  "desc": "凑整、分配律、结合律",
-  "kw": "简算 运算定律 分配律 交换律 结合律",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "运算律"
- },
- {
   "id": "place-value",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -172,6 +18,7 @@
  {
   "id": "rounding",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -187,6 +34,7 @@
  {
   "id": "estimate",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    3,
    4
@@ -203,6 +51,7 @@
  {
   "id": "patterns",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    2,
    3,
@@ -218,6 +67,7 @@
  {
   "id": "compare",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    1,
    2,
@@ -235,6 +85,7 @@
  {
   "id": "rmb",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    1,
    2
@@ -249,6 +100,7 @@
  {
   "id": "time-calc",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    2,
    3
@@ -263,6 +115,7 @@
  {
   "id": "average",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -276,37 +129,9 @@
   "unit": "统计"
  },
  {
-  "id": "decimal-add",
-  "cat": "math",
-  "grades": [
-   3,
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "🔹",
-  "name": "小数加减法",
-  "desc": "小数点对齐",
-  "kw": "小数 加法 减法",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "小数的意义和性质"
- },
- {
-  "id": "decimal-mul",
-  "cat": "math",
-  "grades": [
-   5
-  ],
-  "topic": "数与代数",
-  "icon": "🔸",
-  "name": "小数乘除法",
-  "desc": "小数乘法、除法",
-  "kw": "小数 乘法 除法 小数点",
-  "color": "#c7d2fe"
- },
- {
   "id": "frac-meaning",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    3,
    4,
@@ -320,76 +145,9 @@
   "color": "#c7d2fe"
  },
  {
-  "id": "frac-add-same",
-  "cat": "math",
-  "grades": [
-   3,
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "➕",
-  "name": "同分母分数加减",
-  "desc": "分母不变、分子加减",
-  "kw": "分数 加法 减法 同分母",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "分数初步"
- },
- {
-  "id": "frac-add",
-  "cat": "math",
-  "grades": [
-   5
-  ],
-  "topic": "数与代数",
-  "icon": "➖",
-  "name": "异分母分数加减",
-  "desc": "通分后计算",
-  "kw": "分数 通分 异分母",
-  "color": "#c7d2fe"
- },
- {
-  "id": "frac-mul-div",
-  "cat": "math",
-  "grades": [
-   6
-  ],
-  "topic": "数与代数",
-  "icon": "🍩",
-  "name": "分数乘除法",
-  "desc": "乘法、倒数、除法、应用",
-  "kw": "分数 乘法 除法 倒数",
-  "color": "#c7d2fe"
- },
- {
-  "id": "simplify-frac",
-  "cat": "math",
-  "grades": [
-   5
-  ],
-  "topic": "数与代数",
-  "icon": "✂️",
-  "name": "约分与通分",
-  "desc": "最简分数、公分母",
-  "kw": "约分 通分 最简分数 公分母",
-  "color": "#c7d2fe"
- },
- {
-  "id": "gcd-lcm",
-  "cat": "math",
-  "grades": [
-   5
-  ],
-  "topic": "数与代数",
-  "icon": "🔗",
-  "name": "最大公因数与最小公倍数",
-  "desc": "求值与应用",
-  "kw": "公因数 公倍数 gcd lcm",
-  "color": "#c7d2fe"
- },
- {
   "id": "prime-factor",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    5
   ],
@@ -403,6 +161,7 @@
  {
   "id": "unit-convert",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    3,
    4,
@@ -420,6 +179,7 @@
  {
   "id": "negative",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -433,6 +193,7 @@
  {
   "id": "percent",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -446,6 +207,7 @@
  {
   "id": "ratio",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -457,21 +219,9 @@
   "color": "#c7d2fe"
  },
  {
-  "id": "equations",
-  "cat": "math",
-  "grades": [
-   5
-  ],
-  "topic": "数与代数",
-  "icon": "🟰",
-  "name": "解方程",
-  "desc": "等式性质、方程",
-  "kw": "方程 x 未知数 等式",
-  "color": "#c7d2fe"
- },
- {
   "id": "word-problems",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    1,
    2,
@@ -490,6 +240,7 @@
  {
   "id": "perimeter-area",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    3
   ],
@@ -503,6 +254,7 @@
  {
   "id": "area-shapes",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    5
   ],
@@ -516,6 +268,7 @@
  {
   "id": "circle",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -529,6 +282,7 @@
  {
   "id": "cuboid-volume",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    5,
    6
@@ -543,6 +297,7 @@
  {
   "id": "cylinder-cone",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -556,6 +311,7 @@
  {
   "id": "angles",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -571,6 +327,7 @@
  {
   "id": "angle-types",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    2,
    3,
@@ -588,6 +345,7 @@
  {
   "id": "solid-features",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    1,
    2,
@@ -603,6 +361,7 @@
  {
   "id": "scale",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    6
   ],
@@ -616,6 +375,7 @@
  {
   "id": "median-mode",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    5,
    6
@@ -630,6 +390,7 @@
  {
   "id": "probability",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    5,
    6
@@ -646,6 +407,7 @@
  {
   "id": "capacity",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    3,
    4
@@ -660,23 +422,9 @@
   "unit": "升和毫升"
  },
  {
-  "id": "div-two-digit",
-  "cat": "math",
-  "grades": [
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "➗",
-  "name": "除数是两位数的除法",
-  "desc": "试商、调商、笔算",
-  "kw": "除法 两位数 试商 调商 竖式",
-  "color": "#c7d2fe",
-  "tb": "四上",
-  "unit": "两、三位数除以两位数"
- },
- {
   "id": "strategy",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -690,23 +438,9 @@
   "unit": "解决问题的策略"
  },
  {
-  "id": "laws",
-  "cat": "math",
-  "grades": [
-   4
-  ],
-  "topic": "数与代数",
-  "icon": "🔁",
-  "name": "运算律",
-  "desc": "交换律、结合律、分配律",
-  "kw": "加法交换律 乘法结合律 乘法分配律 运算定律",
-  "color": "#c7d2fe",
-  "tb": "四下",
-  "unit": "运算律"
- },
- {
   "id": "read-write",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -722,6 +456,7 @@
  {
   "id": "calculator",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -737,6 +472,7 @@
  {
   "id": "perp-parallel",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -752,6 +488,7 @@
  {
   "id": "decimal-know",
   "cat": "math",
+  "kind": "practice",
   "grades": [
    4
   ],
@@ -767,6 +504,7 @@
  {
   "id": "observe",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    4
   ],
@@ -782,6 +520,7 @@
  {
   "id": "transform-shapes",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    4
   ],
@@ -797,6 +536,7 @@
  {
   "id": "clock",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    1,
    2,
@@ -812,6 +552,7 @@
  {
   "id": "numberline",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    1,
    2,
@@ -830,6 +571,7 @@
  {
   "id": "mult-grid",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    2
   ],
@@ -843,6 +585,7 @@
  {
   "id": "abacus",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    1,
    2,
@@ -861,6 +604,7 @@
  {
   "id": "symmetry",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3,
    4
@@ -877,6 +621,7 @@
  {
   "id": "triangle-sum",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    4
   ],
@@ -892,6 +637,7 @@
  {
   "id": "circle-explore",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    6
   ],
@@ -905,6 +651,7 @@
  {
   "id": "parallelogram",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    5
   ],
@@ -918,6 +665,7 @@
  {
   "id": "spinner",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    5,
    6
@@ -934,6 +682,7 @@
  {
   "id": "bar-chart",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3,
    4,
@@ -951,6 +700,7 @@
  {
   "id": "hanoi",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    4,
    5,
@@ -966,6 +716,7 @@
  {
   "id": "calendar",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3
   ],
@@ -979,6 +730,7 @@
  {
   "id": "sudoku",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3,
    4,
@@ -995,6 +747,7 @@
  {
   "id": "mental",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    2,
    3,
@@ -1010,6 +763,7 @@
  {
   "id": "twenty-four",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    4,
    5,
@@ -1025,6 +779,7 @@
  {
   "id": "fraction",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3,
    4,
@@ -1040,6 +795,7 @@
  {
   "id": "percent-grid",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    6
   ],
@@ -1053,6 +809,7 @@
  {
   "id": "cuboid",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    5,
    6
@@ -1067,6 +824,7 @@
  {
   "id": "angle",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    2,
    3,
@@ -1084,6 +842,7 @@
  {
   "id": "area",
   "cat": "math",
+  "kind": "tool",
   "grades": [
    3,
    4
@@ -1098,6 +857,7 @@
  {
   "id": "english",
   "cat": "english",
+  "kind": "practice",
   "href": "/english/",
   "grades": [
    3,

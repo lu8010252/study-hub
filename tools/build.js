@@ -14,7 +14,8 @@ const quizTpl = (id, title) => `<!DOCTYPE html>
 const seen = new Set();
 for (const [id, grades, topic, icon, name, desc, kw, kind] of R.list) {
   if (seen.has(id)) throw new Error('重复 id ' + id); seen.add(id);
-  out.push({ id, cat: 'math', grades, topic, icon, name, desc, kw, color: R.col[topic], tb: R.tb[id] ? R.tb[id][0] : undefined, unit: R.tb[id] ? R.tb[id][1] : undefined });
+  if (R.paper.includes(id)) { fs.rmSync(path.join(root, 'math', id), { recursive: true, force: true }); continue; }
+  out.push({ id, cat: 'math', kind: kind === 'quiz' ? 'practice' : 'tool', grades, topic, icon, name, desc, kw, color: R.col[topic], tb: R.tb[id] ? R.tb[id][0] : undefined, unit: R.tb[id] ? R.tb[id][1] : undefined });
   if (kind === 'quiz') {
     const d = path.join(root, 'math', id); fs.mkdirSync(d, { recursive: true });
     fs.writeFileSync(path.join(d, 'index.html'), quizTpl(id, name));
@@ -23,6 +24,6 @@ for (const [id, grades, topic, icon, name, desc, kw, kind] of R.list) {
   }
 }
 /* 其它模块(不属于数学小工具目录) */
-out.push({ id: 'english', cat: 'english', href: '/english/', grades: [3, 4, 5, 6], topic: '英语', icon: '🔤', name: '英语语法小课堂', desc: '人教PEP四年级 · 出题', kw: '英语 语法 单词 听力 自然拼读 词性', color: '#fecaca' });
+out.push({ id: 'english', cat: 'english', kind: 'practice', href: '/english/', grades: [3, 4, 5, 6], topic: '英语', icon: '🔤', name: '英语语法小课堂', desc: '人教PEP四年级 · 出题', kw: '英语 语法 单词 听力 自然拼读 词性', color: '#fecaca' });
 fs.writeFileSync(path.join(root, 'tools.json'), JSON.stringify(out, null, 1));
 console.log('tools:', out.length);

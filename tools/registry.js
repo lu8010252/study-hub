@@ -93,4 +93,7 @@ tb: {
  'triangle-sum':['四下','三角形、平行四边形和梯形'],'angles':['四下','三角形、平行四边形和梯形'],'angle-types':['四上','角的度量'],'angle':['四上','角的度量'],
  'average':['四下','统计'],'estimate':['四上','两、三位数除以两位数'],'div-multi':['四上','两、三位数除以两位数'],
  'unit-convert':['四下','小数的意义和性质'],'frac-add-same':['四下','分数初步'],'decimal-add':['四下','小数的意义和性质']
-}};
+},
+/* 纯计算类练习：纸笔就能做，网站不收录(代码保留在 qd-*.js，需要时从这里删掉 id 即可恢复) */
+paper: ['add10','add20','add100','mult-table','div-table','div-rem','add1000','mult-multi','div-multi','div-two-digit','order-ops','shortcut','laws','decimal-add','decimal-mul','frac-add-same','frac-add','frac-mul-div','simplify-frac','gcd-lcm','equations']
+};

@@ -20,6 +20,7 @@
 <body>
 <div class="hero"><div class="in"><h1>🦢 学习中心</h1><p>课本同步 · 互动实验 · 边玩边学（鼠标 / 触屏都能用）</p></div></div>
 <div class="search"><input id="q" type="search" placeholder="🔍 搜索，如：分数、圆、鸡兔同笼、24点、百分比" autocomplete="off"></div>
+<div class="chips" id="kc"></div>
 <div class="chips" id="gc"></div>
 <div class="chips" id="bc"></div>
 <div class="chips" id="tc"></div>
@@ -31,14 +32,15 @@
 (function(){
   var GR=[['0','全部年级'],['1','一年级'],['2','二年级'],['3','三年级'],['4','四年级'],['5','五年级'],['6','六年级']];
   var TP=['全部','数与代数','图形与几何','统计与概率','应用与思维','英语'];
-  var g='4',tp='全部',bk='全部',tools=[];
+  var kd='tool',g='4',tp='全部',bk='全部',tools=[];
   var BK=['全部','四上','四下'];
   var $=function(i){return document.getElementById(i)},q=$('q');
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function gtxt(a){if(!a||!a.length)return '';return a.length===1?a[0]+'年级':a[0]+'~'+a[a.length-1]+'年级'}
-  function save(){try{localStorage.setItem('hub.filter',JSON.stringify({g:g,tp:tp,bk:bk,q:q.value}))}catch(e){}}
-  function load(){try{var f=JSON.parse(localStorage.getItem('hub.filter')||'{}');if(f.g)g=f.g;if(f.tp)tp=f.tp;if(f.bk)bk=f.bk;if(f.q)q.value=f.q}catch(e){}}
+  function save(){try{localStorage.setItem('hub.filter',JSON.stringify({kd:kd,g:g,tp:tp,bk:bk,q:q.value}))}catch(e){}}
+  function load(){try{var f=JSON.parse(localStorage.getItem('hub.filter')||'{}');if(f.kd)kd=f.kd;if(f.g)g=f.g;if(f.tp)tp=f.tp;if(f.bk)bk=f.bk;if(f.q)q.value=f.q}catch(e){}}
   function match(t,k){
+    if(kd!=='all'&&t.kind!==kd)return false;
     if(g!=='0'&&(t.grades||[]).indexOf(+g)<0)return false;
     if(tp!=='全部'&&t.topic!==tp)return false;
     if(bk!=='全部'&&t.tb!==bk)return false;
@@ -47,6 +49,7 @@
     return k.split(/\s+/).every(function(w){return s.indexOf(w)>=0});
   }
   function draw(){
+    $('kc').innerHTML='<b>类型</b>'+[['tool','🧰 工具（动手玩）'],['practice','✏️ 练习题'],['all','全部']].map(function(x){return '<button class="chip'+(x[0]===kd?' on':'')+'" data-kd="'+x[0]+'">'+x[1]+'</button>'}).join('');
     $('gc').innerHTML='<b>年级</b>'+GR.map(function(x){return '<button class="chip'+(x[0]===g?' on':'')+'" data-g="'+x[0]+'">'+x[1]+'</button>'}).join('');
     $('bc').innerHTML='<b>教材</b>'+BK.map(function(x){return '<button class="chip'+(x===bk?' on':'')+'" data-b="'+x+'">'+(x==='全部'?'全部':'苏教版'+x)+'</button>'}).join('');
     $('tc').innerHTML='<b>专题</b>'+TP.map(function(x){return '<button class="chip'+(x===tp?' on':'')+'" data-t="'+x+'">'+x+'</button>'}).join('');
@@ -60,6 +63,7 @@
     }).join(''):'<div class="empty">没有找到，换个词或放宽筛选条件试试</div>';
     save();
   }
+  $('kc').onclick=function(e){var v=e.target.getAttribute('data-kd');if(v){kd=v;draw()}};
   $('gc').onclick=function(e){var v=e.target.getAttribute('data-g');if(v!==null){g=v;draw()}};
   $('bc').onclick=function(e){var v=e.target.getAttribute('data-b');if(v){bk=v;if(v!=='全部'&&g==='0')g='4';draw()}};
   $('tc').onclick=function(e){var v=e.target.getAttribute('data-t');if(v){tp=v;draw()}};
