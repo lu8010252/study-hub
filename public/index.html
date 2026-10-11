@@ -6,31 +6,60 @@
 <meta name="theme-color" content="#6366f1">
 <title>学习中心</title>
 <link rel="stylesheet" href="/css/hub.css">
+<style>
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 20px 0;max-width:1100px;margin:0 auto;align-items:center}
+.chips b{color:var(--sub);font-size:14px;min-width:44px}
+.chip{min-height:38px;padding:0 14px;border-radius:19px;background:var(--card);border:2px solid var(--line);font-weight:600;font-size:15px}
+.chip.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:transparent}
+.cnt{max-width:1100px;margin:10px auto 0;padding:0 20px;color:var(--sub);font-size:14px}
+.tool .gr{position:absolute;left:8px;top:8px;font-size:11px;background:var(--bg);color:var(--sub);border-radius:8px;padding:0 6px}
+.sec{grid-column:1/-1;font-weight:800;font-size:18px;margin:8px 0 -4px}
+</style>
 </head>
 <body>
 <div class="hero"><div class="in"><h1>🦢 学习中心</h1><p>课本同步 · 互动实验 · 边玩边学（鼠标 / 触屏都能用）</p></div></div>
-<div class="search"><input id="q" type="search" placeholder="🔍 搜索工具，如：24点、分数、长方体" autocomplete="off"></div>
-<div class="tabs" id="tabs"></div>
+<div class="search"><input id="q" type="search" placeholder="🔍 搜索，如：分数、圆、鸡兔同笼、24点、百分比" autocomplete="off"></div>
+<div class="chips" id="gc"></div>
+<div class="chips" id="tc"></div>
+<div class="cnt" id="cnt"></div>
 <div class="grid" id="grid"></div>
 <div class="foot"><button id="clr">清除本机的星星进度</button></div>
 <script src="/js/tool.js"></script>
 <script>
 (function(){
-  var CATS=[['all','全部'],['math','数学'],['english','英语']],cat='all',tools=[];
-  var tabs=document.getElementById('tabs'),grid=document.getElementById('grid'),q=document.getElementById('q');
+  var GR=[['0','全部年级'],['1','一年级'],['2','二年级'],['3','三年级'],['4','四年级'],['5','五年级'],['6','六年级']];
+  var TP=['全部','数与代数','图形与几何','统计与概率','应用与思维','英语'];
+  var g='0',tp='全部',tools=[];
+  var $=function(i){return document.getElementById(i)},q=$('q');
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-  function draw(){
-    tabs.innerHTML=CATS.map(function(c){return '<button class="tab'+(c[0]===cat?' on':'')+'" data-c="'+c[0]+'">'+c[1]+'</button>'}).join('');
-    var k=q.value.trim().toLowerCase(),st=Hub.stars();
-    var list=tools.filter(function(t){return (cat==='all'||t.cat===cat)&&(!k||(t.name+t.desc).toLowerCase().indexOf(k)>=0)});
-    grid.innerHTML=list.length?list.map(function(t){
-      var n=st[t.id]||0;
-      return '<a class="tool" href="'+esc(t.href||('/math/'+t.id+'/'))+'"><span class="st">'+'★'.repeat(n)+'</span><div class="ic" style="background:'+t.color+'">'+t.icon+'</div><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small></a>';
-    }).join(''):'<div class="empty">没有找到，换个词试试</div>';
+  function gtxt(a){if(!a||!a.length)return '';return a.length===1?a[0]+'年级':a[0]+'~'+a[a.length-1]+'年级'}
+  function save(){try{localStorage.setItem('hub.filter',JSON.stringify({g:g,tp:tp,q:q.value}))}catch(e){}}
+  function load(){try{var f=JSON.parse(localStorage.getItem('hub.filter')||'{}');if(f.g)g=f.g;if(f.tp)tp=f.tp;if(f.q)q.value=f.q}catch(e){}}
+  function match(t,k){
+    if(g!=='0'&&(t.grades||[]).indexOf(+g)<0)return false;
+    if(tp!=='全部'&&t.topic!==tp)return false;
+    if(!k)return true;
+    var s=(t.name+' '+t.desc+' '+(t.kw||'')+' '+t.topic+' '+gtxt(t.grades)).toLowerCase();
+    return k.split(/\s+/).every(function(w){return s.indexOf(w)>=0});
   }
-  tabs.onclick=function(e){var c=e.target.getAttribute('data-c');if(c){cat=c;draw()}};
+  function draw(){
+    $('gc').innerHTML='<b>年级</b>'+GR.map(function(x){return '<button class="chip'+(x[0]===g?' on':'')+'" data-g="'+x[0]+'">'+x[1]+'</button>'}).join('');
+    $('tc').innerHTML='<b>专题</b>'+TP.map(function(x){return '<button class="chip'+(x===tp?' on':'')+'" data-t="'+x+'">'+x+'</button>'}).join('');
+    var k=q.value.trim().toLowerCase(),st=Hub.stars();
+    var list=tools.filter(function(t){return match(t,k)});
+    list.sort(function(a,b){var ga=(a.grades||[9])[0],gb=(b.grades||[9])[0];return ga-gb});
+    $('cnt').textContent='共 '+list.length+' 个工具'+(list.length<tools.length?'（已筛选，共 '+tools.length+' 个）':'');
+    $('grid').innerHTML=list.length?list.map(function(t){
+      var n=st[t.id]||0;
+      return '<a class="tool" href="'+esc(t.href||('/math/'+t.id+'/'))+'"><span class="gr">'+esc(gtxt(t.grades))+'</span><span class="st">'+'★'.repeat(n)+'</span><div class="ic" style="background:'+t.color+'">'+t.icon+'</div><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small></a>';
+    }).join(''):'<div class="empty">没有找到，换个词或放宽筛选条件试试</div>';
+    save();
+  }
+  $('gc').onclick=function(e){var v=e.target.getAttribute('data-g');if(v!==null){g=v;draw()}};
+  $('tc').onclick=function(e){var v=e.target.getAttribute('data-t');if(v){tp=v;draw()}};
   q.oninput=draw;
-  document.getElementById('clr').onclick=function(){if(confirm('清除这台设备上数学工具的星星进度？（英语数据不受影响）')){Hub.clearStars();draw()}};
+  $('clr').onclick=function(){if(confirm('清除这台设备上数学工具的星星进度？（英语数据不受影响）')){Hub.clearStars();draw()}};
+  load();
   fetch('/tools.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){tools=j;draw()});
 })();
 </script>

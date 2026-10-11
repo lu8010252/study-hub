@@ -1,10 +1,736 @@
 [
- {"id":"mental","cat":"math","name":"口算练习","desc":"四则运算 · 计时挑战","icon":"➕","color":"#c7d2fe"},
- {"id":"twenty-four","cat":"math","name":"24点","desc":"点牌凑24 · 有提示","icon":"🎴","color":"#fde68a"},
- {"id":"fraction","cat":"math","name":"分数可视化","desc":"拖动看分数、比大小","icon":"🍰","color":"#fbcfe8"},
- {"id":"percent","cat":"math","name":"百分比理解","desc":"百格图涂一涂","icon":"🍕","color":"#fed7aa"},
- {"id":"cuboid","cat":"math","name":"3D长方体","desc":"旋转 · 体积 · 表面积","icon":"🧊","color":"#99f6e4"},
- {"id":"angle","cat":"math","name":"量角器","desc":"拖动量角、猜角度","icon":"📐","color":"#bfdbfe"},
- {"id":"area","cat":"math","name":"面积与周长","desc":"拖拽格子图形","icon":"🟦","color":"#ddd6fe"},
- {"id":"english","cat":"english","href":"/english/","name":"英语语法小课堂","desc":"人教PEP四年级 · 出题","icon":"🔤","color":"#fecaca"}
+ {
+  "id": "add10",
+  "cat": "math",
+  "grades": [
+   1
+  ],
+  "topic": "数与代数",
+  "icon": "🔢",
+  "name": "10以内加减法",
+  "desc": "5以内、10以内加减",
+  "kw": "加法 减法 一年级 凑数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "add20",
+  "cat": "math",
+  "grades": [
+   1
+  ],
+  "topic": "数与代数",
+  "icon": "🔟",
+  "name": "20以内进位加、退位减",
+  "desc": "凑十法、破十法",
+  "kw": "进位 退位 凑十 破十",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "add100",
+  "cat": "math",
+  "grades": [
+   2
+  ],
+  "topic": "数与代数",
+  "icon": "💯",
+  "name": "100以内加减法",
+  "desc": "进位、退位、混合",
+  "kw": "两位数 竖式",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "mult-table",
+  "cat": "math",
+  "grades": [
+   2
+  ],
+  "topic": "数与代数",
+  "icon": "✖️",
+  "name": "乘法口诀",
+  "desc": "1~9 的口诀练习",
+  "kw": "九九乘法表 小九九 口诀",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "div-table",
+  "cat": "math",
+  "grades": [
+   2
+  ],
+  "topic": "数与代数",
+  "icon": "➗",
+  "name": "表内除法",
+  "desc": "用口诀求商",
+  "kw": "除法 口诀",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "div-rem",
+  "cat": "math",
+  "grades": [
+   2,
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "🍰",
+  "name": "有余数的除法",
+  "desc": "商和余数",
+  "kw": "余数 平均分",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "add1000",
+  "cat": "math",
+  "grades": [
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "🧮",
+  "name": "万以内加减法",
+  "desc": "三位数、四位数加减",
+  "kw": "竖式 进位 退位",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "mult-multi",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "✖️",
+  "name": "多位数乘法",
+  "desc": "两位数、三位数相乘",
+  "kw": "乘法 竖式",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "div-multi",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "➗",
+  "name": "多位数除法",
+  "desc": "除数是一位数、两位数",
+  "kw": "除法 试商 竖式",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "order-ops",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔀",
+  "name": "四则混合运算顺序",
+  "desc": "先乘除后加减、括号",
+  "kw": "运算顺序 括号 混合运算",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "shortcut",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "⚡",
+  "name": "简便运算",
+  "desc": "凑整、分配律、结合律",
+  "kw": "简算 运算定律 分配律 交换律 结合律",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "place-value",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔡",
+  "name": "数位与大数",
+  "desc": "万级、亿级、数位",
+  "kw": "数位 亿 万 读数 计数单位",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "rounding",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🎯",
+  "name": "四舍五入与近似数",
+  "desc": "精确到、省略尾数",
+  "kw": "近似数 取整 万 亿",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "estimate",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔍",
+  "name": "估算",
+  "desc": "加减、乘法估算",
+  "kw": "大约 估计",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "patterns",
+  "cat": "math",
+  "grades": [
+   2,
+   3,
+   4
+  ],
+  "topic": "应用与思维",
+  "icon": "🧩",
+  "name": "找规律填数",
+  "desc": "等差、倍数、变化的差",
+  "kw": "数列 规律 数字推理",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "compare",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "⚖️",
+  "name": "比较大小",
+  "desc": "整数、小数、分数比较",
+  "kw": "大小 大于 小于 小数 分数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "rmb",
+  "cat": "math",
+  "grades": [
+   1,
+   2
+  ],
+  "topic": "数与代数",
+  "icon": "💴",
+  "name": "认识人民币",
+  "desc": "元角分、买东西、找零",
+  "kw": "钱 元 角 分 购物",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "time-calc",
+  "cat": "math",
+  "grades": [
+   2,
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "⏰",
+  "name": "时间的计算",
+  "desc": "时分秒、经过时间、24时",
+  "kw": "时间 钟表 24时计时法",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "average",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "统计与概率",
+  "icon": "📊",
+  "name": "平均数",
+  "desc": "求平均数与应用",
+  "kw": "平均 统计",
+  "color": "#fde68a"
+ },
+ {
+  "id": "decimal-add",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🔹",
+  "name": "小数加减法",
+  "desc": "小数点对齐",
+  "kw": "小数 加法 减法",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "decimal-mul",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🔸",
+  "name": "小数乘除法",
+  "desc": "小数乘法、除法",
+  "kw": "小数 乘法 除法 小数点",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "frac-meaning",
+  "cat": "math",
+  "grades": [
+   3,
+   4,
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🍕",
+  "name": "分数的意义",
+  "desc": "分数、假分数、带分数",
+  "kw": "分数 分子 分母 假分数 带分数 分数单位",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "frac-add-same",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "➕",
+  "name": "同分母分数加减",
+  "desc": "分母不变、分子加减",
+  "kw": "分数 加法 减法 同分母",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "frac-add",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "➖",
+  "name": "异分母分数加减",
+  "desc": "通分后计算",
+  "kw": "分数 通分 异分母",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "frac-mul-div",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "🍩",
+  "name": "分数乘除法",
+  "desc": "乘法、倒数、除法、应用",
+  "kw": "分数 乘法 除法 倒数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "simplify-frac",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "✂️",
+  "name": "约分与通分",
+  "desc": "最简分数、公分母",
+  "kw": "约分 通分 最简分数 公分母",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "gcd-lcm",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🔗",
+  "name": "最大公因数与最小公倍数",
+  "desc": "求值与应用",
+  "kw": "公因数 公倍数 gcd lcm",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "prime-factor",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🔑",
+  "name": "因数、倍数、质数与合数",
+  "desc": "特征与判断",
+  "kw": "质数 合数 因数 倍数 素数 整除",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "unit-convert",
+  "cat": "math",
+  "grades": [
+   3,
+   4,
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "📏",
+  "name": "单位换算",
+  "desc": "长度、质量、时间、面积",
+  "kw": "单位 进率 千米 米 克 升 公顷",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "negative",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "🌡️",
+  "name": "认识负数",
+  "desc": "正负数、温度、数轴",
+  "kw": "负数 零下 数轴 正数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "percent",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "💯",
+  "name": "百分数",
+  "desc": "互化、百分率、折扣",
+  "kw": "百分比 折扣 打折 百分率 增长率",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "ratio",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "⚗️",
+  "name": "比和比例",
+  "desc": "比值、解比例、按比分配",
+  "kw": "比 比例 比值 化简比 按比分配",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "equations",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🟰",
+  "name": "解方程",
+  "desc": "等式性质、方程",
+  "kw": "方程 x 未知数 等式",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "word-problems",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "📖",
+  "name": "应用题",
+  "desc": "加减乘除、行程、鸡兔同笼、工程",
+  "kw": "应用题 行程 鸡兔同笼 工程 相遇",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "perimeter-area",
+  "cat": "math",
+  "grades": [
+   3
+  ],
+  "topic": "图形与几何",
+  "icon": "🟩",
+  "name": "周长与面积",
+  "desc": "长方形、正方形",
+  "kw": "周长 面积 长方形 正方形",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "area-shapes",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🔺",
+  "name": "多边形的面积",
+  "desc": "平行四边形、三角形、梯形",
+  "kw": "面积 平行四边形 三角形 梯形 底 高",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "circle",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "⭕",
+  "name": "圆的周长与面积",
+  "desc": "圆周率、半圆、圆环",
+  "kw": "圆 周长 面积 半径 直径 圆周率 π",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "cuboid-volume",
+  "cat": "math",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "📦",
+  "name": "长方体和正方体",
+  "desc": "体积、表面积、容积",
+  "kw": "体积 表面积 棱长 容积 立体",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "cylinder-cone",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🥫",
+  "name": "圆柱与圆锥",
+  "desc": "侧面积、表面积、体积",
+  "kw": "圆柱 圆锥 体积 侧面积",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "angles",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "📐",
+  "name": "角的计算",
+  "desc": "余角、补角、内角和",
+  "kw": "角度 内角和 三角形 多边形 补角 余角",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "angle-types",
+  "cat": "math",
+  "grades": [
+   2,
+   3,
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "📏",
+  "name": "认识角与三角形",
+  "desc": "角的分类、三角形分类",
+  "kw": "锐角 直角 钝角 平角 等腰 等边 三角形",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "solid-features",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🧊",
+  "name": "立体图形的特征",
+  "desc": "面、棱、顶点",
+  "kw": "长方体 正方体 圆柱 圆锥 球 棱柱 棱锥 顶点",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "scale",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🗺️",
+  "name": "比例尺",
+  "desc": "图上距离与实际距离",
+  "kw": "比例尺 地图 图上距离",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "median-mode",
+  "cat": "math",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "统计与概率",
+  "icon": "📈",
+  "name": "众数与中位数",
+  "desc": "统计量",
+  "kw": "众数 中位数 平均数 统计",
+  "color": "#fde68a"
+ },
+ {
+  "id": "probability",
+  "cat": "math",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "统计与概率",
+  "icon": "🎲",
+  "name": "可能性",
+  "desc": "一定、可能、不可能、分数表示",
+  "kw": "概率 可能性 摸球",
+  "color": "#fde68a"
+ },
+ {
+  "id": "mental",
+  "cat": "math",
+  "grades": [
+   2,
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "➕",
+  "name": "口算练习",
+  "desc": "四则运算 · 数字键盘",
+  "kw": "口算 速算 计时",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "twenty-four",
+  "cat": "math",
+  "grades": [
+   4,
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "🎴",
+  "name": "24点",
+  "desc": "点牌凑24 · 有提示",
+  "kw": "24点 扑克 思维 游戏",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "fraction",
+  "cat": "math",
+  "grades": [
+   3,
+   4,
+   5
+  ],
+  "topic": "数与代数",
+  "icon": "🍰",
+  "name": "分数可视化",
+  "desc": "拖动看分数、比大小",
+  "kw": "分数 比大小 可视化 圆 条形",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "percent-grid",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "🍕",
+  "name": "百分比涂格子",
+  "desc": "百格图涂一涂",
+  "kw": "百分比 百格 百分数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "cuboid",
+  "cat": "math",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🧊",
+  "name": "3D长方体",
+  "desc": "旋转 · 体积 · 表面积",
+  "kw": "长方体 3D 立体 旋转 体积",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "angle",
+  "cat": "math",
+  "grades": [
+   2,
+   3,
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "📐",
+  "name": "量角器",
+  "desc": "拖动量角、猜角度",
+  "kw": "量角器 角度 测量",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "area",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "🟦",
+  "name": "面积与周长（拖格子）",
+  "desc": "拖拽长方形",
+  "kw": "面积 周长 方格 长方形",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "english",
+  "cat": "english",
+  "href": "/english/",
+  "grades": [
+   3,
+   4,
+   5,
+   6
+  ],
+  "topic": "英语",
+  "icon": "🔤",
+  "name": "英语语法小课堂",
+  "desc": "人教PEP四年级 · 出题",
+  "kw": "英语 语法 单词 听力 自然拼读 词性",
+  "color": "#fecaca"
+ }
 ]

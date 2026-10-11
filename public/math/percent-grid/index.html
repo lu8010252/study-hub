@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>百分比理解</title><link rel="stylesheet" href="/css/hub.css">
+<style>#g{width:min(92vw,440px);aspect-ratio:1;margin:0 auto;display:block}.fr{display:inline-flex;flex-direction:column;align-items:center;font-weight:800;font-size:30px;line-height:1.1;margin:0 8px}.fr i{border-top:3px solid currentColor;width:100%;display:block}</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+ <div class="big" id="pc"></div>
+ <div id="eq" style="margin:6px 0;color:var(--sub);font-size:20px"></div>
+ <svg id="g" viewBox="0 0 400 400"></svg>
+ <p style="color:var(--sub)">在格子上点一下或拖动，涂出（或擦掉）一片</p>
+</div>
+<div class="panel">
+ <div id="task" style="font-weight:700;font-size:20px;text-align:center"></div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="chk">检查</button><button class="btn ghost" id="nx">换一题</button><button class="btn ghost" id="cl">清空</button></div>
+ <div class="msg" id="m" style="text-align:center"></div>
+</div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('百分比理解');
+var $=function(i){return document.getElementById(i)};
+var on=new Array(100).fill(false),target=0,solved=0,paint=null,svg=$('g');
+function gcd(a,b){return b?gcd(b,a%b):a}
+function draw(){
+  var s='',i;
+  for(i=0;i<100;i++){var x=(i%10)*40,y=Math.floor(i/10)*40;
+    s+='<rect data-i="'+i+'" x="'+(x+2)+'" y="'+(y+2)+'" width="36" height="36" rx="6" fill="'+(on[i]?'#6366f1':'#a5b4fc')+'" fill-opacity="'+(on[i]?1:.25)+'"/>'}
+  svg.innerHTML=s;
+  var c=on.filter(Boolean).length,g=gcd(c,100)||1;
+  $('pc').textContent=c+'%';
+  $('eq').innerHTML=c+'/100 = '+(c===0?'0':(c/g)+'/'+(100/g))+' = '+(c/100);
+}
+function cell(e){var r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*10,y=(e.clientY-r.top)/r.height*10;
+  if(x<0||y<0||x>=10||y>=10)return -1;return Math.floor(y)*10+Math.floor(x)}
+function set(i){if(i<0||on[i]===paint)return;on[i]=paint;draw()}
+svg.addEventListener('pointerdown',function(e){var i=cell(e);if(i<0)return;paint=!on[i];svg.setPointerCapture(e.pointerId);set(i)});
+svg.addEventListener('pointermove',function(e){if(paint===null)return;set(cell(e))});
+function end(){paint=null}svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+function pick(){
+  var k=Hub.rnd(0,2);
+  if(k===0){target=Hub.rnd(1,99);$('task').textContent='涂出 '+target+'%'}
+  else if(k===1){var f=[[1,2,50],[1,4,25],[3,4,75],[1,5,20],[2,5,40],[3,5,60],[1,10,10],[7,10,70],[1,20,5],[9,20,45],[3,25,12]][Hub.rnd(0,10)];target=f[2];$('task').innerHTML='涂出 <span class="fr">'+f[0]+'<i></i>'+f[1]+'</span> 这么多'}
+  else{var d=Hub.rnd(1,99)/100;target=Math.round(d*100);$('task').textContent='涂出 '+d.toFixed(2)+' 这么多'}
+  $('m').textContent='';
+}
+$('chk').onclick=function(){var c=on.filter(Boolean).length;
+  if(c===target){solved++;$('m').className='msg ok';$('m').textContent='✔ 对了！（'+target+'%）已完成 '+solved+' 题';Hub.beep(true);Hub.star('percent-grid',solved>=5?3:solved>=3?2:1)}
+  else{$('m').className='msg bad';$('m').textContent='现在是 '+c+'%，再调一调';Hub.beep(false)}};
+$('nx').onclick=function(){on.fill(false);pick();draw()};
+$('cl').onclick=function(){on.fill(false);draw()};
+pick();draw();
+</script></body></html>
