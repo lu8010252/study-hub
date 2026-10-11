@@ -616,6 +616,194 @@
   "color": "#fde68a"
  },
  {
+  "id": "clock",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "⏰",
+  "name": "认识钟表",
+  "desc": "拖动时针分针、拨时间",
+  "kw": "钟表 时间 时针 分针 几时几分",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "numberline",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "topic": "数与代数",
+  "icon": "📍",
+  "name": "数轴",
+  "desc": "整数、负数、小数点数",
+  "kw": "数轴 负数 小数 点数",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "mult-grid",
+  "cat": "math",
+  "grades": [
+   2
+  ],
+  "topic": "数与代数",
+  "icon": "🔲",
+  "name": "九九乘法表",
+  "desc": "口诀、点子图、找一找",
+  "kw": "乘法口诀 九九表 乘法表",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "abacus",
+  "cat": "math",
+  "grades": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "topic": "数与代数",
+  "icon": "🧮",
+  "name": "计数器",
+  "desc": "拨珠认识数位、读数",
+  "kw": "数位 计数器 算盘 读数 个十百千",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "symmetry",
+  "cat": "math",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "🦋",
+  "name": "轴对称",
+  "desc": "涂出对称图形",
+  "kw": "对称 轴对称 对称轴 图案",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "triangle-sum",
+  "cat": "math",
+  "grades": [
+   4
+  ],
+  "topic": "图形与几何",
+  "icon": "🔺",
+  "name": "三角形内角和",
+  "desc": "拖顶点看三个角的和",
+  "kw": "三角形 内角和 180 锐角 钝角 直角",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "circle-explore",
+  "cat": "math",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🎡",
+  "name": "圆的探索",
+  "desc": "半径变化、周长展开",
+  "kw": "圆 周长 面积 圆周率 半径 直径",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "parallelogram",
+  "cat": "math",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "▱",
+  "name": "平行四边形变长方形",
+  "desc": "剪拼推导面积公式",
+  "kw": "平行四边形 面积 转化 剪拼",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "spinner",
+  "cat": "math",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "统计与概率",
+  "icon": "🎡",
+  "name": "转盘与可能性",
+  "desc": "多次实验看占比",
+  "kw": "可能性 概率 转盘 实验",
+  "color": "#fde68a"
+ },
+ {
+  "id": "bar-chart",
+  "cat": "math",
+  "grades": [
+   3,
+   4,
+   5
+  ],
+  "topic": "统计与概率",
+  "icon": "📊",
+  "name": "条形统计图",
+  "desc": "拖柱子、读图答题",
+  "kw": "统计图 条形图 柱状图 数据",
+  "color": "#fde68a"
+ },
+ {
+  "id": "hanoi",
+  "cat": "math",
+  "grades": [
+   4,
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "🗼",
+  "name": "汉诺塔",
+  "desc": "搬盘子的思维游戏",
+  "kw": "汉诺塔 思维 游戏 递推",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "calendar",
+  "cat": "math",
+  "grades": [
+   3
+  ],
+  "topic": "图形与几何",
+  "icon": "📅",
+  "name": "年历与平年闰年",
+  "desc": "查星期、大小月",
+  "kw": "年历 日历 闰年 平年 大月 小月 星期",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "sudoku",
+  "cat": "math",
+  "grades": [
+   3,
+   4,
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "🔢",
+  "name": "数独",
+  "desc": "4×4、6×6、9×9",
+  "kw": "数独 逻辑 推理 思维 游戏",
+  "color": "#fbcfe8"
+ },
+ {
   "id": "mental",
   "cat": "math",
   "grades": [

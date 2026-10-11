@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>平行四边形变长方形</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<svg id="s" viewBox="0 0 600 260" style="width:100%;max-width:720px"></svg>
+<div style="text-align:left">① 剪下左边的三角形：<input class="range" id="t" type="range" min="0" max="100" value="0"></div>
+<div style="text-align:left">底 b = <b id="bv"></b> 厘米<input class="range" id="b" type="range" min="3" max="10" value="6"></div>
+<div style="text-align:left">高 h = <b id="hv"></b> 厘米<input class="range" id="h" type="range" min="2" max="7" value="4"></div>
+<div style="text-align:left">倾斜程度<input class="range" id="k" type="range" min="1" max="100" value="45"></div>
+<p class="big" id="res"></p><p style="color:var(--sub)" id="why"></p></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('平行四边形变长方形');
+var $=function(i){return document.getElementById(i)};
+var svg=$('s'),U=30;
+function draw(){
+  var b=+$('b').value,h=+$('h').value,k=+$('k').value/100,t=+$('t').value/100;$('bv').textContent=b;$('hv').textContent=h;
+  var B=b*U,H=h*U,S=Math.round(B*k*0.7),x0=60,y0=30,dx=t*B,s='';
+  /* 矩形目标虚线 */
+  s+='<rect x="'+(x0+S)+'" y="'+(y0)+'" width="'+B+'" height="'+H+'" fill="none" stroke="#22a06b" stroke-dasharray="6 5" stroke-width="2"/>';
+  /* 主体:平行四边形去掉左三角 */
+  s+='<polygon points="'+(x0+S)+','+y0+' '+(x0+S+B)+','+y0+' '+(x0+B)+','+(y0+H)+' '+(x0)+','+(y0+H)+'" fill="#a5b4fc" fill-opacity=".5" stroke="#6366f1" stroke-width="3"/>';
+  /* 左三角,可平移到右边 */
+  s+='<polygon points="'+(x0+dx)+','+(y0+H)+' '+(x0+S+dx)+','+y0+' '+(x0+S+dx)+','+(y0+H)+'" fill="#f59e0b" fill-opacity=".8" stroke="#b45309" stroke-width="3"/>';
+  s+='<line x1="'+(x0+S)+'" y1="'+y0+'" x2="'+(x0+S)+'" y2="'+(y0+H)+'" stroke="#e5484d" stroke-width="3"/><text x="'+(x0+S-8)+'" y="'+(y0+H/2)+'" text-anchor="end" fill="#e5484d" font-size="16">高 '+h+'</text>';
+  s+='<text x="'+(x0+B/2+S/2)+'" y="'+(y0+H+24)+'" text-anchor="middle" font-size="16" fill="currentColor">底 '+b+'</text>';
+  svg.setAttribute('viewBox','0 0 '+Math.max(600,x0+S+B+40)+' '+(y0+H+50));svg.innerHTML=s;
+  $('res').textContent=t>=0.99?'变成了长方形！面积 = 长 × 宽 = '+b+' × '+h+' = '+b*h:'平行四边形面积 = 底 × 高 = '+b+' × '+h+' = '+b*h;
+  $('why').textContent=t>=0.99?'长方形的长就是平行四边形的底，宽就是平行四边形的高；剪拼前后面积没变。':'把左边的三角形平移到右边，看看能拼成什么。';
+  if(t>=0.99)Hub.star('parallelogram',3);
+}
+['t','b','h','k'].forEach(function(i){$(i).oninput=draw});
+draw();
+</script></body></html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>数独</title><link rel="stylesheet" href="/css/hub.css">
+<style>#g{display:grid;margin:8px auto;width:min(92vw,440px);aspect-ratio:1;border:3px solid #23224a;background:#23224a;gap:1px}
+.c{display:grid;place-items:center;background:var(--card);font-weight:800;cursor:pointer;touch-action:manipulation;user-select:none}
+.c.g{background:var(--bg);color:var(--ink)}.c.u{color:var(--p1)}.c.s{background:#c7d2fe;color:#23224a}.c.x{background:#fecaca;color:#b91c1c}.c.h{background:#e0e7ff;color:#23224a}</style></head>
+<body><div class="page"><div class="panel" style="text-align:center">
+<div class="row" id="lv" style="justify-content:center"></div><div id="g"></div>
+<div class="row" id="np" style="justify-content:center;gap:6px"></div>
+<div class="row" style="justify-content:center;margin-top:8px"><button class="btn ghost" id="er">擦除</button><button class="btn ghost" id="hint">💡 提示一格</button><button class="btn" id="chk">检查</button><button class="btn ghost" id="nw">新题</button></div>
+<div class="msg" id="m"></div></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('数独');
+var $=function(i){return document.getElementById(i)};
+var LV=[{n:'4×4',s:4,br:2,bc:2,hole:8},{n:'6×6',s:6,br:2,bc:3,hole:18},{n:'9×9（简单）',s:9,br:3,bc:3,hole:40}],L=LV[0],sol,pz,cur,sel=-1;
+function ok(b,s,r,c,v){for(var i=0;i<s;i++){if(b[r][i]===v||b[i][c]===v)return false}var r0=r-r%L.br,c0=c-c%L.bc;for(var y=0;y<L.br;y++)for(var x=0;x<L.bc;x++)if(b[r0+y][c0+x]===v)return false;return true}
+function fill(b,s,pos){if(pos===s*s)return true;var r=Math.floor(pos/s),c=pos%s,nums=[],i;for(i=1;i<=s;i++)nums.push(i);nums.sort(function(){return Math.random()-.5});for(i=0;i<s;i++){var v=nums[i];if(ok(b,s,r,c,v)){b[r][c]=v;if(fill(b,s,pos+1))return true;b[r][c]=0}}return false}
+function count(b,s,lim){var best=-1,bc=99,r,c,v;for(r=0;r<s;r++)for(c=0;c<s;c++)if(!b[r][c]){var n=0;for(v=1;v<=s;v++)if(ok(b,s,r,c,v))n++;if(n<bc){bc=n;best=[r,c]}}if(best===-1)return 1;if(bc===0)return 0;var t=0;for(v=1;v<=s;v++)if(ok(b,s,best[0],best[1],v)){b[best[0]][best[1]]=v;t+=count(b,s,lim);b[best[0]][best[1]]=0;if(t>=lim)return t}return t}
+function gen(){var s=L.s,b=[],r,c;for(r=0;r<s;r++){b.push([]);for(c=0;c<s;c++)b[r].push(0)}fill(b,s,0);sol=b.map(function(x){return x.slice()});pz=b.map(function(x){return x.slice()});
+  var cells=[];for(r=0;r<s;r++)for(c=0;c<s;c++)cells.push([r,c]);cells.sort(function(){return Math.random()-.5});var removed=0;
+  for(var i=0;i<cells.length&&removed<L.hole;i++){var p=cells[i],v=pz[p[0]][p[1]];pz[p[0]][p[1]]=0;var t=pz.map(function(x){return x.slice()});if(count(t,s,2)===1)removed++;else pz[p[0]][p[1]]=v}
+  cur=pz.map(function(x){return x.slice()});sel=-1;$('m').textContent='';draw()}
+function conflict(r,c){var v=cur[r][c];if(!v)return false;var s=L.s,i;for(i=0;i<s;i++){if(i!==c&&cur[r][i]===v)return true;if(i!==r&&cur[i][c]===v)return true}var r0=r-r%L.br,c0=c-c%L.bc;for(var y=0;y<L.br;y++)for(var x=0;x<L.bc;x++)if((r0+y!==r||c0+x!==c)&&cur[r0+y][c0+x]===v)return true;return false}
+function draw(){var s=L.s,g=$('g'),h='',r,c;g.style.gridTemplateColumns='repeat('+s+',1fr)';
+  for(r=0;r<s;r++)for(c=0;c<s;c++){var cls='c '+(pz[r][c]?'g':'u');if(r*s+c===sel)cls+=' s';else if(conflict(r,c))cls+=' x';var bd='';if((c+1)%L.bc===0&&c<s-1)bd+='border-right:3px solid #23224a;';if((r+1)%L.br===0&&r<s-1)bd+='border-bottom:3px solid #23224a;';
+    h+='<div class="'+cls+'" data-i="'+(r*s+c)+'" style="font-size:'+(s===9?22:28)+'px;'+bd+'">'+(cur[r][c]||'')+'</div>'}
+  g.innerHTML=h;$('np').innerHTML=Array.from({length:s},function(_,i){return '<button class="btn ghost" data-n="'+(i+1)+'" style="min-width:44px;padding:0 10px">'+(i+1)+'</button>'}).join('');
+  $('lv').innerHTML=LV.map(function(l,i){return '<button class="btn '+(l===L?'':'ghost')+'" data-l="'+i+'" style="min-height:38px;font-size:15px">'+l.n+'</button>'}).join('')}
+$('g').onclick=function(e){var i=e.target.dataset.i;if(i!==undefined){sel=+i;draw()}};
+function put(v){if(sel<0)return;var r=Math.floor(sel/L.s),c=sel%L.s;if(pz[r][c])return;cur[r][c]=v;draw()}
+$('np').onclick=function(e){var n=e.target.dataset.n;if(n)put(+n)};$('er').onclick=function(){put(0)};
+document.addEventListener('keydown',function(e){if(e.key>='1'&&e.key<='9'&&+e.key<=L.s)put(+e.key);else if(e.key==='Backspace'||e.key==='Delete')put(0)});
+$('hint').onclick=function(){if(sel<0){$('m').className='msg';$('m').textContent='先选一个空格';return}var r=Math.floor(sel/L.s),c=sel%L.s;if(!pz[r][c]){cur[r][c]=sol[r][c];draw()}};
+$('chk').onclick=function(){var s=L.s,r,c,empty=0,bad=0;for(r=0;r<s;r++)for(c=0;c<s;c++){if(!cur[r][c])empty++;else if(cur[r][c]!==sol[r][c])bad++}
+  if(bad){$('m').className='msg bad';$('m').textContent='有 '+bad+' 格填错了（红色格是冲突的）';Hub.beep(false)}else if(empty){$('m').className='msg';$('m').textContent='目前没有错，还剩 '+empty+' 格';}else{$('m').className='msg ok';$('m').textContent='🎉 完成了！';Hub.beep(true);Hub.star('sudoku',L.s===4?1:L.s===6?2:3)}};
+$('nw').onclick=gen;$('lv').onclick=function(e){var i=e.target.dataset.l;if(i!==undefined){L=LV[+i];gen()}};
+gen();
+</script></body></html>

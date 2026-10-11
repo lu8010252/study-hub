@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>条形统计图</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel" style="text-align:center"><div id="ttl" style="font-weight:800;font-size:20px"></div>
+<svg id="s" viewBox="0 0 520 300" style="width:100%;max-width:640px"></svg>
+<p style="color:var(--sub);margin:2px">可以拖动柱子的顶端，改变数据（每格 = 5）</p></div>
+<div class="panel" style="text-align:center"><div id="q" class="qtext sm"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div>
+<button class="btn ghost" id="nx">换一组数据</button></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('条形统计图');
+var $=function(i){return document.getElementById(i)};
+var SETS=[['某班同学喜欢的水果（人）',['苹果','香蕉','西瓜','葡萄','草莓']],['一周图书借阅（本）',['周一','周二','周三','周四','周五']],['四个小组收集的废纸（千克）',['一组','二组','三组','四组','五组']],['五位同学跳绳（个）',['小明','小红','小刚','小丽','阳阳']]];
+var set,vals,svg=$('s'),drag=-1,qa,solved=0,Y0=250,MAX=60,unit=4;
+function gen(){set=SETS[Hub.rnd(0,SETS.length-1)];vals=set[1].map(function(){return Hub.rnd(2,11)*5});$('ttl').textContent=set[0];ask()}
+function draw(){
+  var s='',i,w=60;
+  for(i=0;i<=MAX;i+=10){var y=Y0-i*unit;s+='<line x1="50" y1="'+y+'" x2="510" y2="'+y+'" stroke="currentColor" stroke-opacity=".15"/><text x="44" y="'+(y+5)+'" text-anchor="end" font-size="13" fill="currentColor">'+i+'</text>'}
+  vals.forEach(function(v,i){var x=70+i*90,h=v*unit;s+='<rect x="'+x+'" y="'+(Y0-h)+'" width="'+w+'" height="'+h+'" rx="6" fill="'+['#6366f1','#f59e0b','#22a06b','#e5484d','#3b82f6'][i]+'"/>';
+    s+='<text x="'+(x+w/2)+'" y="'+(Y0-h-6)+'" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">'+v+'</text><text x="'+(x+w/2)+'" y="272" text-anchor="middle" font-size="14" fill="currentColor">'+set[1][i]+'</text>';
+    s+='<circle data-i="'+i+'" cx="'+(x+w/2)+'" cy="'+(Y0-h)+'" r="12" fill="#fff" fill-opacity=".001" style="cursor:ns-resize"/>';});
+  svg.innerHTML=s;
+}
+function pt(e){var r=svg.getBoundingClientRect();return (e.clientY-r.top)/r.height*300}
+svg.addEventListener('pointerdown',function(e){var t=e.target.dataset.i;if(t!==undefined){drag=+t;svg.setPointerCapture(e.pointerId)}});
+svg.addEventListener('pointermove',function(e){if(drag<0)return;var v=Math.round((Y0-pt(e))/unit/5)*5;vals[drag]=Math.max(0,Math.min(MAX,v));draw()});
+function up(){if(drag>=0){drag=-1;ask()}}svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+function ask(){
+  var N=set[1],i,k=Hub.rnd(0,4),mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals),a,b,right,wr,q;
+  if(k===0){if(vals.filter(function(v){return v===mx}).length>1){k=3}else{q='哪一项最多？';right=N[vals.indexOf(mx)];wr=N.filter(function(x){return x!==right})}}
+  if(k===1){if(vals.filter(function(v){return v===mn}).length>1){k=3}else{q='哪一项最少？';right=N[vals.indexOf(mn)];wr=N.filter(function(x){return x!==right})}}
+  if(k===2){a=Hub.rnd(0,4);do{b=Hub.rnd(0,4)}while(b===a);q=N[a]+'比'+N[b]+(vals[a]>=vals[b]?'多':'少')+'多少？';var d=Math.abs(vals[a]-vals[b]);right=String(d);wr=[d+5,Math.max(0,d-5),d+10,d+1].filter(function(x){return x!==d})}
+  if(k===3||k===4){q='五项合计是多少？';var t=vals.reduce(function(x,y){return x+y},0);right=String(t);wr=[t+5,t-5,t+10,t-10]}
+  qa=String(right);var opts=[qa];wr.forEach(function(x){if(opts.indexOf(String(x))<0&&opts.length<4)opts.push(String(x))});opts=opts.sort(function(){return Math.random()-.5});
+  $('q').textContent=q;$('ch').innerHTML=opts.map(function(o){return '<button class="ch" data-c="'+o+'">'+o+'</button>'}).join('');$('m').textContent='';draw();
+}
+$('ch').onclick=function(e){var c=e.target.dataset.c;if(c===undefined)return;if(c===qa){solved++;$('m').className='msg ok';$('m').textContent='✔ 对了！已完成 '+solved+' 题';Hub.beep(true);Hub.star('bar-chart',solved>=5?3:solved>=3?2:1);setTimeout(ask,900)}else{$('m').className='msg bad';$('m').textContent='再看看图';Hub.beep(false)}};
+$('nx').onclick=gen;
+gen();
+</script></body></html>

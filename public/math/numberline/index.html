@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>数轴</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel"><div class="row" id="lv"></div>
+ <svg id="s" viewBox="0 0 600 140" style="width:100%"></svg>
+ <p style="color:var(--sub);margin:0">点一下数轴，放上红点</p></div>
+<div class="panel" style="text-align:center"><div id="task" style="font-weight:700;font-size:22px"></div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="chk">检查</button><button class="btn ghost" id="nx">换一题</button></div><div class="msg" id="m"></div></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('数轴');
+var $=function(i){return document.getElementById(i)};
+var LV=[{n:'0~20',lo:0,hi:20,st:1},{n:'0~100',lo:0,hi:100,st:10},{n:'−10~10',lo:-10,hi:10,st:1},{n:'0~1（小数）',lo:0,hi:1,st:0.1},{n:'0~5（半格）',lo:0,hi:5,st:0.5}];
+var L=LV[0],val=null,goal=0,solved=0,svg=$('s');
+function fmt(x){return String(+x.toFixed(2)).replace('-','−')}
+function X(v){return 30+(v-L.lo)/(L.hi-L.lo)*540}
+function draw(){
+  var s='<line x1="20" y1="80" x2="580" y2="80" stroke="#23224a" stroke-width="3"/><polygon points="590,80 574,72 574,88" fill="#23224a"/>',v;
+  var n=Math.round((L.hi-L.lo)/L.st);
+  for(var i=0;i<=n;i++){v=L.lo+i*L.st;var big=(n<=22)||(i%5===0);s+='<line x1="'+X(v)+'" y1="'+(big?68:74)+'" x2="'+X(v)+'" y2="92" stroke="#23224a" stroke-width="2"/>';
+    if(n<=22||i%(n>50?2:1)===0||v===L.lo)s+='<text x="'+X(v)+'" y="118" text-anchor="middle" font-size="'+(n>12?13:16)+'" fill="currentColor">'+fmt(v)+'</text>'}
+  if(val!==null)s+='<circle cx="'+X(val)+'" cy="80" r="11" fill="#e5484d" stroke="#fff" stroke-width="3"/><text x="'+X(val)+'" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#e5484d">'+fmt(val)+'</text>';
+  svg.innerHTML=s;
+}
+svg.addEventListener('pointerdown',function(e){var r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*600,v=L.lo+(x-30)/540*(L.hi-L.lo);v=Math.round((v-L.lo)/L.st)*L.st+L.lo;val=Math.max(L.lo,Math.min(L.hi,+v.toFixed(2)));draw()});
+function lv(){$('lv').innerHTML=LV.map(function(l,i){return '<button class="btn '+(l===L?'':'ghost')+'" data-i="'+i+'" style="min-height:40px;font-size:15px">'+l.n+'</button>'}).join('')}
+$('lv').onclick=function(e){var i=e.target.dataset.i;if(i!==undefined){L=LV[+i];lv();pick();draw()}};
+function pick(){var n=Math.round((L.hi-L.lo)/L.st);goal=+(L.lo+Hub.rnd(0,n)*L.st).toFixed(2);val=null;$('task').textContent='在数轴上点出 '+fmt(goal);$('m').textContent=''}
+$('chk').onclick=function(){if(val===null){$('m').className='msg';$('m').textContent='先在数轴上点一下';return}if(Math.abs(val-goal)<1e-6){solved++;$('m').className='msg ok';$('m').textContent='✔ 对了！已完成 '+solved+' 题';Hub.beep(true);Hub.star('numberline',solved>=5?3:solved>=3?2:1)}else{$('m').className='msg bad';$('m').textContent='你点的是 '+fmt(val)+'，再找找 '+fmt(goal);Hub.beep(false)}};
+$('nx').onclick=function(){pick();draw()};
+lv();pick();draw();
+</script></body></html>

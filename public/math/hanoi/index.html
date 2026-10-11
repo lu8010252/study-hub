@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>汉诺塔</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel" style="text-align:center"><div class="row" id="lv" style="justify-content:center"></div>
+<p>把所有圆盘从左柱搬到右柱：<b>一次只能搬一个，大盘不能压在小盘上</b>。点一根柱子选盘，再点目标柱子。</p>
+<svg id="s" viewBox="0 0 600 260" style="width:100%;max-width:720px"></svg>
+<div class="row" style="justify-content:center;gap:24px"><div>步数 <b class="big" id="mv">0</b></div><div>最少 <b id="best"></b> 步</div></div>
+<div class="msg" id="m"></div><div class="row" style="justify-content:center"><button class="btn ghost" id="rs">重来</button><button class="btn ghost" id="un">↩ 撤销</button></div></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('汉诺塔');
+var $=function(i){return document.getElementById(i)};
+var n=3,pegs,sel=-1,moves=0,hist=[],svg=$('s'),COL=['#e5484d','#f59e0b','#22a06b','#3b82f6','#6366f1','#a855f7'];
+function init(){pegs=[[],[],[]];for(var i=n;i>=1;i--)pegs[0].push(i);sel=-1;moves=0;hist=[];$('m').textContent='';$('best').textContent=Math.pow(2,n)-1;draw()}
+function draw(){
+  var s='',p,i;
+  for(p=0;p<3;p++){var cx=100+p*200;s+='<rect data-p="'+p+'" x="'+(cx-95)+'" y="10" width="190" height="240" fill="'+(sel===p?'#c7d2fe':'transparent')+'" fill-opacity=".5" rx="12" style="cursor:pointer"/><rect x="'+(cx-5)+'" y="40" width="10" height="200" rx="5" fill="#a5b4fc" style="pointer-events:none"/><rect x="'+(cx-90)+'" y="238" width="180" height="10" rx="5" fill="#6b6a8f" style="pointer-events:none"/>';
+    pegs[p].forEach(function(d,k){var w=30+d*(130/n),y=226-k*(Math.min(30,180/n));var top=(k===pegs[p].length-1&&sel===p);s+='<rect x="'+(cx-w/2)+'" y="'+(top?y-16:y)+'" width="'+w+'" height="'+(Math.min(28,170/n))+'" rx="8" fill="'+COL[d-1]+'" stroke="#fff" stroke-width="2" style="pointer-events:none"/>'})}
+  svg.innerHTML=s;$('mv').textContent=moves;
+  $('lv').innerHTML=[3,4,5,6].map(function(k){return '<button class="btn '+(k===n?'':'ghost')+'" data-n="'+k+'" style="min-height:38px;font-size:15px">'+k+' 个盘</button>'}).join('');
+}
+svg.addEventListener('pointerdown',function(e){var p=e.target.dataset.p;if(p===undefined)return;p=+p;
+  if(sel<0){if(pegs[p].length)sel=p}else if(sel===p)sel=-1;else{var d=pegs[sel][pegs[sel].length-1],t=pegs[p][pegs[p].length-1];
+    if(t&&t<d){$('m').className='msg bad';$('m').textContent='大盘不能压在小盘上';Hub.beep(false)}else{pegs[sel].pop();pegs[p].push(d);hist.push([sel,p]);moves++;sel=-1;$('m').textContent='';
+      if(pegs[2].length===n){var best=Math.pow(2,n)-1;$('m').className='msg ok';$('m').textContent=moves===best?'🎉 完美！刚好是最少步数':'完成！用了 '+moves+' 步（最少 '+best+' 步，再试试？）';Hub.beep(true);Hub.star('hanoi',moves===best?3:moves<=best*1.5?2:1)}}}
+  draw()});
+$('lv').onclick=function(e){var k=e.target.dataset.n;if(k){n=+k;init()}};
+$('rs').onclick=init;$('un').onclick=function(){var h=hist.pop();if(!h)return;pegs[h[0]].push(pegs[h[1]].pop());moves--;sel=-1;draw()};
+init();
+</script></body></html>

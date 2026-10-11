@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>认识钟表</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+ <div class="big" id="dig" style="font-variant-numeric:tabular-nums"></div>
+ <svg id="s" viewBox="0 0 300 300" style="width:100%;max-width:380px"></svg>
+ <p style="color:var(--sub);margin:4px">拖动<b>分针</b>（长的）转一转，时针会跟着走；也可以拖时针</p>
+ <div class="row" style="justify-content:center"><button class="btn ghost" id="sp">🔊 读时间</button></div>
+</div>
+<div class="panel" style="text-align:center">
+ <div id="task" style="font-weight:700;font-size:20px"></div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="chk">检查</button><button class="btn ghost" id="nx">换一题</button></div>
+ <div class="msg" id="m"></div>
+</div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('认识钟表');
+var $=function(i){return document.getElementById(i)};
+var min=0,svg=$('s'),drag=null,goal=null,solved=0,CX=150,CY=150;
+function ang(m){return m/60*2*Math.PI}
+function pt(a,r){return [CX+r*Math.sin(a),CY-r*Math.cos(a)]}
+function hr(){return Math.floor(min/60)%12}
+function say(){var h=hr()||12,m=min%60;return m===0?h+' 时整':m===30?h+' 时半':h+' 时 '+m+' 分'}
+function draw(){
+  var s='<circle cx="150" cy="150" r="140" fill="#fff" stroke="#6366f1" stroke-width="6"/>',i;
+  for(i=0;i<60;i++){var a=pt(ang(i),i%5?128:118),b=pt(ang(i),134);s+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#23224a" stroke-width="'+(i%5?1:3)+'"/>'}
+  for(i=1;i<=12;i++){var p=pt(ang(i*5),100);s+='<text x="'+p[0]+'" y="'+(p[1]+8)+'" text-anchor="middle" font-size="24" font-weight="800" fill="#23224a">'+i+'</text>'}
+  var mm=min%60,ha=ang((hr()*60+mm)/12),h1=pt(ha,70),m1=pt(ang(mm),110);
+  s+='<line id="hh" x1="150" y1="150" x2="'+h1[0]+'" y2="'+h1[1]+'" stroke="#e5484d" stroke-width="10" stroke-linecap="round" style="cursor:grab"/>';
+  s+='<line id="mh" x1="150" y1="150" x2="'+m1[0]+'" y2="'+m1[1]+'" stroke="#6366f1" stroke-width="6" stroke-linecap="round" style="cursor:grab"/>';
+  s+='<circle cx="150" cy="150" r="8" fill="#23224a"/>';
+  svg.innerHTML=s;
+  $('dig').textContent=(hr()||12)+':'+('0'+mm).slice(-2);
+}
+function pos(e){var r=svg.getBoundingClientRect();return [(e.clientX-r.left)/r.width*300-150,(e.clientY-r.top)/r.height*300-150]}
+function angOf(e){var p=pos(e),a=Math.atan2(p[0],-p[1]);if(a<0)a+=2*Math.PI;return a}
+svg.addEventListener('pointerdown',function(e){var t=e.target.id;if(t==='mh'||t==='hh'){drag=t;svg.setPointerCapture(e.pointerId)}else{drag='mh';svg.setPointerCapture(e.pointerId);move(e)}});
+function move(e){
+  if(!drag)return;var a=angOf(e);
+  if(drag==='mh'){var nm=Math.round(a/(2*Math.PI)*60)%60,old=min%60,h=Math.floor(min/60);
+    if(old>45&&nm<15)h++;else if(old<15&&nm>45)h--;min=((h%12)+12)%12*60+nm}
+  else{var tot=a/(2*Math.PI)*12,h2=Math.floor(tot),m2=Math.round((tot-h2)*60);if(m2===60){m2=0;h2=(h2+1)%12}min=h2*60+m2}
+  draw();
+}
+svg.addEventListener('pointermove',move);
+function up(){drag=null}svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+function pick(){var h=Hub.rnd(1,12),m=Hub.rnd(0,3)===0?Hub.rnd(0,11)*5:Hub.pick?0:[0,30][Hub.rnd(0,1)];goal=(h%12)*60+m;$('task').textContent='拨出 '+h+':'+('0'+m).slice(-2)+'（'+(m===0?h+' 时整':m===30?h+' 时半':h+' 时 '+m+' 分')+'）';$('m').textContent=''}
+$('chk').onclick=function(){if(min===goal){solved++;$('m').className='msg ok';$('m').textContent='✔ 拨对了！已完成 '+solved+' 题';Hub.beep(true);Hub.star('clock',solved>=5?3:solved>=3?2:1)}else{$('m').className='msg bad';$('m').textContent='现在是 '+(hr()||12)+':'+('0'+min%60).slice(-2)+'，再拨一拨';Hub.beep(false)}};
+$('nx').onclick=pick;
+$('sp').onclick=function(){try{var u=new SpeechSynthesisUtterance(say());u.lang='zh-CN';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+pick();draw();
+</script></body></html>

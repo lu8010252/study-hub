@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>轴对称</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page">
+<div class="panel" style="text-align:center"><div id="task" style="font-weight:700;font-size:20px;margin-bottom:6px">左边是给定的图案，在<b>右边</b>涂出它的轴对称图形（点格子涂色 / 擦掉，红线是对称轴）</div>
+<svg id="s" viewBox="0 0 400 320" style="width:100%;max-width:560px"></svg>
+<div class="row" style="justify-content:center;margin-top:8px"><button class="btn" id="chk">检查</button><button class="btn ghost" id="nx">换一个</button><button class="btn ghost" id="hint">💡 看对称点</button></div>
+<div class="msg" id="m"></div></div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('轴对称');
+var $=function(i){return document.getElementById(i)};
+var W=5,H=8,U=40,pat,user,solved=0,show=false,svg=$('s');
+function gen(){pat=[];user=[];for(var y=0;y<H;y++){pat.push([]);user.push([]);for(var x=0;x<W;x++){pat[y].push(0);user[y].push(0)}}
+  var n=Hub.rnd(8,14);while(n--){pat[Hub.rnd(0,H-1)][Hub.rnd(0,W-1)]=1}
+  /* 保证连通感:每行至少一个相邻 */ $('m').textContent='';show=false}
+function draw(){
+  var s='',x,y;
+  for(y=0;y<H;y++)for(x=0;x<2*W;x++){var left=x<W,v=left?pat[y][x]:user[y][x-W];
+    s+='<rect data-x="'+x+'" data-y="'+y+'" x="'+(x*U)+'" y="'+(y*U)+'" width="'+U+'" height="'+U+'" fill="'+(v?(left?'#6366f1':'#f59e0b'):'#fff')+'" stroke="#c7d2fe"/>';}
+  if(show)for(y=0;y<H;y++)for(x=0;x<W;x++)if(pat[y][x])s+='<circle cx="'+((2*W-1-x)*U+U/2)+'" cy="'+(y*U+U/2)+'" r="6" fill="#22a06b"/>';
+  s+='<line x1="'+(W*U)+'" y1="0" x2="'+(W*U)+'" y2="'+(H*U)+'" stroke="#e5484d" stroke-width="4" stroke-dasharray="10 6"/>';
+  svg.setAttribute('viewBox','0 0 '+(2*W*U)+' '+(H*U));svg.innerHTML=s;
+}
+var paint=null;
+function cell(e){var r=svg.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*2*W),y=Math.floor((e.clientY-r.top)/r.height*H);return [x,y]}
+svg.addEventListener('pointerdown',function(e){var c=cell(e);if(c[0]<W||c[0]>=2*W||c[1]<0||c[1]>=H)return;paint=!user[c[1]][c[0]-W];svg.setPointerCapture(e.pointerId);set(c)});
+svg.addEventListener('pointermove',function(e){if(paint===null)return;var c=cell(e);if(c[0]>=W&&c[0]<2*W&&c[1]>=0&&c[1]<H)set(c)});
+function set(c){var v=paint?1:0;if(user[c[1]][c[0]-W]!==v){user[c[1]][c[0]-W]=v;draw()}}
+function up(){paint=null}svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+$('chk').onclick=function(){var bad=0,x,y;for(y=0;y<H;y++)for(x=0;x<W;x++)if(pat[y][x]!==user[y][W-1-x])bad++;
+  if(!bad){solved++;$('m').className='msg ok';$('m').textContent='✔ 完全对称！已完成 '+solved+' 题';Hub.beep(true);Hub.star('symmetry',solved>=4?3:solved>=2?2:1)}else{$('m').className='msg bad';$('m').textContent='还有 '+bad+' 格不对称。想一想：每一点到对称轴的距离相等';Hub.beep(false)}};
+$('nx').onclick=function(){gen();draw()};$('hint').onclick=function(){show=!show;draw()};
+gen();draw();
+</script></body></html>
