@@ -1,0 +1,10 @@
+[
+ {"id":"mental","cat":"math","name":"口算练习","desc":"四则运算 · 计时挑战","icon":"➕","color":"#c7d2fe"},
+ {"id":"twenty-four","cat":"math","name":"24点","desc":"点牌凑24 · 有提示","icon":"🎴","color":"#fde68a"},
+ {"id":"fraction","cat":"math","name":"分数可视化","desc":"拖动看分数、比大小","icon":"🍰","color":"#fbcfe8"},
+ {"id":"percent","cat":"math","name":"百分比理解","desc":"百格图涂一涂","icon":"🍕","color":"#fed7aa"},
+ {"id":"cuboid","cat":"math","name":"3D长方体","desc":"旋转 · 体积 · 表面积","icon":"🧊","color":"#99f6e4"},
+ {"id":"angle","cat":"math","name":"量角器","desc":"拖动量角、猜角度","icon":"📐","color":"#bfdbfe"},
+ {"id":"area","cat":"math","name":"面积与周长","desc":"拖拽格子图形","icon":"🟦","color":"#ddd6fe"},
+ {"id":"english","cat":"english","href":"/english/","name":"英语语法小课堂","desc":"人教PEP四年级 · 出题","icon":"🔤","color":"#fecaca"}
+]

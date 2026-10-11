@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#6366f1">
+<title>学习中心</title>
+<link rel="stylesheet" href="/css/hub.css">
+</head>
+<body>
+<div class="hero"><div class="in"><h1>🦢 学习中心</h1><p>课本同步 · 互动实验 · 边玩边学（鼠标 / 触屏都能用）</p></div></div>
+<div class="search"><input id="q" type="search" placeholder="🔍 搜索工具，如：24点、分数、长方体" autocomplete="off"></div>
+<div class="tabs" id="tabs"></div>
+<div class="grid" id="grid"></div>
+<div class="foot"><button id="clr">清除本机的星星进度</button></div>
+<script src="/js/tool.js"></script>
+<script>
+(function(){
+  var CATS=[['all','全部'],['math','数学'],['english','英语']],cat='all',tools=[];
+  var tabs=document.getElementById('tabs'),grid=document.getElementById('grid'),q=document.getElementById('q');
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function draw(){
+    tabs.innerHTML=CATS.map(function(c){return '<button class="tab'+(c[0]===cat?' on':'')+'" data-c="'+c[0]+'">'+c[1]+'</button>'}).join('');
+    var k=q.value.trim().toLowerCase(),st=Hub.stars();
+    var list=tools.filter(function(t){return (cat==='all'||t.cat===cat)&&(!k||(t.name+t.desc).toLowerCase().indexOf(k)>=0)});
+    grid.innerHTML=list.length?list.map(function(t){
+      var n=st[t.id]||0;
+      return '<a class="tool" href="'+esc(t.href||('/math/'+t.id+'/'))+'"><span class="st">'+'★'.repeat(n)+'</span><div class="ic" style="background:'+t.color+'">'+t.icon+'</div><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small></a>';
+    }).join(''):'<div class="empty">没有找到，换个词试试</div>';
+  }
+  tabs.onclick=function(e){var c=e.target.getAttribute('data-c');if(c){cat=c;draw()}};
+  q.oninput=draw;
+  document.getElementById('clr').onclick=function(){if(confirm('清除这台设备上数学工具的星星进度？（英语数据不受影响）')){Hub.clearStars();draw()}};
+  fetch('/tools.json',{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){tools=j;draw()});
+})();
+</script>
+</body>
+</html>

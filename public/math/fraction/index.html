@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>分数可视化</title><link rel="stylesheet" href="/css/hub.css">
+<style>.fr{display:inline-flex;flex-direction:column;align-items:center;font-weight:800;font-size:40px;line-height:1.1;margin:0 10px}.fr i{border-top:4px solid currentColor;width:100%;display:block}
+.lab{display:flex;justify-content:space-between;font-weight:700}</style></head>
+<body><div class="page">
+<div class="row" style="margin-bottom:12px"><button class="btn" id="t1">认识分数</button><button class="btn ghost" id="t2">比大小</button></div>
+<div id="v1">
+<div class="panel" style="text-align:center">
+ <div id="f1" class="big"></div>
+ <svg id="circ" viewBox="0 0 240 240" width="240" height="240" style="max-width:60%"></svg>
+ <svg id="bar" viewBox="0 0 600 70" style="width:100%;max-height:80px"></svg>
+ <p style="color:var(--sub)">点一点扇形或格子，也可以拖下面的滑块</p>
+ <div class="lab"><span>分母（平均分成几份）</span><b id="dv"></b></div><input class="range" id="den" type="range" min="2" max="12" value="4">
+ <div class="lab"><span>分子（涂几份）</span><b id="nv"></b></div><input class="range" id="num" type="range" min="0" max="4" value="1">
+ <p id="dec" style="color:var(--sub)"></p>
+</div></div>
+<div id="v2" hidden>
+<div class="panel" style="text-align:center">
+ <div class="row" style="justify-content:center;align-items:flex-start;gap:20px">
+  <div style="flex:1;min-width:220px"><div id="qa" class="big"></div><svg id="ba" viewBox="0 0 300 50" style="width:100%"></svg></div>
+  <div style="flex:1;min-width:220px"><div id="qb" class="big"></div><svg id="bb" viewBox="0 0 300 50" style="width:100%"></svg></div>
+ </div>
+ <p>左边 ？ 右边，选一个符号：</p>
+ <div class="row" style="justify-content:center"><button class="btn ghost op" data-c=">" style="font-size:30px">＞</button><button class="btn ghost op" data-c="=" style="font-size:30px">＝</button><button class="btn ghost op" data-c="<" style="font-size:30px">＜</button></div>
+ <div class="msg" id="m2"></div><div class="row" style="justify-content:center"><button class="btn ghost" id="h2">💡 看图帮忙</button><button class="btn" id="n2">下一题</button></div> <span id="sc" style="color:var(--sub)"></span>
+</div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('分数可视化');
+var $=function(i){return document.getElementById(i)};
+var d=4,n=1,C=['#a5b4fc','#6366f1'];
+function polar(cx,cy,r,a){return [cx+r*Math.sin(a),cy-r*Math.cos(a)]}
+function draw1(){
+  $('dv').textContent=d;$('nv').textContent=n;$('num').max=d;if(n>d)n=d;$('num').value=n;
+  $('f1').innerHTML='<span class="fr">'+n+'<i></i>'+d+'</span> = '+(Math.round(n/d*1000)/1000);
+  var s='',i;
+  if(d===1){}
+  for(i=0;i<d;i++){
+    var a0=i*2*Math.PI/d,a1=(i+1)*2*Math.PI/d,p0=polar(120,120,110,a0),p1=polar(120,120,110,a1),big=a1-a0>Math.PI?1:0;
+    s+='<path data-i="'+i+'" d="M120 120 L'+p0+' A110 110 0 '+big+' 1 '+p1+' Z" fill="'+(i<n?C[1]:C[0])+'" fill-opacity="'+(i<n?1:.25)+'" stroke="#fff" stroke-width="3" style="cursor:pointer"/>';
+  }
+  $('circ').innerHTML=s;
+  var b='',w=600/d;
+  for(i=0;i<d;i++)b+='<rect data-i="'+i+'" x="'+(i*w+2)+'" y="4" width="'+(w-4)+'" height="62" rx="8" fill="'+(i<n?C[1]:C[0])+'" fill-opacity="'+(i<n?1:.25)+'" style="cursor:pointer"/>';
+  $('bar').innerHTML=b;
+  $('dec').textContent=n===0?'什么都没涂':n===d?'整个涂满了，等于 1':n+'/'+d+' 表示把 1 平均分成 '+d+' 份，取其中的 '+n+' 份';
+}
+$('den').oninput=function(){d=+this.value;if(n>d)n=d;draw1()};
+$('num').oninput=function(){n=+this.value;draw1()};
+function tap(e){var t=e.target.closest('[data-i]');if(!t)return;var i=+t.dataset.i;n=(n===i+1)?i:i+1;draw1()}
+$('circ').onclick=tap;$('bar').onclick=tap;
+/* 比大小 */
+var qa,qb,score=0,tot=0,done=false;
+function rf(){var dd=Hub.rnd(2,12),nn=Hub.rnd(1,dd-1);return [nn,dd]}
+function bar(el,f){var s='<rect x="0" y="0" width="300" height="50" rx="8" fill="#a5b4fc" fill-opacity=".25"/>';
+  s+='<rect x="0" y="0" width="'+(300*f[0]/f[1])+'" height="50" rx="8" fill="#6366f1"/>';
+  for(var i=1;i<f[1];i++)s+='<line x1="'+(300*i/f[1])+'" x2="'+(300*i/f[1])+'" y1="0" y2="50" stroke="#fff" stroke-width="2"/>';
+  el.innerHTML=s}
+function fh(f){return '<span class="fr">'+f[0]+'<i></i>'+f[1]+'</span>'}
+function vis(v){$('ba').style.visibility=v;$('bb').style.visibility=v}
+function q2(){
+  do{qa=rf();qb=rf()}while(qa[0]*qb[1]===qb[0]*qa[1]&&Math.random()<.8);
+  $('qa').innerHTML=fh(qa);$('qb').innerHTML=fh(qb);
+  /* 先不画条，需要看提示再显示 */
+  bar($('ba'),qa);bar($('bb'),qb);vis('hidden');$('m2').textContent='';done=false;
+}
+document.querySelectorAll('#v2 .op').forEach(function(b){b.onclick=function(){
+  if(done)return;var l=qa[0]*qb[1],r=qb[0]*qa[1],c=l>r?'>':l<r?'<':'=';tot++;done=true;vis('visible');
+  if(b.dataset.c===c){score++;$('m2').className='msg ok';$('m2').textContent='✔ 对！';Hub.beep(true);if(score>=5)Hub.star('fraction',3);else if(score>=3)Hub.star('fraction',2);else Hub.star('fraction',1)}
+  else{$('m2').className='msg bad';$('m2').textContent='✘ 看看上面的条形，应该是 '+(c==='>'?'＞':c==='<'?'＜':'＝');Hub.beep(false)}
+  $('sc').textContent='得分 '+score+'/'+tot;
+}});
+$('n2').onclick=q2;$('h2').onclick=function(){vis('visible')};
+function tab(k){$('v1').hidden=k!==1;$('v2').hidden=k!==2;$('t1').className='btn'+(k===1?'':' ghost');$('t2').className='btn'+(k===2?'':' ghost');if(k===2&&!qa)q2()}
+$('t1').onclick=function(){tab(1)};$('t2').onclick=function(){tab(2)};
+draw1();
+</script></body></html>

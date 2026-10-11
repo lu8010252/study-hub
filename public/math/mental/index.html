@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>口算练习</title><link rel="stylesheet" href="/css/hub.css"></head>
+<body><div class="page" id="app"></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('口算练习');
+var ID='mental',N=10,app=document.getElementById('app');
+var st={mode:'add',lv:1,i:0,ok:0,t0:0,cur:null,input:'',wrong:[]};
+var MODES=[['add','加减'],['mul','乘除'],['mix','混合']],LVS=[[0,'简单'],[1,'中等'],[2,'挑战']];
+function gen(){
+  var m=st.mode,l=st.lv,r=Hub.rnd,k;
+  if(m==='mix')k=r(0,1)?'add':'mul';else k=m;
+  var a,b,op;
+  if(k==='add'){
+    var mx=[20,100,1000][l];a=r(2,mx);b=r(2,mx);
+    if(r(0,1)){op='+'}else{op='−';if(b>a){var t=a;a=b;b=t}}
+  }else{
+    if(r(0,1)){op='×';a=[r(2,9),r(11,30),r(12,99)][l];b=[r(2,9),r(2,9),r(11,30)][l]}
+    else{op='÷';b=[r(2,9),r(2,9),r(6,19)][l];var q=[r(2,9),r(11,30),r(12,60)][l];a=b*q}
+  }
+  var ans=op==='+'?a+b:op==='−'?a-b:op==='×'?a*b:a/b;
+  return {q:a+' '+op+' '+b,a:ans};
+}
+function menu(){
+  app.innerHTML='<div class="panel"><h2>选择类型</h2><div class="row" id="m"></div><h2>难度</h2><div class="row" id="l"></div><p style="color:var(--sub)">每轮 '+N+' 题，用屏幕数字键或电脑键盘都行。</p><button class="btn" id="go">开始</button></div>';
+  var m=document.getElementById('m'),l=document.getElementById('l');
+  function ch(){m.innerHTML=MODES.map(function(x){return '<button class="btn '+(st.mode===x[0]?'':'ghost')+'" data-m="'+x[0]+'">'+x[1]+'</button>'}).join('');
+    l.innerHTML=LVS.map(function(x){return '<button class="btn '+(st.lv===x[0]?'':'ghost')+'" data-l="'+x[0]+'">'+x[1]+'</button>'}).join('')}
+  ch();
+  app.onclick=function(e){var t=e.target;if(t.dataset.m){st.mode=t.dataset.m;ch()}if(t.dataset.l){st.lv=+t.dataset.l;ch()}if(t.id==='go')start()};
+}
+function start(){st.lock=false;st.i=0;st.ok=0;st.wrong=[];st.t0=Date.now();next()}
+function next(){
+  if(st.i>=N)return done();
+  st.cur=gen();st.input='';draw('');
+}
+function draw(msg,cls){
+  app.innerHTML='<div class="panel" style="text-align:center"><div style="color:var(--sub)">第 '+(st.i+1)+' / '+N+' 题 · 答对 '+st.ok+'</div><div class="big" style="font-size:48px;margin:14px 0">'+st.cur.q+' = <span style="color:var(--p1);border-bottom:3px solid var(--p1);padding:0 10px;min-width:80px;display:inline-block">'+(st.input||'&nbsp;')+'</span></div><div class="msg '+(cls||'')+'">'+msg+'</div>'
+  +'<div class="pad" style="margin:0 auto">'+[1,2,3,4,5,6,7,8,9].map(function(n){return '<button data-k="'+n+'">'+n+'</button>'}).join('')+'<button data-k="back">⌫</button><button data-k="0">0</button><button data-k="ok" style="background:var(--ok);color:#fff">✓</button></div></div>';
+}
+function key(k){
+  if(!st.cur||st.lock)return;
+  if(k==='back')st.input=st.input.slice(0,-1);
+  else if(k==='ok'){if(!st.input)return;submit();return}
+  else if(st.input.length<6)st.input+=k;
+  draw('');
+}
+function submit(){
+  var good=+st.input===st.cur.a;
+  if(good){st.ok++;Hub.beep(true)}else{st.wrong.push(st.cur.q+' = '+st.cur.a);Hub.beep(false)}
+  st.lock=true;
+  draw(good?'✔ 答对了！':'✘ 正确答案是 '+st.cur.a,good?'ok':'bad');
+  setTimeout(function(){st.lock=false;st.i++;next()},good?500:1400);
+}
+function done(){
+  var s=Math.round((Date.now()-st.t0)/1000),stars=st.ok>=N?3:st.ok>=N-2?2:st.ok>=N/2?1:0;
+  Hub.star(ID,stars);st.cur=null;
+  app.innerHTML='<div class="panel" style="text-align:center"><div class="big">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</div><h2>答对 '+st.ok+' / '+N+'，用时 '+s+' 秒</h2>'
+  +(st.wrong.length?'<p style="color:var(--sub)">错题：'+st.wrong.join('；')+'</p>':'<p>全对，太棒了！</p>')
+  +'<div class="row" style="justify-content:center"><button class="btn" id="again">再来一轮</button><button class="btn ghost" id="mn">改设置</button></div></div>';
+  document.getElementById('again').onclick=start;document.getElementById('mn').onclick=menu;
+}
+app.addEventListener('click',function(e){var k=e.target.dataset&&e.target.dataset.k;if(k)key(k)});
+document.addEventListener('keydown',function(e){
+  if(e.key>='0'&&e.key<='9')key(e.key);else if(e.key==='Backspace')key('back');else if(e.key==='Enter')key('ok');
+});
+menu();
+</script></body></html>

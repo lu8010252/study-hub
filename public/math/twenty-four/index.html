@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>24点</title><link rel="stylesheet" href="/css/hub.css">
+<style>
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:420px;margin:10px auto}
+.card{min-height:110px;border-radius:20px;background:#fff;color:#23224a;border:4px solid var(--line);font-size:44px;font-weight:800;display:grid;place-items:center;touch-action:manipulation;box-shadow:var(--shadow);transition:transform .12s}
+.card.sel{border-color:var(--p1);transform:scale(1.06);background:#eef0ff}
+.card.gone{visibility:hidden}
+.card sup{font-size:.5em}.frac{display:inline-flex;flex-direction:column;align-items:center;font-size:.6em;line-height:1.1}.frac i{display:block;border-top:3px solid currentColor;width:100%;font-style:normal;text-align:center}
+.ops{display:flex;justify-content:center;gap:12px;margin:12px 0}
+.op{width:72px;height:72px;border-radius:50%;font-size:36px;font-weight:800;background:var(--card);border:4px solid var(--line);touch-action:manipulation}
+.op.sel{background:var(--p1);color:#fff;border-color:var(--p1)}
+.log{color:var(--sub);text-align:center;min-height:26px}
+</style></head>
+<body><div class="page" style="text-align:center">
+<p style="color:var(--sub)">点一个数，点运算符，再点另一个数。四个数算出 24 就赢啦！</p>
+<div class="cards" id="cards"></div>
+<div class="ops" id="ops"></div>
+<div class="log" id="log"></div>
+<div class="msg" id="msg"></div>
+<div class="row" style="justify-content:center">
+<button class="btn ghost" id="undo">↩ 撤销</button><button class="btn ghost" id="reset">重来</button><button class="btn ghost" id="hint">💡 提示</button><button class="btn" id="next">换一题</button></div>
+<p id="hintbox" style="color:var(--sub)"></p>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('24点');
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t}return a||1}
+function F(n,d){d=d===undefined?1:d;if(d<0){n=-n;d=-d}var g=gcd(n,d);return {n:n/g,d:d/g}}
+function calc(a,op,b){
+  if(op==='+')return F(a.n*b.d+b.n*a.d,a.d*b.d);
+  if(op==='−')return F(a.n*b.d-b.n*a.d,a.d*b.d);
+  if(op==='×')return F(a.n*b.n,a.d*b.d);
+  if(b.n===0)return null;return F(a.n*b.d,a.d*b.n);
+}
+/* 求解：items=[{v,e}] */
+function solve(items){
+  if(items.length===1)return (items[0].v.n===24&&items[0].v.d===1)?items[0].e:null;
+  for(var i=0;i<items.length;i++)for(var j=0;j<items.length;j++){
+    if(i===j)continue;
+    var rest=items.filter(function(_,k){return k!==i&&k!==j});
+    var ops=['+','−','×','÷'];
+    for(var o=0;o<4;o++){
+      var op=ops[o];if((op==='+'||op==='×')&&i>j)continue;
+      var v=calc(items[i].v,op,items[j].v);if(!v)continue;
+      var r=solve(rest.concat([{v:v,e:'('+items[i].e+op+items[j].e+')'}]));
+      if(r)return r;
+    }
+  }
+  return null;
+}
+function show(v){return v.d===1?String(v.n):'<span class="frac">'+v.n+'<i>'+v.d+'</i></span>'}
+var cards,hist,sel=-1,op=null,tries=0;
+var $=function(i){return document.getElementById(i)};
+function newGame(){
+  var nums,sol;
+  do{nums=[1,2,3,4].map(function(){return Hub.rnd(1,13)});sol=solve(nums.map(function(n){return {v:F(n),e:String(n)}}))}while(!sol);
+  cards=nums.map(function(n,i){return {v:F(n),e:String(n),on:true}});
+  start0=nums.slice();hist=[];sel=-1;op=null;$('msg').textContent='';$('hintbox').textContent='';draw();
+}
+var start0;
+function restart(){cards=start0.map(function(n){return {v:F(n),e:String(n),on:true}});hist=[];sel=-1;op=null;$('msg').textContent='';draw()}
+function draw(){
+  $('cards').innerHTML=cards.map(function(c,i){return '<button class="card'+(c.on?'':' gone')+(i===sel?' sel':'')+'" data-i="'+i+'">'+show(c.v)+'</button>'}).join('');
+  $('ops').innerHTML=['+','−','×','÷'].map(function(o){return '<button class="op'+(o===op?' sel':'')+'" data-o="'+o+'">'+o+'</button>'}).join('');
+  $('log').textContent=hist.map(function(h){return h.text}).join('  ，  ');
+}
+$('cards').onclick=function(e){
+  var b=e.target.closest('.card');if(!b)return;var i=+b.dataset.i;if(!cards[i].on)return;
+  if(sel<0){sel=i;draw();return}
+  if(sel===i){sel=-1;op=null;draw();return}
+  if(!op){sel=i;draw();return}      // 还没选运算符：改选这张
+  var a=cards[sel],c=cards[i],v=calc(a.v,op,c.v);
+  if(!v){$('msg').className='msg bad';$('msg').textContent='不能除以 0';Hub.beep(false);return}
+  hist.push({a:sel,b:i,ca:a,cb:c,text:show2(a.v)+op+show2(c.v)+'='+show2(v)});
+  cards[sel]=Object.assign({},a,{on:false});cards[i]={v:v,e:'',on:true};
+  var left=cards.filter(function(x){return x.on});sel=-1;op=null;draw();$('msg').textContent='';
+  if(left.length===1){
+    if(left[0].v.n===24&&left[0].v.d===1){$('msg').className='msg ok';$('msg').textContent='🎉 算出 24 了，太棒了！';Hub.beep(true);Hub.star('twenty-four',3)}
+    else{$('msg').className='msg bad';$('msg').textContent='结果是 '+(left[0].v.d===1?left[0].v.n:left[0].v.n+'/'+left[0].v.d)+'，不是 24，撤销再试试';Hub.beep(false)}
+  }
+};
+function show2(v){return v.d===1?v.n:v.n+'/'+v.d}
+$('ops').onclick=function(e){var b=e.target.closest('.op');if(!b)return;if(sel<0){$('msg').className='msg';$('msg').textContent='先点一个数';return}op=op===b.dataset.o?null:b.dataset.o;draw()};
+$('undo').onclick=function(){var h=hist.pop();if(!h)return;cards[h.a]=h.ca;cards[h.b]=h.cb;sel=-1;op=null;$('msg').textContent='';draw()};
+$('reset').onclick=restart;
+$('next').onclick=newGame;
+$('hint').onclick=function(){
+  var items=cards.filter(function(c){return c.on}).map(function(c){return {v:c.v,e:show2(c.v)}});
+  var s=solve(items);$('hintbox').textContent=s?'参考算法：'+s.replace(/^\((.*)\)$/,'$1')+' = 24':'当前这一步走偏了，撤销再试试';
+};
+newGame();
+</script></body></html>

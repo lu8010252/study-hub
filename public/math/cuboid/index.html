@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>3D长方体</title><link rel="stylesheet" href="/css/hub.css">
+<style>
+#stage{height:300px;perspective:900px;display:grid;place-items:center;touch-action:none;cursor:grab;user-select:none;overflow:hidden}
+#box{position:relative;transform-style:preserve-3d}
+.f{position:absolute;border:2px solid #fff;display:grid;place-items:center;font-weight:700;color:#23224a;opacity:.92}
+.cubes{position:absolute;inset:0}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+@media(max-width:520px){.r2{grid-template-columns:1fr}}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+ <div id="stage"><div id="box"></div></div>
+ <p style="color:var(--sub);margin:4px">用鼠标 / 手指拖动，转一转看每个面</p>
+ <div class="row" style="justify-content:center;gap:28px"><div>体积 <b class="big" id="v"></b> cm³</div><div>表面积 <b class="big" id="sa"></b> cm²</div></div>
+ <div class="r2" style="margin-top:8px;text-align:left">
+  <div>长 <b id="lv"></b> cm<input class="range" id="L" type="range" min="1" max="10" value="4"></div>
+  <div>宽 <b id="wv"></b> cm<input class="range" id="W" type="range" min="1" max="10" value="3"></div>
+  <div>高 <b id="hv"></b> cm<input class="range" id="H" type="range" min="1" max="10" value="2"></div>
+ </div>
+</div>
+<div class="panel" style="text-align:center">
+ <div id="task" style="font-weight:700;font-size:20px"></div>
+ <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="chk">检查</button><button class="btn ghost" id="nx">换一题</button></div>
+ <div class="msg" id="m"></div>
+</div></div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('3D长方体');
+var $=function(i){return document.getElementById(i)};
+var rx=-24,ry=-32,u=34,goal=null,solved=0;
+function dims(){return [+$('L').value,+$('W').value,+$('H').value]}
+function build(){
+  var d=dims(),L=d[0]*u,W=d[1]*u,H=d[2]*u,b=$('box');
+  b.style.width=L+'px';b.style.height=H+'px';
+  function face(w,h,tr,bg,txt){return '<div class="f" style="width:'+w+'px;height:'+h+'px;left:'+(L-w)/2+'px;top:'+(H-h)/2+'px;background:'+bg+';transform:'+tr+'">'+txt+'</div>'}
+  b.innerHTML=
+   face(L,H,'translateZ('+W/2+'px)','#c7d2fe',d[0]+'×'+d[2])+
+   face(L,H,'rotateY(180deg) translateZ('+W/2+'px)','#c7d2fe','')+
+   face(W,H,'rotateY(90deg) translateZ('+L/2+'px)','#a5b4fc',d[1]+'×'+d[2])+
+   face(W,H,'rotateY(-90deg) translateZ('+L/2+'px)','#a5b4fc','')+
+   face(L,W,'rotateX(90deg) translateZ('+H/2+'px)','#fde68a',d[0]+'×'+d[1])+
+   face(L,W,'rotateX(-90deg) translateZ('+H/2+'px)','#fde68a','');
+  rot();
+  $('lv').textContent=d[0];$('wv').textContent=d[1];$('hv').textContent=d[2];
+  $('v').textContent=d[0]*d[1]*d[2];$('sa').textContent=2*(d[0]*d[1]+d[0]*d[2]+d[1]*d[2]);
+}
+function rot(){$('box').style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)'}
+var st=$('stage'),down=null;
+st.addEventListener('pointerdown',function(e){down=[e.clientX,e.clientY,rx,ry];st.setPointerCapture(e.pointerId);st.style.cursor='grabbing'});
+st.addEventListener('pointermove',function(e){if(!down)return;ry=down[3]+(e.clientX-down[0])*.6;rx=Math.max(-90,Math.min(90,down[2]-(e.clientY-down[1])*.6));rot()});
+function up(){down=null;st.style.cursor='grab'}st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+['L','W','H'].forEach(function(k){$(k).oninput=build});
+function pick(){
+  var d=[Hub.rnd(2,8),Hub.rnd(2,6),Hub.rnd(1,5)],k=Hub.rnd(0,1),v=d[0]*d[1]*d[2],s=2*(d[0]*d[1]+d[0]*d[2]+d[1]*d[2]);
+  goal=k?{s:s}:{v:v};$('task').textContent=k?'做一个表面积是 '+s+' cm² 的长方体':'做一个体积是 '+v+' cm³ 的长方体';$('m').textContent='';
+}
+$('chk').onclick=function(){
+  var d=dims(),v=d[0]*d[1]*d[2],s=2*(d[0]*d[1]+d[0]*d[2]+d[1]*d[2]);
+  var ok=goal.v!==undefined?v===goal.v:s===goal.s;
+  if(ok){solved++;$('m').className='msg ok';$('m').textContent='✔ 对了！'+d.join('×')+'，体积 '+v+'，表面积 '+s+'。已完成 '+solved+' 题';Hub.beep(true);Hub.star('cuboid',solved>=5?3:solved>=3?2:1)}
+  else{$('m').className='msg bad';$('m').textContent='现在体积 '+v+'，表面积 '+s+'，再调一调';Hub.beep(false)}
+};
+$('nx').onclick=pick;
+pick();build();
+</script></body></html>
