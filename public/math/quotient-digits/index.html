@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>商是几位数</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">拖一拖滑块，看看除的时候从哪一位除起</div>
+<div class="sl"><b id="la"></b><input type="range" min="100" max="999" value="456" id="a"></div>
+<div class="sl"><b id="lb"></b><input type="range" min="11" max="99" value="38" id="b"></div>
+<div id="v" style="font:800 40px ui-monospace,Menlo,monospace;margin:12px 0"></div><div id="t" style="font-size:19px;line-height:1.8"></div>
+<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
+<div class="qtext" id="qq"></div><div class="chs"><button class="ch" data-c="1">一位数</button><button class="ch" data-c="2">两位数</button></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>方法：</b>先看被除数的前两位，够除就从被除数的<b>前两位</b>除起，商是<b>两位数</b>（商的最高位在十位）；前两位不够除，就看前三位，商是<b>一位数</b>（商的最高位在个位）。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('商是几位数');
+var $=function(i){return document.getElementById(i)};
+
+var Q,sc=0;
+function info(a,b){var t2=Math.floor(a/10),ok=t2>=b;return {t2:t2,ok:ok,n:ok?2:1}}
+function draw(){var a=+$('a').value,b=+$('b').value,i=info(a,b),s=String(a);$('la').textContent='被除数 '+a;$('lb').textContent='除数 '+b;
+  $('v').innerHTML=b+' ) <span style="color:'+(i.ok?'#22a06b':'#e5484d')+'">'+s.slice(0,2)+'</span><span style="color:'+(i.ok?'#94a3b8':'#22a06b')+'">'+s[2]+'</span>';
+  $('t').innerHTML='前两位 <b>'+s.slice(0,2)+'</b> '+(i.ok?'≥':'<')+' 除数 <b>'+b+'</b>：'+(i.ok?'<span style="color:#22a06b">够除</span>，从前两位除起，商是<b>两位数</b>':'<span style="color:#e5484d">不够除</span>，要看前三位 '+s+'，商是<b>一位数</b>')+'<br><span class="mut">'+a+' ÷ '+b+' = '+Math.floor(a/b)+(a%b?' ……'+a%b:'')+'</span>'}
+['a','b'].forEach(function(k){$(k).addEventListener('input',draw)});
+function newQ(){var a=Hub.rnd(100,999),b=Hub.rnd(11,99);Q={n:info(a,b).n};$('qq').innerHTML=a+' ÷ '+b+'，商是几位数？';$('m').textContent=''}
+document.addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var good=+c===Q.n;Hub.beep(good);if(good){sc++;Hub.star('quotient-digits',sc>=5?3:sc>=3?2:1)}$('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ 答对了（已对 '+sc+' 题）':'✘ 再看前两位够不够除，正确是 '+Q.n+' 位数';Q=null});
+$('nx').onclick=newQ;draw();newQ();
+</script></body></html>

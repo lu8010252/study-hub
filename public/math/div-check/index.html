@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>除法：一份一份量</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="q"></div>
+<svg id="s" viewBox="0 0 360 120" style="width:100%;max-width:600px"></svg>
+<div class="cc"><button class="btn ghost" data-d="-10">−10 份</button><button class="btn ghost" data-d="-1">−1 份</button><button class="btn" data-d="1">＋1 份</button><button class="btn" data-d="10">＋10 份</button></div>
+<div class="big2" id="st"></div><div id="hint" class="mut" style="margin-top:4px"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>想一想：</b>把被除数一份一份地“量”：每份是除数那么长。量到剩下的不够再量一份了，量了几份，商就是几；剩下的就是余数。所以<b>余数一定比除数小</b>，验算：商 × 除数 + 余数 = 被除数。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('除法：一份一份量');
+var $=function(i){return document.getElementById(i)};
+
+var D,d,q=0,sc=0,done=false;
+function gen(){d=Hub.rnd(12,48);D=Hub.rnd(Math.max(100,d*5),999);q=0;done=false;$('m').textContent='';draw()}
+function draw(){var W=340,s='<rect x="10" y="40" width="'+W+'" height="30" rx="4" fill="#fff" stroke="#334155" stroke-width="2"/>',w=d/D*W,i,r=D-d*q;
+  for(i=0;i<q;i++){if(10+(i+1)*w>10+W+0.5)break;s+='<rect x="'+(10+i*w)+'" y="40" width="'+w+'" height="30" fill="'+(i%2?'#a5b4fc':'#818cf8')+'" stroke="#fff"/>'}
+  if(r>0&&r<=D)s+='<rect x="'+(10+q*w)+'" y="40" width="'+(r/D*W)+'" height="30" fill="#fde68a" stroke="#f59e0b" stroke-dasharray="4 3"/>';
+  if(r<0)s+='<rect x="'+(10+W)+'" y="40" width="'+Math.min(40,-r/D*W+4)+'" height="30" fill="#fecaca"/>';
+  s+='<text x="10" y="30" font-size="13" fill="#334155" font-weight="700">被除数 '+D+'</text><text x="'+(10+w/2)+'" y="92" text-anchor="middle" font-size="12" fill="#4f46e5">每份 '+d+'</text><line x1="10" y1="82" x2="'+(10+Math.min(w,W))+'" y2="82" stroke="#4f46e5" stroke-width="2"/>';
+  $('s').innerHTML=s;$('q').innerHTML=D+' ÷ '+d+' = ?　（每份 <b>'+d+'</b>，看看最多能量几份）';
+  $('st').textContent='量了 '+q+' 份：'+d+' × '+q+' = '+d*q+'，剩下 '+(r<0?'？':r);
+  var est=Math.round(d/10)*10;$('hint').textContent='提示：把除数 '+d+' 看成 '+est+'，估一估 '+D+' ÷ '+est+' ≈ '+Math.round(D/est);
+  if(r<0){$('m').className='msg bad';$('m').textContent='✘ 超过被除数了，少量一份';done=false}
+  else if(r>=d){$('m').className='msg';$('m').textContent='剩下的 '+r+' 还够再量一份（'+r+' ≥ '+d+'），商还可以更大';done=false}
+  else{$('m').className='msg ok';$('m').textContent='✔ '+D+' ÷ '+d+' = '+q+(r?' ……'+r:'')+'　验算：'+q+' × '+d+' + '+r+' = '+D;if(!done){done=true;sc++;Hub.beep(true);Hub.star('div-check',sc>=4?3:sc>=2?2:1)}}}
+document.addEventListener('click',function(e){var x=e.target.dataset.d;if(x){q=Math.max(0,Math.min(99,q+ +x));draw()}});$('nx').onclick=gen;gen();
+</script></body></html>
