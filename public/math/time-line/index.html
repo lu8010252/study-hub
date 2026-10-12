@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>时间线段图：经过时间</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">拖动两个圆点，看经过了多长时间</div>
+<svg id="s" viewBox="0 0 380 130" style="width:100%;max-width:640px;touch-action:none"></svg>
+<div id="out" style="font-size:20px;line-height:1.8"></div>
+<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
+<div class="qtext" id="qq"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>方法：</b>经过时间 = 结束时刻 − 开始时刻。先算到整时，再算剩下的分钟。24 时计时法：下午 1 时 = 13 时，晚上 8 时 = 20 时。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('时间线段图：经过时间');
+var $=function(i){return document.getElementById(i)};
+
+var a=8*60+20,b=10*60+45,drag=-1,Q,sc=0;
+function hm(m){return Math.floor(m/60)+'时'+(m%60?m%60+'分':'')}
+function clock(m){m=(m+1440)%1440;var h=Math.floor(m/60),mm=m%60;return (h<10?'0':'')+h+':'+(mm<10?'0':'')+mm}
+function x(m){return 20+m/1440*340}
+function draw(){var s='<line x1="20" y1="70" x2="360" y2="70" stroke="#334155" stroke-width="3"/>',h;
+  for(h=0;h<=24;h++){var X=x(h*60);s+='<line x1="'+X+'" y1="'+(h%6?64:58)+'" x2="'+X+'" y2="76" stroke="#64748b" stroke-width="'+(h%6?1:2)+'"/>';if(h%3===0)s+='<text x="'+X+'" y="94" font-size="11" text-anchor="middle" fill="#64748b">'+h+'</text>'}
+  var lo=Math.min(a,b),hi=Math.max(a,b);s+='<rect x="'+x(lo)+'" y="62" width="'+(x(hi)-x(lo))+'" height="16" rx="6" fill="#a5b4fc" opacity=".7"/>';
+  [[a,'开始','#22a06b',0],[b,'结束','#e5484d',1]].forEach(function(p){s+='<circle data-i="'+p[3]+'" cx="'+x(p[0])+'" cy="70" r="12" fill="'+p[2]+'" stroke="#fff" stroke-width="3" style="cursor:grab"/><text x="'+x(p[0])+'" y="'+(p[3]?36:36)+'" font-size="12" font-weight="700" text-anchor="middle" fill="'+p[2]+'">'+p[1]+' '+clock(p[0])+'</text>'});
+  $('s').innerHTML=s;var d=hi-lo;$('out').innerHTML='从 <b>'+clock(lo)+'</b> 到 <b>'+clock(hi)+'</b>，经过 <b style="color:#4f46e5">'+hm(d)+'</b>（'+d+' 分钟）<br><span class="mut">'+(lo<720?'上午':'下午')+' '+(Math.floor(lo/60)%12||12)+':'+('0'+lo%60).slice(-2)+' → '+(hi<720?'上午':'下午')+' '+(Math.floor(hi/60)%12||12)+':'+('0'+hi%60).slice(-2)+'</span>'}
+function pt(e){var r=$('s').getBoundingClientRect();return (e.clientX-r.left)/r.width*380}
+$('s').addEventListener('pointerdown',function(e){var i=e.target.dataset.i;if(i!==undefined){drag=+i;$('s').setPointerCapture(e.pointerId)}});
+$('s').addEventListener('pointermove',function(e){if(drag<0)return;var m=Math.round((pt(e)-20)/340*1440/5)*5;m=Math.max(0,Math.min(1440,m));if(drag===0)a=m;else b=m;draw()});
+['pointerup','pointercancel'].forEach(function(k){$('s').addEventListener(k,function(){drag=-1})});
+function newQ(){var t=Hub.rnd(0,1),s=Hub.rnd(6,15)*60+Hub.rnd(0,11)*5,d=Hub.rnd(1,5)*60+Hub.rnd(1,11)*5;
+  if(t===0){Q={a:hm(d)};$('qq').innerHTML='从 <b>'+clock(s)+'</b> 到 <b>'+clock(s+d)+'</b>，经过了多长时间？';var o=[hm(d),hm(d+10),hm(Math.max(5,d-15)),hm(d+60)].filter(function(x,i,a){return a.indexOf(x)===i});o.sort(function(){return Math.random()-.5});$('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('')}
+  else{Q={a:clock(s+d)};$('qq').innerHTML='<b>'+clock(s)+'</b> 开始，经过 <b>'+hm(d)+'</b>，几时几分结束？';var o2=[clock(s+d),clock(s+d+10),clock(s+d-10),clock(s+d+60)].filter(function(x,i,a){return a.indexOf(x)===i});o2.sort(function(){return Math.random()-.5});$('ch').innerHTML=o2.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('')}$('m').textContent=''}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var good=c===Q.a;Hub.beep(good);if(good){sc++;Hub.star('time-line',sc>=5?3:sc>=3?2:1)}$('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ 答对了（已对 '+sc+' 题）':'✘ 正确答案：'+Q.a+'（在线段图上拖一拖验证）';Q=null});
+$('nx').onclick=newQ;draw();newQ();
+</script></body></html>

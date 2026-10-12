@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>割圆术：正多边形变成圆</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">圆里面画正多边形，边越多越像圆。数一数，周长和直径的比值越来越接近谁？</div>
+<svg id="s" viewBox="-130 -130 260 260" style="width:100%;max-width:340px"></svg>
+<div class="sl"><b id="ln"></b><input type="range" min="3" max="120" value="6" id="n"></div>
+<div class="cc"><button class="btn" id="db">边数 × 2</button><button class="btn ghost" id="rs">从 6 边形开始</button></div>
+<div id="out" style="font-size:19px;line-height:1.8"></div>
+<table id="tb" style="margin:8px auto;border-collapse:collapse"></table></div>
+<div class="panel"><b>刘徽割圆术：</b>魏晋时期的数学家刘徽把圆内接正多边形的边数不断加倍，用多边形的周长去逼近圆的周长，算出圆周率约是 3.14。边数越多，多边形越接近圆。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('割圆术：正多边形变成圆');
+var $=function(i){return document.getElementById(i)};
+
+var n=6,seen={};
+function draw(){var R=110,s='<circle cx="0" cy="0" r="'+R+'" fill="rgba(99,102,241,.08)" stroke="#6366f1" stroke-width="2" stroke-dasharray="4 3"/>',pts=[],i;
+  for(i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n;pts.push([R*Math.cos(a),R*Math.sin(a)])}
+  s+='<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="rgba(245,158,11,.35)" stroke="#b45309" stroke-width="2.5" stroke-linejoin="round"/>';
+  $('s').innerHTML=s;$('ln').textContent='边数 '+n;var per=n*Math.sin(Math.PI/n),ar=.5*n*Math.sin(2*Math.PI/n)/Math.PI;
+  $('out').innerHTML='圆内接正 '+n+' 边形：周长 ÷ 直径 = <b style="color:#4f46e5">'+per.toFixed(5)+'</b><br>面积是圆面积的 <b>'+(ar*100).toFixed(2)+'%</b><br><span class="mut">圆周率 π = 3.14159…</span>';
+  seen[n]=per;var keys=[6,12,24,48,96];$('tb').innerHTML='<tr><th style="padding:3px 12px;border:1px solid var(--line)">边数</th><th style="padding:3px 12px;border:1px solid var(--line)">周长 ÷ 直径</th></tr>'+keys.map(function(k){var v=k*Math.sin(Math.PI/k);return '<tr style="background:'+(k===n?'#fef3c7':'#fff')+'"><td style="padding:3px 12px;border:1px solid var(--line)">'+k+'</td><td style="padding:3px 12px;border:1px solid var(--line)">'+v.toFixed(5)+'</td></tr>'}).join('');
+  if(n>=96)Hub.star('polygon-circle',3);else if(n>=24)Hub.star('polygon-circle',2);else Hub.star('polygon-circle',1)}
+$('n').addEventListener('input',function(e){n=+e.target.value;draw()});$('db').onclick=function(){n=Math.min(120,n*2);$('n').value=n;draw()};$('rs').onclick=function(){n=6;$('n').value=6;draw()};draw();
+</script></body></html>

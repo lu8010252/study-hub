@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>搭小正方体：体积与表面积</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">点方格加一块小正方体（点到最高再点一次清空），看体积和表面积怎么变</div>
+<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center">
+<svg id="g" viewBox="0 0 168 168" style="width:100%;max-width:230px;background:#fff;border-radius:10px"></svg>
+<svg id="s" viewBox="-130 -190 260 230" style="width:100%;max-width:340px"></svg></div>
+<div class="cc"><button class="btn ghost" id="clr">清空</button><button class="btn ghost" id="eg">摆个 2×2×2</button></div>
+<div id="st" style="font-size:19px;line-height:1.8"></div>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px" id="vw"></div></div>
+<div class="panel"><b>想一想：</b>体积 = 小正方体的个数；表面积 = 露在外面的小正方形的个数 = 个数 × 6 − 紧贴在一起的面数 × 2。摆成的形状越“紧凑”（越接近正方体），表面积越小。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('搭小正方体：体积与表面积');
+var $=function(i){return document.getElementById(i)};
+
+var N=4,h=[],A=26,B=15,Hh=30,MAX=4;
+function P(x,y,z){return [(x-y)*A,-(x+y)*B-z*Hh]}
+function poly(p,f){return '<polygon points="'+p.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' ')+'" fill="'+f+'" stroke="#334155" stroke-width="1.4" stroke-linejoin="round"/>'}
+function init(){h=[];for(var y=0;y<N;y++){h.push([]);for(var x=0;x<N;x++)h[y].push(0)}}
+function iso(){var cells=[],x,y,z;for(y=0;y<N;y++)for(x=0;x<N;x++)for(z=0;z<h[y][x];z++)cells.push([x,y,z]);cells.sort(function(a,b){return (b[0]+b[1])-(a[0]+a[1])||a[2]-b[2]});
+  var s='';/* 地面网格 */s+=poly([P(0,0,0),P(N,0,0),P(N,N,0),P(0,N,0)],'#f1f5f9');cells.forEach(function(c){var x=c[0],y=c[1],z=c[2];s+=poly([P(x,y,z+1),P(x+1,y,z+1),P(x+1,y+1,z+1),P(x,y+1,z+1)],'#fde68a')+poly([P(x,y,z),P(x+1,y,z),P(x+1,y,z+1),P(x,y,z+1)],'#f59e0b')+poly([P(x,y,z),P(x,y+1,z),P(x,y+1,z+1),P(x,y,z+1)],'#d97706')});return s}
+function grid(){var s='',x,y,U=40;for(y=0;y<N;y++)for(x=0;x<N;x++){s+='<rect data-x="'+x+'" data-y="'+y+'" x="'+(4+x*U)+'" y="'+(4+y*U)+'" width="'+U+'" height="'+U+'" fill="'+(h[y][x]?'#fef3c7':'#fff')+'" stroke="#c7d2fe"/><text pointer-events="none" x="'+(4+x*U+U/2)+'" y="'+(4+y*U+U/2+7)+'" text-anchor="middle" font-size="20" font-weight="700" fill="#b45309">'+(h[y][x]||'')+'</text>'}return s}
+function mini(v,kind){var u=16,s='',i,k;if(kind==='t'){for(i=0;i<N;i++)for(k=0;k<N;k++)if(v[i][k])s+='<rect x="'+(4+k*u)+'" y="'+(4+i*u)+'" width="'+u+'" height="'+u+'" fill="#fde68a" stroke="#334155"/>'}
+  else for(i=0;i<N;i++)for(k=0;k<v[i];k++)s+='<rect x="'+(4+i*u)+'" y="'+(4+(MAX-1-k)*u)+'" width="'+u+'" height="'+u+'" fill="#fde68a" stroke="#334155"/>';return '<svg viewBox="0 0 '+(8+N*u)+' '+(8+(kind==='t'?N:MAX)*u)+'" style="width:96px;background:#fff;border-radius:8px">'+s+'</svg>'}
+function stat(){var n=0,c=0,x,y;for(y=0;y<N;y++)for(x=0;x<N;x++){n+=h[y][x];if(h[y][x])c+=h[y][x]-1;if(x+1<N)c+=Math.min(h[y][x],h[y][x+1]);if(y+1<N)c+=Math.min(h[y][x],h[y+1][x])}return {n:n,c:c,s:6*n-2*c}}
+function draw(){$('g').innerHTML=grid();$('s').innerHTML=iso();var t=stat();
+  $('st').innerHTML='体积：<b>'+t.n+'</b> 个小正方体（每个棱长 1 厘米 → '+t.n+' 立方厘米）<br>表面积：'+t.n+' × 6 − '+t.c+' × 2 = <b style="color:#e5484d">'+t.s+'</b> 平方厘米　<span class="mut">（贴在一起的面有 '+t.c+' 处）</span>';
+  var fr=[],lf=[],x,y;for(x=0;x<N;x++){var m=0;for(y=0;y<N;y++)m=Math.max(m,h[y][x]);fr.push(m)}for(y=N-1;y>=0;y--){var m2=0;for(x=0;x<N;x++)m2=Math.max(m2,h[y][x]);lf.push(m2)}
+  var tp=[];for(y=N-1;y>=0;y--)tp.push(h[y].map(function(v){return v>0?1:0}));
+  $('vw').innerHTML=[['正面看',mini(fr,'f')],['左面看',mini(lf,'f')],['上面看',mini(tp,'t')]].map(function(v){return '<div style="text-align:center"><div class="mut">'+v[0]+'</div>'+v[1]+'</div>'}).join('');
+  if(t.n>=8&&t.s===24)Hub.star('cube-stack',3);else if(t.n>=4)Hub.star('cube-stack',1)}
+$('g').addEventListener('pointerdown',function(e){var x=e.target.dataset.x,y=e.target.dataset.y;if(x===undefined)return;x=+x;y=+y;h[y][x]=h[y][x]>=MAX?0:h[y][x]+1;Hub.beep(true);draw()});
+$('clr').onclick=function(){init();draw()};$('eg').onclick=function(){init();h[0][0]=h[0][1]=h[1][0]=h[1][1]=2;draw()};init();h[0][0]=2;h[0][1]=1;draw();
+</script></body></html>

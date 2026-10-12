@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>时间线段图：经过了多久</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">设定开始时间和经过的时间，看线段图上的结束时间</div>
+<div class="sl"><b id="l1"></b><input type="range" min="0" max="1439" step="5" value="510" id="st"></div>
+<div class="sl"><b id="l2"></b><input type="range" min="5" max="600" step="5" value="95" id="du"></div>
+<svg id="s" viewBox="0 0 380 110" style="width:100%;max-width:600px"></svg><div class="big2" id="eq"></div>
+<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
+<div class="qtext" id="qq"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('时间线段图：经过了多久');
+var $=function(i){return document.getElementById(i)};
+
+var Q,sc=0;function f2(n){return (n<10?'0':'')+n}function hm(t){t=(t%1440+1440)%1440;return f2(Math.floor(t/60))+':'+f2(t%60)}
+function dur(d){return (d>=60?Math.floor(d/60)+' 时 ':'')+(d%60?d%60+' 分':'')}
+function draw(){var st=+$('st').value,du=+$('du').value,en=st+du;$('l1').textContent='开始 '+hm(st);$('l2').textContent='经过 '+dur(du);
+  var x0=30,x1=350,span=Math.max(du,60),sc2=(x1-x0)/span,s='<line x1="'+x0+'" y1="60" x2="'+x1+'" y2="60" stroke="#334155" stroke-width="4"/>',i;
+  var step=du>240?120:du>120?60:30,t;for(t=0;t<=du;t+=step){var x=x0+t*sc2;s+='<line x1="'+x+'" y1="54" x2="'+x+'" y2="66" stroke="#334155" stroke-width="2"/><text x="'+x+'" y="84" text-anchor="middle" font-size="11" fill="#64748b">'+hm(st+t)+'</text>'}
+  var xe=x0+du*sc2;s+='<rect x="'+x0+'" y="50" width="'+(xe-x0)+'" height="20" fill="rgba(99,102,241,.35)"/><circle cx="'+x0+'" cy="60" r="7" fill="#22a06b"/><circle cx="'+xe+'" cy="60" r="7" fill="#e5484d"/><text x="'+x0+'" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#22a06b">'+hm(st)+' 开始</text><text x="'+xe+'" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#e5484d">'+hm(en)+(en>=1440?'（第二天）':'')+' 结束</text><text x="'+((x0+xe)/2)+'" y="102" text-anchor="middle" font-size="13" fill="#4f46e5">经过 '+dur(du)+'</text>';
+  $('s').innerHTML=s;$('eq').textContent=hm(st)+' + '+dur(du)+' = '+hm(en)}
+['st','du'].forEach(function(k){$(k).addEventListener('input',draw)});
+function newQ(){var st=Hub.rnd(6,20)*60+Hub.rnd(0,5)*10,du=Hub.rnd(2,15)*10+Hub.rnd(0,3)*30,en=st+du,t=Hub.rnd(0,2),right,txt,o;
+  if(t===0){right=hm(en);txt='从 '+hm(st)+' 开始，经过 '+dur(du)+'，结束时间是？';o=[right,hm(en+60),hm(en-30),hm(en+10)]}
+  else if(t===1){right=dur(du);txt='从 '+hm(st)+' 到 '+hm(en)+'，经过了多长时间？';o=[right,dur(du+60),dur(Math.max(10,du-30)),dur(du+10)]}
+  else{right=hm(st);txt='到 '+hm(en)+' 结束，经过 '+dur(du)+'，开始时间是？';o=[right,hm(st+60),hm(st-30),hm(st+10)]}
+  Q={a:right,st:st,du:du};var seen={},oo=[];o.forEach(function(x){if(!seen[x]){seen[x]=1;oo.push(x)}});oo.sort(function(){return Math.random()-.5});
+  $('qq').textContent=txt;$('ch').innerHTML=oo.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('');$('m').textContent='';$('st').value=st;$('du').value=du;draw()}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var g=c===Q.a;Hub.beep(g);if(g){sc++;Hub.star('time-segment',sc>=5?3:sc>=3?2:1)}$('m').className='msg '+(g?'ok':'bad');$('m').textContent=g?'✔ 对了（已对 '+sc+' 题），看线段图验证':'✘ 正确答案：'+Q.a;Q=null});
+$('nx').onclick=newQ;newQ();
+</script></body></html>

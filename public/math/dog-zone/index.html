@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>小狗的活动区域</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="task"></div>
+<div class="cc"><button class="btn" data-m="open">空地中间</button><button class="btn ghost" data-m="wall">墙边</button><button class="btn ghost" data-m="corner">房子的墙角</button></div>
+<canvas id="cv" width="400" height="360" style="width:100%;max-width:520px;border:2px solid var(--line);border-radius:10px;background:#ecfccb"></canvas>
+<div class="sl"><b id="lr"></b><input type="range" min="1" max="8" step="0.5" value="4" id="r"></div>
+<div class="sl" id="rowA"><b id="la"></b><input type="range" min="2" max="8" value="5" id="a"></div>
+<div class="sl" id="rowB"><b id="lb"></b><input type="range" min="2" max="6" value="3" id="b"></div>
+<div id="out" style="font-size:19px;line-height:1.8"></div></div>
+<div class="panel"><b>想一想：</b>拴小狗的绳子长是半径。在空地上能跑一个整圆；靠墙只能跑半个圆；在房子的墙角，开始能跑 <b>¾ 个圆</b>，绳子绕过墙角后还能多跑一些。（单位：米）</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('小狗的活动区域');
+var $=function(i){return document.getElementById(i)};
+
+var mode='open',S=16,SX=170,SY=230;
+function reach(x,y,r,a,b){if(mode==='open')return Math.hypot(x,y)<=r;if(mode==='wall')return y>=0&&Math.hypot(x,y)<=r;
+  if(x>0&&x<a&&y<0&&y>-b)return false;var d;if(!(x>0&&y<0))d=Math.hypot(x,y);else{d=1e9;if(x>=a)d=a+Math.hypot(x-a,y);if(y<=-b)d=Math.min(d,b+Math.hypot(x,y+b))}return d<=r}
+function draw(){var r=+$('r').value,a=+$('a').value,b=+$('b').value,c=$('cv').getContext('2d'),W=400,H=360,cnt=0,px,py;
+  if(mode==='open'){SX=200;SY=190}else if(mode==='wall'){SX=200;SY=110}else{SX=160;SY=235}
+  c.clearRect(0,0,W,H);var img=c.createImageData(W,H),step=2;
+  for(py=0;py<H;py+=step)for(px=0;px<W;px+=step){var x=(px-SX)/S,y=(py-SY)/S;if(reach(x,y,r,a,b)){cnt++;for(var i=0;i<step;i++)for(var j=0;j<step;j++){var k=((py+j)*W+px+i)*4;if(px+i<W&&py+j<H){img.data[k]=250;img.data[k+1]=204;img.data[k+2]=21;img.data[k+3]=200}}}}
+  c.putImageData(img,0,0);var area=cnt*(step/S)*(step/S);
+  c.strokeStyle='#92400e';c.lineWidth=5;if(mode==='wall'){c.beginPath();c.moveTo(0,SY);c.lineTo(W,SY);c.stroke();c.fillStyle='#a8a29e';c.fillRect(0,SY-14,W,14)}
+  if(mode==='corner'){c.fillStyle='#a8a29e';c.fillRect(SX,SY-b*S,a*S,b*S);c.strokeRect(SX,SY-b*S,a*S,b*S);c.fillStyle='#57534e';c.font='700 14px sans-serif';c.fillText('房子 '+a+'×'+b,SX+8,SY-b*S/2)}
+  c.fillStyle='#7c2d12';c.beginPath();c.arc(SX,SY,6,0,7);c.fill();c.fillStyle='#fff';c.font='700 13px sans-serif';c.fillText('桩',SX+9,SY+4);c.fillText('🐕',SX+r*S*.6,SY+r*S*.5);
+  $('lr').textContent='绳长 r = '+r+' 米';$('la').textContent='房子长 '+a+' 米';$('lb').textContent='房子宽 '+b+' 米';$('rowA').style.display=$('rowB').style.display=mode==='corner'?'':'none';
+  var pi=Math.PI,f='',val;
+  if(mode==='open'){val=pi*r*r;f='πr² = 3.14 × '+r+' × '+r+' = <b>'+(3.14*r*r).toFixed(2)+'</b> 平方米'}
+  else if(mode==='wall'){f='πr² ÷ 2 = 3.14 × '+r+' × '+r+' ÷ 2 = <b>'+(3.14*r*r/2).toFixed(2)+'</b> 平方米'}
+  else{var p1=.75*3.14*r*r,t='¾ × 3.14 × '+r+'²'+' = '+p1.toFixed(2),tot=p1;if(r>a){var q=.25*3.14*(r-a)*(r-a);tot+=q;t+=' + ¼ × 3.14 × '+(r-a)+'² = +'+q.toFixed(2)}if(r>b){var q2=.25*3.14*(r-b)*(r-b);tot+=q2;t+=' + ¼ × 3.14 × '+(r-b)+'² = +'+q2.toFixed(2)}f=t+'<br>合计 <b>'+tot.toFixed(2)+'</b> 平方米'+(Math.abs(tot-area)/area>.03?'<br><span class="mut">（绳子绕两边后两块有重叠，实际约 '+area.toFixed(1)+' 平方米）</span>':'')}
+  $('out').innerHTML='小狗能玩的面积（电脑数出来的）≈ <b style="color:#b45309">'+area.toFixed(1)+'</b> 平方米<br>算式：'+f;
+  $('task').textContent=mode==='open'?'小狗被拴在空地中间的木桩上，绳子长 '+r+' 米，它能玩多大的地方？':mode==='wall'?'木桩钉在一堵长墙边，小狗在墙的一侧':'木桩钉在房子的一个墙角，小狗只能在房子外面玩';
+  if(!draw.s){draw.s=1}Hub.star('dog-zone',mode==='corner'&&r>a?3:2)}
+['r','a','b'].forEach(function(k){$(k).addEventListener('input',draw)});
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==m)});draw()}});draw();
+</script></body></html>

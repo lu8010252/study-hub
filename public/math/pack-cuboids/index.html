@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>拼组长方体：表面积最小</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="q"></div>
+<div class="cc" id="ns"></div>
+<svg id="s" viewBox="0 0 380 200" style="width:100%;max-width:560px"></svg>
+<div class="cc" id="opts"></div>
+<div class="big2" id="sa"></div><div class="mut" id="tip"></div><div class="msg" id="m"></div></div>
+<div class="panel"><b>规律：</b>用同样多的小正方体拼长方体，越接近正方体，露在外面的面越少，表面积越小。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('拼组长方体：表面积最小');
+var $=function(i){return document.getElementById(i)};
+
+var N=24,cur=null,found={},U=22;
+function combos(n){var r=[],a,b,c;for(a=1;a<=n;a++)for(b=a;b<=n;b++){if(n%(a*b))continue;c=n/(a*b);if(c>=b)r.push([a,b,c])}return r}
+function sa(c){return 2*(c[0]*c[1]+c[0]*c[2]+c[1]*c[2])}
+function P(x,y,z){return [(x-y)*U*.87+190,170-(x+y)*U*.5-z*U]}
+function poly(p,f){return '<polygon points="'+p.map(function(q){return q.join(',')}).join(' ')+'" fill="'+f+'" stroke="#334155" stroke-width="1"/>'}
+function draw(){var cs=combos(N),mn=Math.min.apply(null,cs.map(sa));$('q').innerHTML='用 <b>'+N+'</b> 个棱长 1 厘米的小正方体拼成长方体，怎样拼表面积最小？';
+  $('ns').innerHTML=[8,12,16,18,24,30,36,64].map(function(n){return '<button class="btn '+(n===N?'':'ghost')+'" data-n="'+n+'" style="min-height:40px;padding:0 12px">'+n+' 个</button>'}).join('');
+  $('opts').innerHTML=cs.map(function(c,i){return '<button class="btn '+(cur===c.join()?'':'ghost')+'" data-c="'+c.join()+'">'+c[0]+'×'+c[1]+'×'+c[2]+(found[N+':'+c.join()]?' ✓':'')+'</button>'}).join('');
+  if(cur){var c=cur.split(',').map(Number),a=c[0],b=c[1],h=c[2],k=Math.min(1,140/(U*Math.max(a+b,h*1.4)));var s='';
+    var sx=function(x,y,z){var p=P(x,y,z);return [190+(p[0]-190)*k,170-(170-p[1])*k]};
+    s+=poly([sx(0,0,h),sx(a,0,h),sx(a,b,h),sx(0,b,h)],'#fde68a');s+=poly([sx(0,0,0),sx(a,0,0),sx(a,0,h),sx(0,0,h)],'#f59e0b');s+=poly([sx(0,0,0),sx(0,b,0),sx(0,b,h),sx(0,0,h)],'#d97706');
+    $('s').innerHTML=s;var S=sa(c);$('sa').textContent='表面积 = ('+a*b+' + '+a*h+' + '+b*h+') × 2 = '+S+' 平方厘米';found[N+':'+cur]=1;
+    $('tip').textContent=S===mn?'':'';if(S===mn){$('m').className='msg ok';$('m').textContent='✔ 这是最小的表面积 '+mn+'！'+(c[0]===1?'':'')+' 摆得最接近正方体';Hub.star('pack-cuboids',3)}else{$('m').className='msg';$('m').textContent='还可以更小，再试试别的拼法（现在是 '+S+'）'}}
+  else{$('s').innerHTML='<text x="190" y="100" text-anchor="middle" font-size="18" fill="#94a3b8">选一种拼法</text>';$('sa').textContent='';$('m').textContent=''}}
+document.addEventListener('click',function(e){var n=e.target.dataset.n,c=e.target.dataset.c;if(n){N=+n;cur=null;draw()}if(c){cur=c;draw()}});draw();
+</script></body></html>

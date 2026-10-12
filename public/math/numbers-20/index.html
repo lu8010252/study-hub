@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>认识数字 1~20</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc" id="ns" style="max-width:520px;margin:0 auto"></div>
+<div class="big2" style="font-size:64px;margin:6px 0" id="num"></div><div class="big2" id="cn"></div>
+<svg id="s" viewBox="0 0 330 140" style="width:100%;max-width:520px"></svg>
+<div class="mut" id="tip"></div>
+<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
+<div class="qtext">数一数，有几个？</div><svg id="s2" viewBox="0 0 330 100" style="width:100%;max-width:520px"></svg>
+<div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('认识数字 1~20');
+var $=function(i){return document.getElementById(i)};
+var CN=['零','一','二','三','四','五','六','七','八','九'];function cnN(n){if(n<10)return CN[n];if(n<20)return '十'+(n%10?CN[n%10]:'');return CN[Math.floor(n/10)]+'十'+(n%10?CN[n%10]:'')}
+var n=7,Q,sc=0;
+function frames(k,id,cnt,col){var s='',i;for(i=0;i<20;i++){var f=Math.floor(i/10),c=i%10,x=10+f*165+(c%5)*30,y=10+Math.floor(c/5)*40;s+='<rect x="'+x+'" y="'+y+'" width="28" height="36" rx="5" fill="#fff" stroke="#c7d2fe"/>';if(i<cnt)s+='<circle cx="'+(x+14)+'" cy="'+(y+18)+'" r="11" fill="'+(i<10?'#6366f1':'#f59e0b')+'"/>'}return s}
+function draw(){$('ns').innerHTML=Array.apply(null,Array(20)).map(function(_,i){return '<button class="btn '+(i+1===n?'':'ghost')+'" data-n="'+(i+1)+'" style="min-width:48px;min-height:44px;padding:0 8px">'+(i+1)+'</button>'}).join('');
+  $('num').textContent=n;$('cn').textContent=cnN(n);$('s').innerHTML=frames(0,'s',n);
+  $('tip').textContent=n<10?n+' 个 = '+n+' 个一':n===10?'10 个一 = 1 个十':n+' = 10 + '+(n-10)+'，是 1 个十和 '+(n-10)+' 个一';if(n===20)Hub.star('numbers-20',1)}
+document.addEventListener('click',function(e){var k=e.target.dataset.n;if(k){n=+k;draw()}});
+function newQ(){var a=Hub.rnd(1,20);Q=a;$('s2').innerHTML=frames(0,'s2',a);var o=[a];[a-1,a+1,a+2,a-2,a+10].forEach(function(x){if(x>=1&&x<=20&&o.indexOf(x)<0&&o.length<4)o.push(x)});o.sort(function(){return Math.random()-.5});$('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('');$('m').textContent=''}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||Q===null)return;var g=+c===Q;Hub.beep(g);if(g){sc++;Hub.star('numbers-20',sc>=5?3:sc>=3?2:1)}$('m').className='msg '+(g?'ok':'bad');$('m').textContent=g?'✔ 对了！'+Q+' 读作 '+cnN(Q):'✘ 再数一数，有 '+Q+' 个';Q=null});
+$('nx').onclick=newQ;draw();newQ();
+</script></body></html>

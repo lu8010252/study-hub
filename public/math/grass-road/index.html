@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>草地铺路面积</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="h">一条直路</button><button class="btn ghost" data-m="z">弯弯曲曲的路</button><button class="btn ghost" data-m="x">十字路</button></div>
+<div class="qtext" id="task"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+<div><div class="mut">原来的样子</div><svg id="s1" viewBox="0 0 200 150" style="width:100%;max-width:260px"></svg></div><div class="big2" style="align-self:center">→</div>
+<div><div class="mut">把路推到边上</div><svg id="s2" viewBox="0 0 200 150" style="width:100%;max-width:260px"></svg></div></div>
+<div class="sl"><b id="lL"></b><input type="range" min="8" max="20" value="14" id="L"></div><div class="sl"><b id="lW"></b><input type="range" min="5" max="14" value="9" id="W"></div><div class="sl"><b id="lw"></b><input type="range" min="1" max="4" value="2" id="w"></div>
+<div id="ps"></div><div id="out" style="font-size:19px;line-height:1.8;margin-top:6px"></div></div>
+<div class="panel"><b>方法：</b>把路平移到草地的边上，草地被分成一整块，面积 = (长 − 路宽) × 宽，和路原来在哪里没关系。十字路：(长 − 路宽) × (宽 − 路宽)。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('草地铺路面积');
+var $=function(i){return document.getElementById(i)};
+
+var PS='',mode='h',pos=[0.4,0.45,0.35],sc=0;
+function draw(){var L=+$('L').value,W=+$('W').value,w=+$('w').value,k=Math.min(180/L,130/W),ox=10,oy=10,Lp=L*k,Wp=W*k,wp=w*k,s1='<rect x="'+ox+'" y="'+oy+'" width="'+Lp+'" height="'+Wp+'" fill="#86efac" stroke="#15803d" stroke-width="2"/>',s2=s1,road='#fde68a';
+  $('lL').textContent='长 '+L+' 米';$('lW').textContent='宽 '+W+' 米';$('lw').textContent='路宽 '+w+' 米';
+  var area;
+  if(mode==='h'){var x=ox+(Lp-wp)*pos[0];s1+='<rect x="'+x+'" y="'+oy+'" width="'+wp+'" height="'+Wp+'" fill="'+road+'"/>';s2+='<rect x="'+(ox+Lp-wp)+'" y="'+oy+'" width="'+wp+'" height="'+Wp+'" fill="'+road+'"/>';area=(L-w)*W;
+    $('out').innerHTML='草地面积 = (长 − 路宽) × 宽 = ('+L+' − '+w+') × '+W+' = <b>'+area+'</b> 平方米';PS='<div class="sl"><b>路的位置</b><input type="range" min="0" max="100" value="'+pos[0]*100+'" data-p="0"></div>'}
+  else if(mode==='z'){var seg=Wp/3,xs=pos.map(function(p){return ox+(Lp-wp)*p});xs.forEach(function(x,i){s1+='<rect x="'+x+'" y="'+(oy+i*seg)+'" width="'+wp+'" height="'+seg+'" fill="'+road+'"/>'});
+    xs.slice(0,2).forEach(function(x,i){var a=Math.min(x,xs[i+1]),b=Math.max(x,xs[i+1])+wp;s1+='<rect x="'+a+'" y="'+(oy+(i+1)*seg-1)+'" width="'+(b-a)+'" height="2" fill="'+road+'"/>'});
+    s2+='<rect x="'+(ox+Lp-wp)+'" y="'+oy+'" width="'+wp+'" height="'+Wp+'" fill="'+road+'"/>';area=(L-w)*W;
+    $('out').innerHTML='不管路怎么弯，每一段都同宽，平移到边上就是一条直路：<br>草地面积 = ('+L+' − '+w+') × '+W+' = <b>'+area+'</b> 平方米';PS='<div class="mut">拖三段路的位置：</div>'+pos.map(function(p,i){return '<div class="sl"><b>第 '+(i+1)+' 段</b><input type="range" min="0" max="100" value="'+p*100+'" data-p="'+i+'"></div>'}).join('')}
+  else{var x1=ox+(Lp-wp)*pos[0],y1=oy+(Wp-wp)*pos[1];s1+='<rect x="'+x1+'" y="'+oy+'" width="'+wp+'" height="'+Wp+'" fill="'+road+'"/><rect x="'+ox+'" y="'+y1+'" width="'+Lp+'" height="'+wp+'" fill="'+road+'"/>';
+    s2+='<rect x="'+(ox+Lp-wp)+'" y="'+oy+'" width="'+wp+'" height="'+Wp+'" fill="'+road+'"/><rect x="'+ox+'" y="'+(oy+Wp-wp)+'" width="'+Lp+'" height="'+wp+'" fill="'+road+'"/>';area=(L-w)*(W-w);
+    $('out').innerHTML='草地面积 = (长 − 路宽) × (宽 − 路宽) = ('+L+' − '+w+') × ('+W+' − '+w+') = <b>'+area+'</b> 平方米<br><span class="mut">路面积 = '+(L*W-area)+' 平方米（两条路相交的小方块只算一次）</span>';
+    PS='<div class="sl"><b>竖路</b><input type="range" min="0" max="100" value="'+pos[0]*100+'" data-p="0"></div><div class="sl"><b>横路</b><input type="range" min="0" max="100" value="'+pos[1]*100+'" data-p="1"></div>'}
+  if(!draw.keep)$('ps').innerHTML=PS;$('s1').innerHTML=s1;$('s2').innerHTML=s2;$('task').textContent=mode==='h'?'草地上铺一条 '+w+' 米宽的直路，草地还剩多大？拖动路试试，面积变不变？':mode==='z'?'路弯弯曲曲，每一段都一样宽，草地还剩多大？':'草地上铺两条交叉的路，草地还剩多大？';
+  if(!draw.k){draw.k={}}draw.k[mode]=1;if(Object.keys(draw.k).length>=3)Hub.star('grass-road',3);else Hub.star('grass-road',Object.keys(draw.k).length)}
+document.addEventListener('input',function(e){var p=e.target.dataset.p;if(p!==undefined){pos[+p]=e.target.value/100;draw1()}else if(['L','W','w'].indexOf(e.target.id)>=0)draw()});
+function draw1(){var f=document.activeElement,p=f&&f.dataset&&f.dataset.p;var ps=$('ps').innerHTML;draw();PS=ps;var n=document.querySelector('[data-p="'+p+'"]');if(n)n.value=pos[+p]*100}
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==m)});draw()}});draw();
+</script></body></html>

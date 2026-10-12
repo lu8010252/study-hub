@@ -1221,6 +1221,123 @@
   ]
  },
  {
+  "id": "rubik-cube",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "🧊",
+  "name": "三阶魔方",
+  "desc": "能转的 3D 魔方，转一转、拼一拼",
+  "kw": "魔方 3D 立体 思维 游戏 三阶 空间",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "cube-stack",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🧱",
+  "name": "搭小正方体：体积与表面积",
+  "desc": "搭一搭，数体积、算表面积、看三视图",
+  "kw": "正方体 搭积木 叠塔 体积 表面积 三视图 观察物体",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "folding-nets",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "📦",
+  "name": "展开图：折一折",
+  "desc": "长方体展开图、正方体 11 种展开图",
+  "kw": "展开图 长方体 正方体 11种 围正方体 折叠 表面积",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "polygon-circle",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "⭕",
+  "name": "割圆术：正多边形变成圆",
+  "desc": "边越多越像圆，逼近圆周率",
+  "kw": "圆 圆周率 割圆术 刘徽 正多边形 化方为圆",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "dog-zone",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🐕",
+  "name": "小狗的活动区域",
+  "desc": "拴在空地、墙边、墙角，算面积",
+  "kw": "圆 面积 拴小狗 活动区域 扇形 绳长 墙角",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "grass-road",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🛣️",
+  "name": "草地铺路面积",
+  "desc": "平移小路，草地面积不变",
+  "kw": "面积 平移 小路 草地 铺路 十字路 转化",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "time-line",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "⏳",
+  "name": "时间线段图：经过时间",
+  "desc": "线段图上拖一拖算经过时间",
+  "kw": "时间 线段图 经过时间 24时计时法 时分",
+  "color": "#c7d2fe"
+ },
+ {
+  "id": "heartbeat",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   2,
+   3
+  ],
+  "topic": "数与代数",
+  "icon": "💓",
+  "name": "心跳计时器",
+  "desc": "测 15 秒心跳，算 1 分钟",
+  "kw": "时间 秒 分 心跳 计时器 秒的认识",
+  "color": "#c7d2fe"
+ },
+ {
   "id": "clock",
   "cat": "math",
   "kind": "tool",

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>展开图：折一折</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="c">长方体展开图</button><button class="btn ghost" data-m="k">正方体的 11 种展开图</button></div>
+<div id="ctl"></div>
+<svg id="s" viewBox="-170 -150 340 260" style="width:100%;max-width:600px;background:#fff;border-radius:10px;touch-action:none"></svg>
+<div class="sl"><b>折起来</b><input type="range" min="0" max="100" value="0" id="t"></div>
+<div class="mut">拖动图形可以转着看；滑块控制展开 / 折起</div>
+<div id="info" style="font-size:18px;line-height:1.7;margin-top:6px"></div></div>
+<div class="panel" id="qz" style="display:none"><div class="qtext">🔍 这个图形折起来能围成正方体吗？</div><svg id="qs" viewBox="0 0 160 120" style="width:100%;max-width:240px"></svg><div class="cc"><button class="btn" data-a="1">能</button><button class="btn" data-a="0">不能</button><button class="btn ghost" id="nq">换一个</button></div><div class="msg" id="qm"></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('展开图：折一折');
+var $=function(i){return document.getElementById(i)};
+
+var mode='c',ang=-0.5,ax=0.7,L=6,Wd=4,Hh=3,faces=[],netIdx=0,drag=null,NETS=[],BAD=[],sc=0,Q=null;
+var COL=['#a5b4fc','#fde68a','#99f6e4','#fbcfe8','#fdba74','#bef264'];
+function rodr(q,A,d,t){var x=q[0]-A[0],y=q[1]-A[1],z=q[2]||0,c=Math.cos(t),s=Math.sin(t),dx=d[0],dy=d[1],dz=0,dot=dx*x+dy*y+dz*z;
+  return [A[0]+x*c+(dy*z-dz*y)*s+dx*dot*(1-c),A[1]+y*c+(dz*x-dx*z)*s+dy*dot*(1-c),(A[2]||0)+z*c+(dx*y-dy*x)*s+dz*dot*(1-c)]}
+function build(fs){faces=fs;var c0=[0,0];fs[0].p.forEach(function(p){c0[0]+=p[0]/fs[0].p.length;c0[1]+=p[1]/fs[0].p.length});fs.forEach(function(f){f.p=f.p.map(function(p){return [p[0]-c0[0],p[1]-c0[1]]});if(f.h)f.h=f.h.map(function(p){return [p[0]-c0[0],p[1]-c0[1]]})});faces.forEach(function(f,i){var A=f.h?f.h[0]:null;if(!A){f.s=1;return}var dx=f.h[1][0]-A[0],dy=f.h[1][1]-A[1],l=Math.hypot(dx,dy);f.d=[dx/l,dy/l];
+  var cx=0,cy=0;f.p.forEach(function(p){cx+=p[0]/f.p.length;cy+=p[1]/f.p.length});var r=rodr([cx,cy,0],[A[0],A[1],0],f.d,Math.PI/2);f.s=r[2]>0?1:-1})}
+function T(i,q,th){var f=faces[i];if(f.par<0)return q;var r=rodr(q,[f.h[0][0],f.h[0][1],0],f.d,f.s*th);return T(f.par,r,th)}
+function cuboid(){var l=L,w=Wd,h=Hh,R=function(u0,v0,u1,v1){return [[u0,v0],[u1,v0],[u1,v1],[u0,v1]]};
+  build([{n:'下',p:R(0,0,l,w),par:-1},{n:'左',p:R(-h,0,0,w),par:0,h:[[0,0],[0,w]]},{n:'右',p:R(l,0,l+h,w),par:0,h:[[l,0],[l,w]]},{n:'前',p:R(0,-h,l,0),par:0,h:[[0,0],[l,0]]},{n:'后',p:R(0,w,l,w+h),par:0,h:[[0,w],[l,w]]},{n:'上',p:R(0,w+h,l,2*w+h),par:4,h:[[0,w+h],[l,w+h]]}])}
+/* 正方体：枚举 35 个六连方，用“滚骰子”判断能否围成 */
+function canon(cs){var best=null,k;for(k=0;k<8;k++){var t=cs.map(function(c){var x=c[0],y=c[1];if(k&1)x=-x;if(k&2)y=-y;if(k&4){var z=x;x=y;y=z}return [x,y]}),mx=Math.min.apply(null,t.map(function(c){return c[0]})),my=Math.min.apply(null,t.map(function(c){return c[1]}));t=t.map(function(c){return [c[0]-mx,c[1]-my]}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]});var s=t.join(';');if(best===null||s<best)best=s}return best}
+function enumerate(){var seen={},cur=[[[0,0]]],n,out=[];for(n=1;n<6;n++){var nx=[],ns={};cur.forEach(function(cs){cs.forEach(function(c){[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var q=[c[0]+d[0],c[1]+d[1]];if(cs.some(function(e){return e[0]===q[0]&&e[1]===q[1]}))return;var m=cs.concat([q]),k=canon(m);if(!ns[k]){ns[k]=1;nx.push(m)}})})});cur=nx}return cur}
+function roll(cs){var key=function(c){return c[0]+','+c[1]},m={};cs.forEach(function(c){m[key(c)]=c});var st={b:0,t:5,n:1,s:4,e:2,w:3},lab={},seen={},q=[[cs[0],st]];seen[key(cs[0])]=1;lab[key(cs[0])]=st.b;
+  while(q.length){var x=q.shift(),c=x[0],s=x[1];[[1,0,'e'],[-1,0,'w'],[0,1,'s'],[0,-1,'n']].forEach(function(d){var k=(c[0]+d[0])+','+(c[1]+d[1]);if(!m[k]||seen[k])return;seen[k]=1;var n={b:s.b,t:s.t,n:s.n,s:s.s,e:s.e,w:s.w};
+    if(d[2]==='e'){n.b=s.e;n.e=s.t;n.t=s.w;n.w=s.b}else if(d[2]==='w'){n.b=s.w;n.w=s.t;n.t=s.e;n.e=s.b}else if(d[2]==='s'){n.b=s.s;n.s=s.t;n.t=s.n;n.n=s.b}else{n.b=s.n;n.n=s.t;n.t=s.s;n.s=s.b}lab[k]=n.b;q.push([m[k],n])})}
+  var vs={};cs.forEach(function(c){vs[lab[key(c)]]=1});return Object.keys(vs).length===6}
+function tree(cs){var key=function(c){return c[0]+','+c[1]},idx={};cs.forEach(function(c,i){idx[key(c)]=i});var fs=[],seen={},q=[0];seen[0]=1;var order=[0];fs[0]={p:sq(cs[0]),par:-1,n:''};
+  while(q.length){var i=q.shift(),c=cs[i];[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var k=key([c[0]+d[0],c[1]+d[1]]),j=idx[k];if(j===undefined||seen[j])return;seen[j]=1;var A,B;if(d[0]===1){A=[c[0]+1,c[1]];B=[c[0]+1,c[1]+1]}else if(d[0]===-1){A=[c[0],c[1]];B=[c[0],c[1]+1]}else if(d[1]===1){A=[c[0],c[1]+1];B=[c[0]+1,c[1]+1]}else{A=[c[0],c[1]];B=[c[0]+1,c[1]]}
+    fs[j]={p:sq(cs[j]),par:i,h:[A,B],n:''};q.push(j)})}return fs}
+function sq(c){return [[c[0],c[1]],[c[0]+1,c[1]],[c[0]+1,c[1]+1],[c[0],c[1]+1]]}
+function setupNets(){var all=enumerate();all.forEach(function(cs){(roll(cs)?NETS:BAD).push(cs)})}
+function view(p){var c=Math.cos(ang),s=Math.sin(ang),x=p[0]*c-p[1]*s,y=p[0]*s+p[1]*c,z=p[2];var X=x,Y=-(y*Math.sin(ax)+z*Math.cos(ax)),D=-y*Math.cos(ax)+z*Math.sin(ax);return [X,Y,D]}
+function draw(){var th=+$('t').value/100*Math.PI/2,sc2=mode==='c'?16:34,items=[],cx=0,cy=0,n=0;
+  faces.forEach(function(f,i){var pts=f.p.map(function(p){var q=T(i,[p[0],p[1],0],th);return view(q)});var dm=pts.reduce(function(a,p){return a+p[2]/pts.length},0);items.push({i:i,pts:pts,d:dm})});
+  items.sort(function(a,b){return a.d-b.d});
+  var s='';items.forEach(function(it){s+='<polygon points="'+it.pts.map(function(p){return (p[0]*sc2).toFixed(1)+','+(p[1]*sc2+(mode==='c'?-10:-20)).toFixed(1)}).join(' ')+'" fill="'+COL[it.i%6]+'" fill-opacity=".92" stroke="#4338ca" stroke-width="2" stroke-linejoin="round"/>';
+    var f=faces[it.i],lx=0,ly=0;it.pts.forEach(function(p){lx+=p[0]/4;ly+=p[1]/4});s+='<text x="'+(lx*sc2)+'" y="'+(ly*sc2+(mode==='c'?-10:-20)+5)+'" text-anchor="middle" font-size="'+(mode==='c'?13:18)+'" font-weight="700" fill="#334155" pointer-events="none">'+(mode==='c'?f.n:it.i+1)+'</text>'});
+  $('s').innerHTML=s}
+function info(){if(mode==='c'){var a=L*Wd,b=L*Hh,c=Wd*Hh;$('info').innerHTML='前 = 后 = '+L+'×'+Hh+' = '+b+'　左 = 右 = '+Wd+'×'+Hh+' = '+c+'　上 = 下 = '+L+'×'+Wd+' = '+a+'<br>表面积 = ('+a+' + '+b+' + '+c+') × 2 = <b>'+(a+b+c)*2+'</b> 平方厘米　（相对的面完全相同）'}
+  else $('info').innerHTML='正方体展开图一共有 <b>11</b> 种（1-4-1 型 6 种、2-3-1 型 3 种、2-2-2 型 1 种、3-3 型 1 种）。你现在看的是第 <b>'+(netIdx+1)+'</b> 种。拖动滑块折一折，每个面都会正好围成正方体。'}
+function ctl(){if(mode==='c'){$('ctl').innerHTML='<div class="sl"><b>长 '+L+'</b><input type="range" min="2" max="9" value="'+L+'" data-p="L"></div><div class="sl"><b>宽 '+Wd+'</b><input type="range" min="2" max="9" value="'+Wd+'" data-p="W"></div><div class="sl"><b>高 '+Hh+'</b><input type="range" min="1" max="9" value="'+Hh+'" data-p="H"></div>';$('qz').style.display='none'}
+  else{$('ctl').innerHTML='<div class="cc">'+NETS.map(function(n,i){return '<button class="btn '+(i===netIdx?'':'ghost')+'" data-n="'+i+'" style="min-height:40px;min-width:44px;padding:0 10px">'+(i+1)+'</button>'}).join('')+'</div>';$('qz').style.display=''}}
+function load(){if(mode==='c')cuboid();else build(tree(NETS[netIdx]));draw();info()}
+document.addEventListener('input',function(e){var p=e.target.dataset.p;if(p){var v=+e.target.value;if(p==='L')L=v;if(p==='W')Wd=v;if(p==='H')Hh=v;e.target.parentNode.firstChild.textContent={L:'长 ',W:'宽 ',H:'高 '}[p]+v;cuboid();draw();info()}if(e.target.id==='t')draw()});
+document.addEventListener('click',function(e){var d=e.target.dataset;if(d.m){mode=d.m;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==mode)});ctl();load();if(mode==='k')newQ()}
+  if(d.n!==undefined){netIdx=+d.n;ctl();load()}
+  if(d.a!==undefined&&Q){var good=(d.a==='1')===Q.ok;Hub.beep(good);if(good){sc++;Hub.star('folding-nets',sc>=4?3:sc>=2?2:1)}$('qm').className='msg '+(good?'ok':'bad');$('qm').textContent=(good?'✔ 答对了':'✘ 不对')+'：'+(Q.ok?'这是正方体的 11 种展开图之一，6 个面折起来正好不重叠':'折起来会有两个面重叠，还缺一个面')+(good?'（已对 '+sc+' 题）':'');Q=null}});
+$('s').addEventListener('pointerdown',function(e){drag=[e.clientX,e.clientY,ang,ax];$('s').setPointerCapture(e.pointerId)});$('s').addEventListener('pointermove',function(e){if(!drag)return;ang=drag[2]+(e.clientX-drag[0])*.01;ax=Math.max(.15,Math.min(1.45,drag[3]+(e.clientY-drag[1])*.01));draw()});
+['pointerup','pointercancel'].forEach(function(k){$('s').addEventListener(k,function(){drag=null})});
+function newQ(){var ok=Math.random()<.5,list=ok?NETS:BAD,cs=list[Hub.rnd(0,list.length-1)];Q={ok:ok};var s='';cs.forEach(function(c,i){s+='<rect x="'+(c[0]*26+10)+'" y="'+(c[1]*26+10)+'" width="26" height="26" fill="#c7d2fe" stroke="#4338ca" stroke-width="2"/>'});$('qs').innerHTML=s;$('qm').textContent='';$('qm').className='msg'}
+$('nq').onclick=newQ;setupNets();ctl();load();
+</script></body></html>

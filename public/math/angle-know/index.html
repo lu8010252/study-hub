@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>认识角：转一转</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="task">拖动橙色点转动一条边，看角的大小和名字</div>
+<svg id="s" viewBox="0 0 320 240" style="width:100%;max-width:520px;background:#fff;border-radius:10px"></svg>
+<div class="big2" id="ang"></div><div class="big2" style="color:#4f46e5" id="nm"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="nx">考考我</button></div></div>
+<div class="panel"><b>角的分类：</b>小于 90° 是锐角；等于 90° 是直角；大于 90° 小于 180° 是钝角；等于 180° 是平角；等于 360° 是周角。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('认识角：转一转');
+var $=function(i){return document.getElementById(i)};
+
+var ang=45,drag=false,goal=null,sc=0,hit=false,O=[110,170];
+function nameOf(a){return a<1?'零角':a<90?'锐角':a===90?'直角':a<180?'钝角':a===180?'平角':a<360?'优角（大于平角）':'周角'}
+function draw(){var a=ang,r=130,rad=a*Math.PI/180,X=O[0]+r*Math.cos(-rad),Y=O[1]+r*Math.sin(-rad),s='<line x1="'+O[0]+'" y1="'+O[1]+'" x2="'+(O[0]+r)+'" y2="'+O[1]+'" stroke="#334155" stroke-width="4" stroke-linecap="round"/>';
+  var ar=40,ex=O[0]+ar*Math.cos(-rad),ey=O[1]+ar*Math.sin(-rad);s+='<path d="M'+(O[0]+ar)+' '+O[1]+' A'+ar+' '+ar+' 0 '+(a>180?1:0)+' 0 '+ex+' '+ey+'" fill="rgba(99,102,241,.2)" stroke="#6366f1" stroke-width="3"/>';
+  if(a===90)s+='<rect x="'+O[0]+'" y="'+(O[1]-16)+'" width="16" height="16" fill="none" stroke="#e5484d" stroke-width="2"/>';
+  s+='<line x1="'+O[0]+'" y1="'+O[1]+'" x2="'+X+'" y2="'+Y+'" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="'+O[0]+'" cy="'+O[1]+'" r="6" fill="#e5484d"/><circle id="h" cx="'+X+'" cy="'+Y+'" r="14" fill="#f59e0b" stroke="#fff" stroke-width="3" style="cursor:grab"/>';
+  $('s').innerHTML=s;$('ang').textContent=Math.round(a)+'°';$('nm').textContent=nameOf(Math.round(a));
+  if(goal!==null){var ok=goal==='锐角'?a>0&&a<90:goal==='直角'?Math.round(a)===90:goal==='钝角'?a>90&&a<180:goal==='平角'?Math.round(a)===180:false;if(ok&&!hit){hit=true;sc++;Hub.beep(true);Hub.star('angle-know',sc>=4?3:sc>=2?2:1);$('m').className='msg ok';$('m').textContent='✔ 做到了：'+goal+'！'}else if(!ok){hit=false}}}
+function pt(e){var r=$('s').getBoundingClientRect();return [(e.clientX-r.left)/r.width*320,(e.clientY-r.top)/r.height*240]}
+$('s').addEventListener('pointerdown',function(e){if(e.target.id==='h'){drag=true;$('s').setPointerCapture(e.pointerId)}});
+$('s').addEventListener('pointermove',function(e){if(!drag)return;var q=pt(e),a=Math.atan2(-(q[1]-O[1]),q[0]-O[0])*180/Math.PI;if(a<0)a+=360;/* 吸附到整十度和关键角 */var snap=[90,180,270,360,0].filter(function(k){return Math.abs(a-k)<3})[0];ang=snap!==undefined?snap:a;draw()});
+['pointerup','pointercancel'].forEach(function(k){$('s').addEventListener(k,function(){drag=false})});
+$('nx').onclick=function(){var G=['锐角','直角','钝角','平角'];goal=G[Hub.rnd(0,3)];hit=false;$('m').className='msg';$('m').textContent='做一个'+goal;draw()};draw();
+</script></body></html>

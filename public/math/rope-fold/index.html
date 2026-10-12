@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>绳子对折再剪</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="sl"><b id="l1"></b><input type="range" min="1" max="4" value="2" id="f"></div>
+<div class="sl"><b id="l2"></b><input type="range" min="1" max="4" value="1" id="k"></div>
+<svg id="s" viewBox="0 0 380 150" style="width:100%;max-width:600px"></svg>
+<div class="big2" id="eq"></div><div class="mut" id="tip"></div>
+<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
+<div class="qtext" id="qq"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('绳子对折再剪');
+var $=function(i){return document.getElementById(i)};
+
+var Q,sc=0;
+function draw(){var f=+$('f').value,k=+$('k').value,L=Math.pow(2,f);$('l1').textContent='对折 '+f+' 次（'+L+' 层）';$('l2').textContent='剪 '+k+' 刀';
+  var xs=[],i,j,cuts=[];for(i=1;i<=k;i++)xs.push(i/(k+1)*0.9+0.05);
+  var s='<line x1="20" y1="60" x2="360" y2="60" stroke="#94a3b8" stroke-width="3"/><text x="20" y="40" font-size="12" fill="#64748b">把绳子拉直后的样子：</text>';
+  for(j=0;j<L;j++)xs.forEach(function(x){var pos=(j+(j%2===0?x:1-x))/L;cuts.push(pos)});cuts.sort(function(a,b){return a-b});
+  s+='<rect x="20" y="52" width="340" height="16" rx="8" fill="#fbcfe8" stroke="#be185d"/>';
+  cuts.forEach(function(p){var x=20+p*340;s+='<line x1="'+x+'" y1="42" x2="'+x+'" y2="78" stroke="#e5484d" stroke-width="3"/>'});
+  var pts=[0].concat(cuts).concat([1]);for(i=0;i<pts.length-1;i++)s+='<text x="'+(20+(pts[i]+pts[i+1])/2*340)+'" y="100" text-anchor="middle" font-size="'+(pts.length>20?9:12)+'" font-weight="700" fill="#4f46e5">'+(i+1)+'</text>';
+  s+='<text x="190" y="130" text-anchor="middle" font-size="14" fill="#334155">折后的绳子有 '+L+' 层，每剪一刀剪断 '+L+' 处</text>';
+  $('s').innerHTML=s;var seg=k*L+1;$('eq').textContent='段数 = '+k+' × '+L+' + 1 = '+seg;$('tip').textContent='每剪一刀同时剪断 '+L+' 根，剪 '+k+' 刀共 '+(k*L)+' 处，绳子分成 '+(k*L)+' + 1 = '+seg+' 段';
+  if(f>=3&&k>=2)Hub.star('rope-fold',2)}
+['f','k'].forEach(function(i){$(i).addEventListener('input',draw)});
+function newQ(){var f=Hub.rnd(1,4),k=Hub.rnd(1,4),r=k*Math.pow(2,f)+1;Q={a:r};var o=[r,k*Math.pow(2,f),Math.pow(2,f)*(k+1),(k+1)*f+1,r+2].filter(function(x,i,a){return a.indexOf(x)===i}).slice(0,4);if(o.indexOf(r)<0)o[0]=r;o.sort(function(){return Math.random()-.5});
+  $('qq').textContent='一根绳子对折 '+f+' 次，从折后的中间剪 '+k+' 刀，绳子被剪成几段？';$('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+' 段</button>'}).join('');$('m').textContent=''}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var g=+c===Q.a;Hub.beep(g);if(g){sc++;Hub.star('rope-fold',sc>=3?3:2)}$('m').className='msg '+(g?'ok':'bad');$('m').textContent=g?'✔ 对了':'✘ 正确答案 '+Q.a+' 段：用上面的滑块试试看';Q=null});
+$('nx').onclick=newQ;draw();newQ();
+</script></body></html>

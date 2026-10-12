@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>三阶魔方</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="mut">拖动空白处转动视角；点下面的按钮转动一层（带 ' 的是反方向）</div>
+<svg id="s" viewBox="-150 -150 300 300" style="width:100%;max-width:440px;touch-action:none"></svg>
+<div class="cc" id="mv"></div>
+<div class="cc"><button class="btn" id="sc">🔀 打乱</button><button class="btn ghost" id="rs">复原成初始</button><button class="btn ghost" id="un">↩ 撤销</button></div>
+<div class="msg" id="m"></div><div class="mut" id="cnt"></div></div>
+<div class="panel"><b>规律：</b>魔方有 6 个面，每个面 9 个小方块。试试：先拼出一个面，再想办法拼第二层。转动时每一层都是绕中心旋转 90°。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('三阶魔方');
+var $=function(i){return document.getElementById(i)};
+
+var COLS={'+y':'#f8fafc','-y':'#facc15','+z':'#22c55e','-z':'#3b82f6','+x':'#ef4444','-x':'#fb923c'};
+var cub=[],yaw=-0.6,pit=0.5,drag=null,anim=null,hist=[],moves=0,busy=false;
+function reset(){cub=[];for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){var st=[];if(x)st.push({n:[x,0,0],c:COLS[(x>0?'+':'-')+'x']});if(y)st.push({n:[0,y,0],c:COLS[(y>0?'+':'-')+'y']});if(z)st.push({n:[0,0,z],c:COLS[(z>0?'+':'-')+'z']});cub.push({p:[x,y,z],st:st})}hist=[];moves=0}
+function rot(v,a,t){var c=Math.round(Math.cos(t)),s=Math.round(Math.sin(t)),x=v[0],y=v[1],z=v[2];if(a===0)return [x,y*c-z*s,y*s+z*c];if(a===1)return [x*c+z*s,y,-x*s+z*c];return [x*c-y*s,x*s+y*c,z]}
+function rotf(v,a,t){var c=Math.cos(t),s=Math.sin(t),x=v[0],y=v[1],z=v[2];if(a===0)return [x,y*c-z*s,y*s+z*c];if(a===1)return [x*c+z*s,y,-x*s+z*c];return [x*c-y*s,x*s+y*c,z]}
+function commit(a,sd,t){cub.forEach(function(q){if(q.p[a]===sd){q.p=rot(q.p,a,t);q.st.forEach(function(s){s.n=rot(s.n,a,t)})}})}
+/* 面名 -> 轴, 侧, 顺时针角度 */
+var FACE={U:[1,1],D:[1,-1],L:[0,-1],R:[0,1],F:[2,1],B:[2,-1]};
+function turn(f,cw,fast,noHist){if(busy)return;var a=FACE[f][0],sd=FACE[f][1],t=-sd*(Math.PI/2)*(cw?1:-1);
+  if(!noHist)hist.push([f,cw]);moves++;
+  if(fast){commit(a,sd,t);return}
+  busy=true;var t0=Date.now(),dur=260;(function step(){var k=Math.min(1,(Date.now()-t0)/dur);anim={a:a,sd:sd,ang:t*k};draw();if(k<1)requestAnimationFrame(step);else{anim=null;commit(a,sd,t);busy=false;draw();check()}})()}
+function V(v){/* 视角旋转 */var c=Math.cos(yaw),s=Math.sin(yaw),x=v[0]*c+v[2]*s,z=-v[0]*s+v[2]*c,y=v[1],c2=Math.cos(pit),s2=Math.sin(pit),y2=y*c2-z*s2,z2=y*s2+z*c2;return [x,y2,z2]}
+var NR={'x':[[0,0,0]]};
+function draw(){var polys=[],S=48;
+  cub.forEach(function(q){var inL=anim&&q.p[anim.a]===anim.sd;var faces=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+    faces.forEach(function(n){var st=null;q.st.forEach(function(s){if(s.n[0]===n[0]&&s.n[1]===n[1]&&s.n[2]===n[2])st=s});
+      var u,w;if(n[0]){u=[0,1,0];w=[0,0,1]}else if(n[1]){u=[1,0,0];w=[0,0,1]}else{u=[1,0,0];w=[0,1,0]}
+      var mk=function(sc){return [[1,1],[1,-1],[-1,-1],[-1,1]].map(function(k){var v=[q.p[0]+n[0]*.5+(u[0]*k[0]+w[0]*k[1])*.5*sc,q.p[1]+n[1]*.5+(u[1]*k[0]+w[1]*k[1])*.5*sc,q.p[2]+n[2]*.5+(u[2]*k[0]+w[2]*k[1])*.5*sc];if(inL)v=rotf(v,anim.a,anim.ang);return V(v)})};
+      var nv=V(inL?rotf(n,anim.a,anim.ang):n);if(nv[2]<=0.001)return;/* 背面剔除：相机在 +z */
+      var big=mk(1),cen=big.reduce(function(a,p){return a+p[2]/4},0);polys.push({d:cen,p:big,c:'#111827'});if(st)polys.push({d:cen+.001,p:mk(.84),c:st.c})})});
+  polys.sort(function(a,b){return a.d-b.d});
+  $('s').innerHTML=polys.map(function(o){return '<polygon points="'+o.p.map(function(p){return (p[0]*S).toFixed(1)+','+(-p[1]*S).toFixed(1)}).join(' ')+'" fill="'+o.c+'" stroke="'+(o.c==='#111827'?'#000':'none')+'" stroke-linejoin="round" stroke-width="1"/>'}).join('');
+  $('cnt').textContent='已转动 '+moves+' 次'}
+function solved(){var m={};cub.forEach(function(q){q.st.forEach(function(s){var k=s.n.join(),c=m[k];if(c===undefined)m[k]=s.c;else if(c!==s.c)m[k]=false})});return Object.keys(m).every(function(k){return m[k]})&&Object.keys(m).length===6}
+function check(){if(solved()&&moves>0){$('m').className='msg ok';$('m').textContent='🎉 拼好了！';Hub.beep(true);Hub.star('rubik-cube',moves<=5?1:3)}else $('m').textContent=''}
+$('mv').innerHTML=['U','D','L','R','F','B'].map(function(f){return '<span style="display:inline-flex;gap:4px"><button class="btn" data-f="'+f+'" data-cw="1" style="min-width:44px">'+f+'</button><button class="btn ghost" data-f="'+f+'" data-cw="0" style="min-width:44px">'+f+"'</button></span>"}).join('');
+document.addEventListener('click',function(e){var f=e.target.dataset.f;if(f)turn(f,e.target.dataset.cw==='1')});
+$('sc').onclick=function(){if(busy)return;reset();var i,F=['U','D','L','R','F','B'];for(i=0;i<22;i++)turn(F[Hub.rnd(0,5)],Math.random()<.5,true,true);moves=0;draw();$('m').textContent='已打乱，开始还原吧'};
+$('rs').onclick=function(){if(busy)return;reset();draw();$('m').textContent=''};
+$('un').onclick=function(){if(busy||!hist.length)return;var l=hist.pop();moves=Math.max(0,moves-1);turn(l[0],!l[1],false,true);moves=Math.max(0,moves-1)};
+$('s').addEventListener('pointerdown',function(e){drag=[e.clientX,e.clientY,yaw,pit];$('s').setPointerCapture(e.pointerId)});
+$('s').addEventListener('pointermove',function(e){if(!drag)return;yaw=drag[2]+(e.clientX-drag[0])*.012;pit=Math.max(-1.3,Math.min(1.3,drag[3]+(e.clientY-drag[1])*.012));draw()});
+['pointerup','pointercancel'].forEach(function(k){$('s').addEventListener(k,function(){drag=null})});
+reset();draw();
+</script></body></html>
