@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>拼一拼：两个长方体怎么拼表面积最小</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">两个完全一样的长方体拼在一起，怎么拼表面积最小？</div>
+<div class="sl"><b id="la"></b><input type="range" min="1" max="10" value="6" id="a"></div><div class="sl"><b id="lb"></b><input type="range" min="1" max="10" value="4" id="b"></div><div class="sl"><b id="lc"></b><input type="range" min="1" max="10" value="2" id="c"></div>
+<div class="cc" id="wb"></div>
+<svg id="s" viewBox="-200 -150 400 300" style="width:100%;max-width:520px;height:300px"></svg>
+<div id="out" style="font-size:19px;line-height:1.9"></div>
+<table id="tb" style="margin:6px auto;border-collapse:collapse;font-size:17px"></table></div>
+<div class="panel"><b>规律：</b>拼起来后，被粘住的两个面不再露在外面。<b>表面积 = 两个长方体表面积之和 − 2 × 粘住的面的面积</b>。粘住的面越大，减少得越多，表面积就越小，所以要把<b>最大的面</b>拼在一起。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('拼一拼：两个长方体怎么拼表面积最小');
+var $=function(i){return document.getElementById(i)};
+
+var way=0,tried={};var NMS=['长×宽面','长×高面','宽×高面'];
+function iso(x,y,z,A,B,Hh){return [(x-y)*A,-(x+y)*B-z*Hh]}
+function box(o,d,A,B,Hh,tint){var x=o[0],y=o[1],z=o[2],X=d[0],Y=d[1],Z=d[2],p=function(a,b,c){var q=iso(a,b,c,A,B,Hh);return q[0].toFixed(1)+','+q[1].toFixed(1)};
+  var fx='<polygon points="'+[p(x,y,z),p(x,y+Y,z),p(x,y+Y,z+Z),p(x,y,z+Z)].join(' ')+'" fill="'+tint[0]+'" stroke="#334155" stroke-width="1.8" stroke-linejoin="round"/>';
+  var fy='<polygon points="'+[p(x,y,z),p(x+X,y,z),p(x+X,y,z+Z),p(x,y,z+Z)].join(' ')+'" fill="'+tint[1]+'" stroke="#334155" stroke-width="1.8" stroke-linejoin="round"/>';
+  var ft='<polygon points="'+[p(x,y,z+Z),p(x+X,y,z+Z),p(x+X,y+Y,z+Z),p(x,y+Y,z+Z)].join(' ')+'" fill="'+tint[2]+'" stroke="#334155" stroke-width="1.8" stroke-linejoin="round"/>';
+  return fx+fy+ft}
+function draw(){var a=+$('a').value,b=+$('b').value,c=+$('c').value,d=[a,b,c];$('la').textContent='长 '+a+' 厘米';$('lb').textContent='宽 '+b+' 厘米';$('lc').textContent='高 '+c+' 厘米';
+  var faces=[[a*b,2],[a*c,1],[b*c,0]],/* 粘住的面, 加倍的维度 */face=[a*b,a*c,b*c],dbl=[2,1,0];
+  $('wb').innerHTML=[0,1,2].map(function(i){return '<button class="btn '+(i===way?'':'ghost')+'" data-w="'+i+'">粘在 '+NMS[i]+(tried[i]?' ✓':'')+'</button>'}).join('');
+  var k=dbl[way],nd=d.slice();nd[k]*=2;
+  var s0=2*(a*b+a*c+b*c),S=2*s0-2*face[way],mx=Math.max(nd[0],nd[1],nd[2])+0.5;
+  var sc=Math.min(26,230/(nd[0]+nd[1]+nd[2]+1)),A=sc*0.866,B=sc*0.5,Hh=sc;
+  var o1=[0,0,0],o2=[0,0,0];o2[k]=d[k];
+  var first=box(o2,d,A,B,Hh,['#fde68a','#fcd34d','#fef3c7']),second=box(o1,d,A,B,Hh,['#a5b4fc','#818cf8','#c7d2fe']);
+  /* 绘制顺序: 远的先画 → o2 在远处 */
+  $('s').innerHTML='<g>'+first+second+'</g>';
+  var bb=$('s').firstChild.getBBox(),pad=18;$('s').setAttribute('viewBox',(bb.x-pad)+' '+(bb.y-pad)+' '+(bb.width+2*pad)+' '+(bb.height+2*pad));
+  tried[way]=S;
+  $('out').innerHTML='粘在<b>'+NMS[way]+'</b>（面积 '+face[way]+'），拼成长 '+nd[0]+'、宽 '+nd[1]+'、高 '+nd[2]+' 的长方体<br>表面积 = 2 × '+s0+' − 2 × '+face[way]+' = <b style="color:#4f46e5">'+S+'</b> 平方厘米';
+  var rows='<tr><th style="padding:4px 12px">拼法</th><th>粘住的面积</th><th>表面积</th></tr>',all=Object.keys(tried).length===3,mn=Math.min.apply(null,[0,1,2].map(function(i){return 2*s0-2*face[i]}));
+  [0,1,2].forEach(function(i){var Si=2*s0-2*face[i];rows+='<tr style="'+(all&&Si===mn?'background:#dcfce7;font-weight:800':'')+'"><td style="padding:4px 12px;border-top:1px solid #e2e8f0">粘'+NMS[i]+'</td><td style="border-top:1px solid #e2e8f0">'+face[i]+'</td><td style="border-top:1px solid #e2e8f0">'+(tried[i]?Si:'？')+'</td></tr>'});
+  $('tb').innerHTML=rows;if(all){$('out').innerHTML+='<br>🎉 三种都试过了：粘最大的面，表面积最小';Hub.star('glue-cuboids',3)}else Hub.star('glue-cuboids',1)}
+$('wb').addEventListener('click',function(e){var w=e.target.getAttribute('data-w');if(w===null)return;way=+w;draw()});
+['a','b','c'].forEach(function(k){$(k).addEventListener('input',function(){tried={};draw()})});draw();
+</script></body></html>

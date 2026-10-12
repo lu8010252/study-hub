@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>拼一拼：三角形、梯形面积怎么来的</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="tri">三角形</button><button class="btn ghost" data-m="tra">梯形</button></div>
+<svg id="s" viewBox="0 0 420 220" style="width:100%;max-width:680px;background:#f8fafc;border-radius:12px"></svg>
+<div class="sl"><b>旋转</b><input type="range" min="0" max="100" value="0" id="t"></div>
+<div class="cc"><button class="btn" id="play">▶ 自动转</button></div>
+<div id="p1" class="sl"></div><div id="p2" class="sl"></div><div id="p3" class="sl"></div>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel" id="rule"></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('拼一拼：三角形、梯形面积怎么来的');
+var $=function(i){return document.getElementById(i)};
+
+var mode='tri',tm=null;
+function mk(id,lab,min,max,val){return '<b id="l'+id+'"></b><input type="range" min="'+min+'" max="'+max+'" value="'+val+'" id="'+id+'">'}
+function setup(){$('p1').innerHTML=mk('v1','',2,12,8);$('p2').innerHTML=mk('v2','',2,12,5);
+  if(mode==='tra'){$('p3').innerHTML=mk('v3','',2,12,5);$('p3').style.display='flex'}else{$('p3').innerHTML='';$('p3').style.display='none'}
+  ['v1','v2','v3'].forEach(function(k){if($(k))$(k).addEventListener('input',draw)});
+  $('rule').innerHTML=mode==='tri'?'<b>推导：</b>两个完全一样的三角形，可以拼成一个<b>平行四边形</b>。平行四边形的底 = 三角形的底，高 = 三角形的高。每个三角形是平行四边形的一半，所以<b>三角形面积 = 底 × 高 ÷ 2</b>。':'<b>推导：</b>两个完全一样的梯形，可以拼成一个<b>平行四边形</b>。平行四边形的底 = 梯形的上底 + 下底，高 = 梯形的高。每个梯形是它的一半，所以<b>梯形面积 = (上底 + 下底) × 高 ÷ 2</b>。'}
+function rot(p,M,a){var c=Math.cos(a),s=Math.sin(a),x=p[0]-M[0],y=p[1]-M[1];return [M[0]+x*c-y*s,M[1]+x*s+y*c]}
+function poly(P,col,op){return '<polygon points="'+P.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="'+col+'" fill-opacity="'+op+'" stroke="#334155" stroke-width="2.5" stroke-linejoin="round"/>'}
+function draw(){var u=+$('t').value/100,a=u*Math.PI,k=18,s='',out;
+  if(mode==='tri'){var b=+$('v1').value,h=+$('v2').value,off=Math.round(b/3);$('lv1').textContent='底 '+b+' 厘米';$('lv2').textContent='高 '+h+' 厘米';
+    var sc=Math.min(k,150/h,170/(b+off+2)),B=[60,40+h*sc],C=[60+b*sc,40+h*sc],A=[60+off*sc,40],M=[(A[0]+C[0])/2,(A[1]+C[1])/2];
+    var P=[A,B,C],Q=P.map(function(p){return rot(p,M,a)});
+    s+=poly(P,'#6366f1',.7)+poly(Q,'#f59e0b',.7);
+    s+='<line x1="'+A[0]+'" y1="'+A[1]+'" x2="'+A[0]+'" y2="'+B[1]+'" stroke="#e5484d" stroke-width="2" stroke-dasharray="5 4"/>'+
+    '<circle cx="'+M[0]+'" cy="'+M[1]+'" r="5" fill="#e5484d"/><text x="'+(M[0]+8)+'" y="'+(M[1]-6)+'" font-size="12" fill="#e5484d">旋转中心（斜边中点）</text>'+
+    '<text x="'+((B[0]+C[0])/2)+'" y="'+(B[1]+20)+'" text-anchor="middle" font-size="14" font-weight="700" fill="#e5484d">底 '+b+'</text><text x="'+(A[0]-6)+'" y="'+((A[1]+B[1])/2)+'" text-anchor="end" font-size="14" font-weight="700" fill="#22a06b">高 '+h+'</text>';
+    out=u>=.99?'拼成了平行四边形：底 '+b+'，高 '+h+'，面积 = '+b+' × '+h+' = <b>'+b*h+'</b><br>一个三角形：'+b+' × '+h+' ÷ 2 = <b style="color:#4f46e5">'+b*h/2+'</b> 平方厘米':'拖动“旋转”，把橙色三角形转过去，拼一拼'}
+  else{var up=+$('v1').value,dn=+$('v2').value,h2=+$('v3').value;$('lv1').textContent='上底 '+up+' 厘米';$('lv2').textContent='下底 '+dn+' 厘米';$('lv3').textContent='高 '+h2+' 厘米';
+    var sc2=Math.min(k,150/h2,330/(up+dn+4)),inset=Math.round((dn-up)/2),X0=40,Y0=40;
+    var A2=[X0+Math.max(0,inset)*sc2,Y0],Bq=[A2[0]+up*sc2,Y0],Cq=[X0+dn*sc2+(inset<0?-inset*sc2:0),Y0+h2*sc2],D=[Cq[0]-dn*sc2,Y0+h2*sc2];
+    var M2=[(Bq[0]+Cq[0])/2,(Bq[1]+Cq[1])/2],P2=[A2,Bq,Cq,D],Q2=P2.map(function(p){return rot(p,M2,a)});
+    s+=poly(P2,'#6366f1',.7)+poly(Q2,'#f59e0b',.7);
+    s+='<circle cx="'+M2[0]+'" cy="'+M2[1]+'" r="5" fill="#e5484d"/><text x="'+(M2[0]+8)+'" y="'+(M2[1])+'" font-size="12" fill="#e5484d">旋转中心（腰的中点）</text>'+
+    '<text x="'+((A2[0]+Bq[0])/2)+'" y="'+(Y0-8)+'" text-anchor="middle" font-size="14" font-weight="700" fill="#e5484d">上底 '+up+'</text><text x="'+((D[0]+Cq[0])/2)+'" y="'+(D[1]+20)+'" text-anchor="middle" font-size="14" font-weight="700" fill="#e5484d">下底 '+dn+'</text>';
+    out=u>=.99?'拼成的平行四边形：底 = '+up+' + '+dn+' = '+(up+dn)+'，高 '+h2+'，面积 = '+(up+dn)*h2+'<br>一个梯形：('+up+' + '+dn+') × '+h2+' ÷ 2 = <b style="color:#4f46e5">'+(up+dn)*h2/2+'</b> 平方厘米':'拖动“旋转”，把橙色梯形转过去，拼一拼'}
+  $('s').setAttribute('viewBox',mode==='tri'?'0 0 420 220':'0 0 420 220');$('s').innerHTML=s;$('out').innerHTML=out;if(u>=.99)Hub.star('area-derive',3)}
+document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){mode=b.getAttribute('data-m');document.querySelectorAll('[data-m]').forEach(function(x){x.classList.toggle('ghost',x!==b)});$('t').value=0;setup();draw()}});
+$('t').addEventListener('input',draw);
+$('play').onclick=function(){if(tm){clearInterval(tm);tm=null;return}$('t').value=0;tm=setInterval(function(){var v=+$('t').value+2;$('t').value=Math.min(100,v);draw();if(v>=100){clearInterval(tm);tm=null}},30)};
+setup();draw();
+</script></body></html>

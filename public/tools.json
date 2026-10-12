@@ -1438,6 +1438,56 @@
   "color": "#99f6e4"
  },
  {
+  "id": "draw-height",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "📐",
+  "name": "画高：拖出三角形的高",
+  "desc": "拖圆点画三角形的高，钝角三角形的高在外面",
+  "kw": "高 垂线 三角形 底边 钝角 锐角 直角 垂足",
+  "color": "#99f6e4",
+  "tbs": [
+   {
+    "b": "四下",
+    "u": "三角形、平行四边形和梯形",
+    "o": 6
+   }
+  ]
+ },
+ {
+  "id": "area-derive",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🔄",
+  "name": "拼一拼：三角形梯形面积",
+  "desc": "把三角形、梯形转成平行四边形，推出面积公式",
+  "kw": "三角形面积 梯形面积 平行四边形 转化 旋转 拼",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "glue-cuboids",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🧊",
+  "name": "拼长方体：表面积最小",
+  "desc": "两个长方体怎么拼表面积最小",
+  "kw": "长方体 表面积 拼 粘 最大的面",
+  "color": "#99f6e4"
+ },
+ {
   "id": "time-line",
   "cat": "math",
   "kind": "tool",
