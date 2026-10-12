@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>计算器与探索规律</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div id="disp" style="max-width:320px;margin:0 auto;background:#0f172a;color:#e2e8f0;border-radius:12px;padding:10px 14px;text-align:right;font:700 28px ui-monospace,Menlo,monospace;min-height:84px"><div id="ex" style="font-size:16px;color:#94a3b8;min-height:22px"></div><div id="res">0</div></div>
+<div id="keys" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:320px;margin:10px auto"></div></div>
+<div class="panel"><div class="qtext">🔍 探索规律：用计算器算一算，点“下一道”，看看积有什么规律</div>
+<div class="cc" id="sq"></div><div id="rows" style="font:700 20px/1.8 ui-monospace,Menlo,monospace"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn" id="nxt">下一道</button><button class="btn ghost" id="rs">重来</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('计算器与探索规律');
+var $=function(i){return document.getElementById(i)};
+
+var ex='',res='0',just=false,K=['C','⌫','÷','×','7','8','9','−','4','5','6','+','1','2','3','=','0','00','.','='];
+var uniq=['C','⌫','÷','×','7','8','9','−','4','5','6','+','1','2','3','0','.','='];
+$('keys').innerHTML=['C','⌫','÷','×','7','8','9','−','4','5','6','+','1','2','3','=','0','.',''].map(function(k,i){if(!k)return '<span></span>';return '<button data-k="'+k+'" class="btn '+('÷×−+⌫C'.indexOf(k)>=0?'ghost':'')+'" style="min-height:52px;font-size:22px;'+(k==='='?'grid-row:span 2':'')+'">'+k+'</button>'}).join('');
+function js(s){return s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')}
+function calc(){try{if(!/^[0-9+\-*\/. ]+$/.test(js(ex)))return;var v=Function('return ('+js(ex)+')')();if(!isFinite(v)){res='错误';return}res=String(+v.toFixed(8));if(res.length>14)res=v.toExponential(6)}catch(e){res='错误'}}
+document.addEventListener('click',function(e){var k=e.target.dataset.k;if(!k)return;
+  if(k==='C'){ex='';res='0';just=false}else if(k==='⌫'){ex=ex.slice(0,-1);res=ex||'0'}
+  else if(k==='='){if(ex){calc();ex=ex+' =';just=true}}
+  else{if(just){if('÷×−+'.indexOf(k)>=0)ex=res;else ex='';just=false}if('÷×−+'.indexOf(k)>=0&&(!ex||'÷×−+'.indexOf(ex.slice(-1))>=0))ex=ex?ex.slice(0,-1):'';ex+=k;if('÷×−+'.indexOf(k)<0)res=ex.split(/[÷×−+]/).pop()}
+  $('ex').textContent=ex;$('res').textContent=res});
+var SEQ=[{n:'12345679 × 9 的倍数',f:function(i){return [12345679,9*(i+1)]},t:'乘 9 的 1、2、3……倍：积是 111111111、222222222……'},{n:'111 × 111 型',f:function(i){return [Number('1'.repeat(i+2)),Number('1'.repeat(i+2))]},t:'积的数字：1 2 3…… 再倒回去（回文）'},{n:'142857 × 1~6',f:function(i){return [142857,i+1]},t:'积的数字还是 1 4 2 8 5 7，只是换了位置（循环）'},{n:'37 × 3 的倍数',f:function(i){return [37,3*(i+1)]},t:'积是 111、222、333……'}],si=0,cnt=0;
+function drawS(){$('sq').innerHTML=SEQ.map(function(x,i){return '<button class="btn '+(i===si?'':'ghost')+'" data-q="'+i+'">'+x.n+'</button>'}).join('');var h='',i;for(i=0;i<cnt;i++){var p=SEQ[si].f(i);h+=p[0]+' × '+p[1]+' = <b style="color:#4f46e5">'+(p[0]*p[1])+'</b><br>'}$('rows').innerHTML=h;$('m').textContent=cnt>=4?'规律：'+SEQ[si].t:'';if(cnt>=4&&!drawS.s){drawS.s=1;Hub.star('calc-lab',2)}if(cnt>=6)Hub.star('calc-lab',3)}
+document.addEventListener('click',function(e){var q=e.target.dataset.q;if(q!==undefined){si=+q;cnt=0;drawS()}});
+$('nxt').onclick=function(){cnt=Math.min(8,cnt+1);drawS()};$('rs').onclick=function(){cnt=0;drawS()};drawS();
+</script></body></html>

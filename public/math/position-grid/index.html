@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>确定位置：数对</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="task"></div>
+<svg id="s" viewBox="0 0 360 300" style="width:100%;max-width:560px;background:#fff;border-radius:10px"></svg>
+<div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="mut" id="info"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>数对：</b>竖排叫<b>列</b>，从左往右数；横排叫<b>行</b>，从前往后数。用 (列, 行) 表示位置，例如第 3 列第 2 行记作 (3, 2)。先写列，再写行。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('确定位置：数对');
+var $=function(i){return document.getElementById(i)};
+
+var C=8,R=6,U=40,Q,sc=0,hover=null,FACE=['😀','😎','🤓','😊','🙂','😄','🤗','😺'];
+function draw(sel,show){var s='',c,r;s+='<rect x="100" y="262" width="160" height="26" rx="6" fill="#c7d2fe"/><text x="180" y="280" text-anchor="middle" font-size="15" font-weight="700" fill="#4338ca">讲台</text>';
+  for(c=1;c<=C;c++)s+='<text x="'+(20+(c-.5)*U)+'" y="16" text-anchor="middle" font-size="13" fill="#64748b">第'+c+'列</text>';
+  for(r=1;r<=R;r++)s+='<text x="12" y="'+(250-(r-.5)*U+5)+'" text-anchor="middle" font-size="11" fill="#64748b">'+r+'</text>';
+  for(r=1;r<=R;r++)for(c=1;c<=C;c++){var X=20+(c-1)*U,Y=250-r*U+0,isT=sel&&sel[0]===c&&sel[1]===r;s+='<rect data-c="'+c+'" data-r="'+r+'" x="'+(X+2)+'" y="'+(Y+2)+'" width="'+(U-4)+'" height="'+(U-4)+'" rx="8" fill="'+(isT?'#fde68a':(hover&&hover[0]===c&&hover[1]===r?'#e0e7ff':'#f8fafc'))+'" stroke="'+(isT?'#f59e0b':'#cbd5e1')+'" stroke-width="'+(isT?3:1)+'"/><text pointer-events="none" x="'+(X+U/2)+'" y="'+(Y+U/2+8)+'" text-anchor="middle" font-size="22">'+((c+r)%2?'🪑':'🧒')+'</text>'}
+  if(show)s+='<text x="180" y="296" text-anchor="middle" font-size="12" fill="#e5484d">'+show+'</text>';$('s').innerHTML=s}
+function newQ(){var c=Hub.rnd(1,C),r=Hub.rnd(1,R),t=Hub.rnd(0,1);Q={c:c,r:r,t:t};
+  if(t===0){$('task').innerHTML='点出 <b style="color:#4f46e5">('+c+', '+r+')</b> 的位置（第 '+c+' 列第 '+r+' 行）';$('ch').innerHTML='';draw(null)}
+  else{$('task').innerHTML='高亮的位置用数对表示是？';var o=['('+c+', '+r+')','('+r+', '+c+')'],a=Math.min(C,c+1),b=Math.min(R,r+1);o.push('('+a+', '+r+')');o.push('('+c+', '+b+')');o=o.filter(function(x,i){return o.indexOf(x)===i});while(o.length<4)o.push('('+Hub.rnd(1,C)+', '+Hub.rnd(1,R)+')');o=o.filter(function(x,i){return o.indexOf(x)===i}).slice(0,4);if(o.indexOf('('+c+', '+r+')')<0)o[0]='('+c+', '+r+')';o.sort(function(){return Math.random()-.5});
+    $('ch').innerHTML=o.map(function(x){return '<button class="ch" data-p="'+x+'">'+x+'</button>'}).join('');draw([c,r])}
+  $('m').textContent=''}
+function fin(good,msg){Hub.beep(good);if(good){sc++;Hub.star('position-grid',sc>=6?3:sc>=3?2:1)}$('m').className='msg '+(good?'ok':'bad');$('m').textContent=(good?'✔ ':'✘ ')+msg+(good?'（已对 '+sc+' 题）':'');var q=Q;Q=null;if(q)draw(q.t===1||!good?[q.c,q.r]:null)}
+$('s').addEventListener('pointerdown',function(e){var c=+e.target.dataset.c,r=+e.target.dataset.r;if(!c)return;$('info').textContent='你点的是第 '+c+' 列第 '+r+' 行，记作 ('+c+', '+r+')';if(!Q||Q.t!==0)return;fin(c===Q.c&&r===Q.r,c===Q.c&&r===Q.r?'找对了':'你点的是 ('+c+', '+r+')，要找的是 ('+Q.c+', '+Q.r+')：先数列再数行')});
+$('ch').addEventListener('click',function(e){var p=e.target.dataset.p;if(p===undefined||!Q||Q.t!==1)return;var good=p==='('+Q.c+', '+Q.r+')';fin(good,good?'位置是第 '+Q.c+' 列第 '+Q.r+' 行':'正确是 ('+Q.c+', '+Q.r+')：先说列再说行')});
+$('nx').onclick=newQ;newQ();
+</script></body></html>

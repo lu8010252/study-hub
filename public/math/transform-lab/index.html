@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>平移旋转轴对称操作台</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="task"></div>
+<svg id="s" viewBox="-2 -2 264 224" style="width:100%;max-width:560px;background:#fff;border-radius:10px"></svg>
+<div class="cc"><button class="btn ghost" data-o="l">⬅ 左移</button><button class="btn ghost" data-o="u">⬆ 上移</button><button class="btn ghost" data-o="d">⬇ 下移</button><button class="btn ghost" data-o="r">➡ 右移</button></div>
+<div class="cc"><button class="btn" data-o="cw">⟳ 绕 O 顺时针 90°</button><button class="btn" data-o="ccw">⟲ 绕 O 逆时针 90°</button><button class="btn" data-o="f">⇋ 沿红线对称</button></div>
+<div class="mut" id="steps"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="rs">重来这题</button><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="panel"><b>小知识：</b>灰色虚线是目标位置，橙色图形是你的图形。平移：每个点移动相同距离；旋转：绕点 O 转动，O 不动；轴对称：沿红线翻过去，到红线的距离不变。想一想：用到了哪几种变换？</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('平移旋转轴对称操作台');
+var $=function(i){return document.getElementById(i)};
+
+var U=22,GW=12,GH=10,SH=[[[0,0],[3,0],[3,1],[1,1],[1,3],[0,3]],[[0,0],[1,0],[1,1],[2,1],[2,2],[0,2]],[[0,0],[3,0],[0,2]],[[0,0],[2,0],[2,1],[3,1],[3,2],[0,2]],[[0,0],[2,0],[2,2],[1,2],[1,1],[0,1]]];
+var orig,cur,tgt,O,cx,steps,sc=0,need;
+function inb(s){return s.every(function(p){return p[0]>=0&&p[0]<=GW&&p[1]>=0&&p[1]<=GH})}
+function key(s){return s.map(function(p){return p.join(',')}).sort().join(';')}
+function op(s,o){var d={l:[-1,0],r:[1,0],u:[0,-1],d:[0,1]};if(d[o])return s.map(function(p){return [p[0]+d[o][0],p[1]+d[o][1]]});
+  if(o==='cw')return s.map(function(p){var a=p[0]-O[0],b=p[1]-O[1];return [O[0]-b,O[1]+a]});
+  if(o==='ccw')return s.map(function(p){var a=p[0]-O[0],b=p[1]-O[1];return [O[0]+b,O[1]-a]});
+  return s.map(function(p){return [2*cx-p[0],p[1]]})}
+var NAME={l:'左移 1 格',r:'右移 1 格',u:'上移 1 格',d:'下移 1 格',cw:'顺时针旋转 90°',ccw:'逆时针旋转 90°',f:'沿红线对称'};
+function gen(){for(var t=0;t<500;t++){var b=SH[Hub.rnd(0,SH.length-1)],ox=Hub.rnd(1,GW-4),oy=Hub.rnd(1,GH-4);orig=b.map(function(p){return [p[0]+ox,p[1]+oy]});
+  O=orig[Hub.rnd(0,orig.length-1)].slice();cx=Hub.rnd(5,7);var s=orig,k=Hub.rnd(2,3),seq=[],i;
+  for(i=0;i<k;i++){var kinds=['t','r','f'],kk=kinds[Hub.rnd(0,2)];if(kk==='t'){var dx=Hub.rnd(-3,3),dy=Hub.rnd(-2,2);s=s.map(function(p){return [p[0]+dx,p[1]+dy]})}else if(kk==='r')s=op(s,Math.random()<.5?'cw':'ccw');else s=op(s,'f')}
+  if(inb(s)&&key(s)!==key(orig)){tgt=s;break}}
+  cur=orig;steps=[];$('m').textContent='';draw()}
+function pts(s){return s.map(function(p){return p[0]*U+','+p[1]*U}).join(' ')}
+function draw(){var s='',k;for(k=0;k<=GW;k++)s+='<line x1="'+k*U+'" y1="0" x2="'+k*U+'" y2="'+GH*U+'" stroke="#e0e7ff"/>';for(k=0;k<=GH;k++)s+='<line x1="0" y1="'+k*U+'" x2="'+GW*U+'" y2="'+k*U+'" stroke="#e0e7ff"/>';
+  s+='<line x1="'+cx*U+'" y1="0" x2="'+cx*U+'" y2="'+GH*U+'" stroke="#e5484d" stroke-width="2" stroke-dasharray="6 4"/>';
+  s+='<polygon points="'+pts(tgt)+'" fill="rgba(148,163,184,.15)" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4"/>';
+  s+='<polygon points="'+pts(cur)+'" fill="rgba(245,158,11,.65)" stroke="#b45309" stroke-width="2.5" stroke-linejoin="round"/>';
+  s+='<circle cx="'+O[0]*U+'" cy="'+O[1]*U+'" r="5" fill="#e5484d"/><text x="'+(O[0]*U+7)+'" y="'+(O[1]*U-4)+'" font-size="13" font-weight="700" fill="#e5484d">O</text>';
+  $('s').innerHTML=s;$('task').textContent='用下面的按钮，把橙色图形变到灰色虚线的位置';$('steps').textContent=steps.length?'已操作 '+steps.length+' 步：'+steps.slice(-6).map(function(o){return NAME[o]}).join(' → '):'';
+  if(key(cur)===key(tgt)){$('m').className='msg ok';$('m').textContent='✔ 完成！用了 '+steps.length+' 步';if(!draw.d){draw.d=1;sc++;Hub.beep(true);Hub.star('transform-lab',sc>=4?3:sc>=2?2:1)}}else{draw.d=0;if(steps.length)$('m').textContent=''}}
+document.addEventListener('click',function(e){var o=e.target.dataset.o;if(!o||key(cur)===key(tgt))return;var n=op(cur,o);if(!inb(n)){$('m').className='msg bad';$('m').textContent='不能移出方格纸';return}cur=n;steps.push(o);draw()});
+$('rs').onclick=function(){cur=orig;steps=[];$('m').textContent='';draw()};$('nx').onclick=function(){draw.d=0;gen()};gen();
+</script></body></html>

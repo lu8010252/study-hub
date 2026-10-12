@@ -12,10 +12,12 @@ const quizTpl = (id, title) => `<!DOCTYPE html>
 <script>Quiz.start('${id}')</script></body></html>
 `;
 const seen = new Set();
+const tbs = id => { const v = R.tb[id]; if (!v) return undefined; const a = Array.isArray(v[0]) ? v : [v]; return a.map(([b, u]) => ({ b, u, o: R.units[b].indexOf(u) })); };
+for (const [id, v] of Object.entries(R.tb)) for (const [b, u] of (Array.isArray(v[0]) ? v : [v])) if (R.units[b].indexOf(u) < 0) throw new Error('单元不存在 ' + id + ' ' + u);
 for (const [id, grades, topic, icon, name, desc, kw, kind] of R.list) {
   if (seen.has(id)) throw new Error('重复 id ' + id); seen.add(id);
   if (R.paper.includes(id)) { fs.rmSync(path.join(root, 'math', id), { recursive: true, force: true }); continue; }
-  out.push({ id, cat: 'math', kind: kind === 'quiz' ? 'practice' : 'tool', grades, topic, icon, name, desc, kw, color: R.col[topic], tb: R.tb[id] ? R.tb[id][0] : undefined, unit: R.tb[id] ? R.tb[id][1] : undefined });
+  out.push({ id, cat: 'math', kind: kind === 'quiz' ? 'practice' : 'tool', grades, topic, icon, name, desc, kw, color: R.col[topic], tbs: tbs(id) });
   if (kind === 'quiz') {
     const d = path.join(root, 'math', id); fs.mkdirSync(d, { recursive: true });
     fs.writeFileSync(path.join(d, 'index.html'), quizTpl(id, name));

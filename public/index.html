@@ -43,9 +43,9 @@
     if(kd!=='all'&&t.kind!==kd)return false;
     if(g!=='0'&&(t.grades||[]).indexOf(+g)<0)return false;
     if(tp!=='全部'&&t.topic!==tp)return false;
-    if(bk!=='全部'&&t.tb!==bk)return false;
+    if(bk!=='全部'&&!(t.tbs||[]).some(function(x){return x.b===bk}))return false;
     if(!k)return true;
-    var s=(t.name+' '+t.desc+' '+(t.kw||'')+' '+t.topic+' '+gtxt(t.grades)+' '+(t.tb||'')+' '+(t.unit||'')).toLowerCase();
+    var s=(t.name+' '+t.desc+' '+(t.kw||'')+' '+t.topic+' '+gtxt(t.grades)+' '+(t.tbs||[]).map(function(x){return x.b+' '+x.u}).join(' ')).toLowerCase();
     return k.split(/\s+/).every(function(w){return s.indexOf(w)>=0});
   }
   function draw(){
@@ -55,11 +55,12 @@
     $('tc').innerHTML='<b>专题</b>'+TP.map(function(x){return '<button class="chip'+(x===tp?' on':'')+'" data-t="'+x+'">'+x+'</button>'}).join('');
     var k=q.value.trim().toLowerCase(),st=Hub.stars();
     var list=tools.filter(function(t){return match(t,k)});
-    list.sort(function(a,b){var ga=(a.grades||[9])[0],gb=(b.grades||[9])[0];return ga-gb});
+    function uo(t){var x=(t.tbs||[]).filter(function(y){return y.b===bk})[0];return x?x.o:99}
+    list.sort(function(a,b){if(bk!=='全部')return uo(a)-uo(b);var ga=(a.grades||[9])[0],gb=(b.grades||[9])[0];return ga-gb});
     $('cnt').textContent='共 '+list.length+' 个工具'+(list.length<tools.length?'（已筛选，共 '+tools.length+' 个）':'');
     $('grid').innerHTML=list.length?list.map(function(t){
       var n=st[t.id]||0;
-      return '<a class="tool" href="'+esc(t.href||('/math/'+t.id+'/'))+'"><span class="gr">'+esc(gtxt(t.grades))+'</span><span class="st">'+'★'.repeat(n)+'</span><div class="ic" style="background:'+t.color+'">'+t.icon+'</div><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small>'+(t.unit?'<small class="tb">苏教'+esc(t.tb)+'·'+esc(t.unit)+'</small>':'')+'</a>';
+      return '<a class="tool" href="'+esc(t.href||('/math/'+t.id+'/'))+'"><span class="gr">'+esc(gtxt(t.grades))+'</span><span class="st">'+'★'.repeat(n)+'</span><div class="ic" style="background:'+t.color+'">'+t.icon+'</div><b>'+esc(t.name)+'</b><small>'+esc(t.desc)+'</small>'+(function(){var x=(t.tbs||[]).filter(function(y){return bk==='全部'||y.b===bk})[0];return x?'<small class="tb">苏教'+esc(x.b)+'·'+esc(x.u)+'</small>':''})()+'</a>';
     }).join(''):'<div class="empty">没有找到，换个词或放宽筛选条件试试</div>';
     save();
   }

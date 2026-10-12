@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>制订旅游计划</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="goal"></div>
+<div class="sl"><b>大人</b><span class="cc" style="margin:0"><button class="btn ghost" data-s="a-1">−</button><span class="big2" id="va">2</span><button class="btn ghost" data-s="a+1">＋</button></span><b>孩子</b><span class="cc" style="margin:0"><button class="btn ghost" data-s="k-1">−</button><span class="big2" id="vk">1</span><button class="btn ghost" data-s="k+1">＋</button></span></div>
+<div class="sl"><b>天数</b><input type="range" min="2" max="6" value="3" id="days"><span id="vd" class="big2">3</span></div>
+<div class="mut" style="margin-top:8px">交通（往返，每人）</div><div class="cc" id="tr"></div>
+<div class="mut">住宿（每晚一间，每间住 3 人以内）</div><div class="cc" id="ht"></div>
+<div id="calc" style="text-align:left;max-width:520px;margin:10px auto;line-height:1.9;font-size:17px"></div>
+<div class="msg" id="m"></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('制订旅游计划');
+var $=function(i){return document.getElementById(i)};
+
+var S={a:2,k:1,d:3,tr:0,ht:0,budget:3500},TR=[['高铁',260,'元/人'],['飞机',520,'元/人'],['大巴',150,'元/人']],HT=[['经济型',180,'元/晚·间'],['舒适型',320,'元/晚·间']],FOOD=50,TK=[80,40],plans={},sc=0;
+function rooms(){return Math.ceil((S.a+S.k)/3)}
+function total(){var p=S.a+S.k,t=TR[S.tr][1]*p,h=HT[S.ht][1]*rooms()*(S.d-1),f=FOOD*p*S.d,k=TK[0]*S.a*S.d+TK[1]*S.k*S.d;return [t,h,f,k,t+h+f+k]}
+function draw(){var t=total(),p=S.a+S.k;$('va').textContent=S.a;$('vk').textContent=S.k;$('vd').textContent=S.d;
+  $('goal').innerHTML='预算 <b style="color:#4f46e5">'+S.budget+'</b> 元，在预算内安排一次旅游（景点门票：大人 '+TK[0]+' 元/天，孩子 '+TK[1]+' 元/天；餐费 '+FOOD+' 元/人/天）';
+  $('tr').innerHTML=TR.map(function(x,i){return '<button class="btn '+(i===S.tr?'':'ghost')+'" data-t="'+i+'">'+x[0]+' '+x[1]+x[2]+'</button>'}).join('');
+  $('ht').innerHTML=HT.map(function(x,i){return '<button class="btn '+(i===S.ht?'':'ghost')+'" data-h="'+i+'">'+x[0]+' '+x[1]+x[2]+'</button>'}).join('');
+  $('calc').innerHTML='交通：'+TR[S.tr][1]+' × '+p+' = <b>'+t[0]+'</b> 元<br>住宿：'+HT[S.ht][1]+' × '+rooms()+' 间 × '+(S.d-1)+' 晚 = <b>'+t[1]+'</b> 元<br>餐费：'+FOOD+' × '+p+' 人 × '+S.d+' 天 = <b>'+t[2]+'</b> 元<br>门票：'+TK[0]+' × '+S.a+' × '+S.d+' + '+TK[1]+' × '+S.k+' × '+S.d+' = <b>'+t[3]+'</b> 元<br><b>合计：'+t[0]+' + '+t[1]+' + '+t[2]+' + '+t[3]+' = '+t[4]+' 元</b>';
+  var ok=t[4]<=S.budget;$('m').className='msg '+(ok?'ok':'bad');$('m').textContent=ok?'✔ 在预算内，还剩 '+(S.budget-t[4])+' 元':'✘ 超出预算 '+(t[4]-S.budget)+' 元，换个方案试试';
+  if(ok){var key=[S.a,S.k,S.d,S.tr,S.ht].join();if(!plans[key]){plans[key]=1;sc++;Hub.star('travel-plan',sc>=3?3:sc>=2?2:1)}}}
+document.addEventListener('click',function(e){var d=e.target.dataset;if(d.s){var k=d.s[0],dl=d.s.slice(1);S[k]=Math.max(k==='a'?1:0,Math.min(5,S[k]+ +dl));draw()}if(d.t!==undefined){S.tr=+d.t;draw()}if(d.h!==undefined){S.ht=+d.h;draw()}});
+$('days').addEventListener('input',function(e){S.d=+e.target.value;draw()});draw();
+</script></body></html>

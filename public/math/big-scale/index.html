@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>一亿有多大</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">点一点，把数变大，看看一亿到底有多大</div>
+<div class="cc" id="ns"></div>
+<canvas id="cv" width="300" height="300" style="width:100%;max-width:300px;border:2px solid var(--line);border-radius:10px;background:#fff"></canvas>
+<div class="big2" id="num"></div><div class="mut" id="grid"></div>
+<div class="mut" style="margin-top:10px">换个东西来数：</div><div class="cc" id="it"></div>
+<div id="res" style="font-size:19px;line-height:1.7;margin-top:6px"></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('一亿有多大');
+var $=function(i){return document.getElementById(i)};
+
+var NUM=[[1,'一'],[10,'十'],[100,'一百'],[1000,'一千'],[10000,'一万'],[100000,'十万'],[1000000,'一百万'],[10000000,'一千万'],[100000000,'一亿']],lv=4;
+var ITEMS=[
+ {n:'纸张',u:'张',f:function(c){var cm=c*0.01;return '摞起来的高度：'+(cm<100?cm.toFixed(cm<1?2:1)+' 厘米':cm<100000?(cm/100).toFixed(1)+' 米':(cm/100000).toFixed(1)+' 千米')+'<br><span class="mut">（100 张纸约厚 1 厘米）</span>'+cmap(cm)}},
+ {n:'走路',u:'步',f:function(c){var m=c*0.5;return '一步约 0.5 米，一共走了：'+(m<1000?m.toFixed(0)+' 米':(m/1000).toFixed(m<10000?1:0)+' 千米')+(m>=40000000?'<br><span class="mut">地球赤道一圈约 4 万千米，相当于绕地球约 '+(m/1000/40000).toFixed(1)+' 圈</span>':'')}},
+ {n:'时间',u:'秒',f:function(c){var d=c/86400;return '一共是：'+(c<60?c+' 秒':c<3600?(c/60).toFixed(0)+' 分钟':c<86400?(c/3600).toFixed(1)+' 小时':d<365?d.toFixed(1)+' 天':(d/365).toFixed(1)+' 年')}},
+ {n:'大米',u:'粒',f:function(c){var g=c*0.025;return '一粒大米约 0.025 克，一共重：'+(g<1000?g.toFixed(1)+' 克':g<1e6?(g/1000).toFixed(1)+' 千克':(g/1e6).toFixed(1)+' 吨')}}],it=0;
+function cmap(cm){var m=cm/100;return m>=8848?'<br><span class="mut">比珠穆朗玛峰（约 8.8 千米）还高！</span>':m>=300?'<br><span class="mut">相当于 '+(m/3).toFixed(0)+' 层楼高</span>':''}
+function draw(){var c=NUM[lv][0],cv=$('cv'),x=cv.getContext('2d');x.clearRect(0,0,300,300);var n=Math.min(c,10000),i;x.fillStyle='#6366f1';for(i=0;i<n;i++){x.fillRect((i%100)*3,Math.floor(i/100)*3,2,2)}
+  $('num').textContent=NUM[lv][1]+'（'+c.toLocaleString('en-US').replace(/,/g,' ')+'）';
+  $('grid').textContent=c<=10000?'这个方块里共 '+c+' 个点（每个小点代表 1）':'整个方块是 一万（10000）个点；'+NUM[lv][1]+' 要 '+(c/10000).toLocaleString('en-US').replace(/,/g,' ')+' 个这样的方块';
+  $('ns').innerHTML=NUM.map(function(x,i){return '<button class="btn '+(i===lv?'':'ghost')+'" data-l="'+i+'" style="min-height:40px;padding:0 12px">'+x[1]+'</button>'}).join('');
+  $('it').innerHTML=ITEMS.map(function(x,i){return '<button class="btn '+(i===it?'':'ghost')+'" data-i="'+i+'">'+x.n+'</button>'}).join('');
+  $('res').innerHTML='如果有 <b>'+NUM[lv][1]+' '+ITEMS[it].u+'</b>……<br>'+ITEMS[it].f(c);
+  if(lv===8&&!draw.s){draw.s=1;Hub.star('big-scale',3)}else if(lv>=6&&!draw.m){draw.m=1;Hub.star('big-scale',1)}}
+document.addEventListener('click',function(e){var d=e.target.dataset;if(d.l!==undefined){lv=+d.l;draw()}if(d.i!==undefined){it=+d.i;draw()}});draw();
+</script></body></html>

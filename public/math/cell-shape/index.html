@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>方格里的周长与面积</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext" id="task"></div>
+<svg id="s" viewBox="0 0 336 252" style="width:100%;max-width:560px;background:#fff;border-radius:10px"></svg>
+<div class="big2" id="info"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn" id="chk">检查</button><button class="btn ghost" id="clr">清空</button><button class="btn ghost" id="nx">换一题</button><button class="btn ghost" id="fr">自由摆</button></div></div>
+<div class="panel"><b>小知识：</b>每个小方格边长 1 厘米：<b>面积</b>=方格个数；<b>周长</b>=图形外围边的条数。面积相同的图形，周长可以不同；周长相同的图形，面积也可以不同。点一点、拖一拖涂出图形。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('方格里的周长与面积');
+var $=function(i){return document.getElementById(i)};
+
+var W=12,Hh=9,U=28,g=[],paint=null,task=null,sc=0,free=false;
+function clr(){g=[];for(var y=0;y<Hh;y++){g.push([]);for(var x=0;x<W;x++)g[y].push(0)}}
+function at(x,y){return x>=0&&y>=0&&x<W&&y<Hh&&g[y][x]}
+function stat(){var a=0,p=0,x,y,n=0;for(y=0;y<Hh;y++)for(x=0;x<W;x++)if(g[y][x]){a++;if(!at(x+1,y))p++;if(!at(x-1,y))p++;if(!at(x,y+1))p++;if(!at(x,y-1))p++}
+  /* 连通 */var seen={},st=[],c=0;for(y=0;y<Hh&&!st.length;y++)for(x=0;x<W&&!st.length;x++)if(g[y][x])st.push([x,y]);
+  while(st.length){var q=st.pop(),k=q[0]+','+q[1];if(seen[k])continue;seen[k]=1;c++;[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){if(at(q[0]+d[0],q[1]+d[1]))st.push([q[0]+d[0],q[1]+d[1]])})}
+  return {a:a,p:p,conn:c===a}}
+function draw(){var s='',x,y;for(y=0;y<Hh;y++)for(x=0;x<W;x++)s+='<rect data-x="'+x+'" data-y="'+y+'" x="'+x*U+'" y="'+y*U+'" width="'+U+'" height="'+U+'" fill="'+(g[y][x]?'#a5b4fc':'#fff')+'" stroke="#e0e7ff"/>';
+  for(y=0;y<Hh;y++)for(x=0;x<W;x++)if(g[y][x]){var X=x*U,Y=y*U,e='';if(!at(x,y-1))e+='M'+X+' '+Y+'h'+U;if(!at(x,y+1))e+='M'+X+' '+(Y+U)+'h'+U;if(!at(x-1,y))e+='M'+X+' '+Y+'v'+U;if(!at(x+1,y))e+='M'+(X+U)+' '+Y+'v'+U;s+='<path d="'+e+'" stroke="#e5484d" stroke-width="3.5" fill="none" stroke-linecap="round" pointer-events="none"/>'}
+  $('s').innerHTML=s;var t=stat();$('info').innerHTML='面积 <span style="color:#4f46e5">'+t.a+'</span> 平方厘米　周长 <span style="color:#e5484d">'+t.p+'</span> 厘米'}
+function newTask(){free=false;clr();var t=Math.random()<.5;
+  if(t){var N=Hub.rnd(6,16);task={t:'minP',N:N,best:2*Math.ceil(2*Math.sqrt(N))};$('task').innerHTML='摆一个<b>面积是 '+N+' 平方厘米</b>的图形（要连在一起），让它的<b>周长尽量短</b>'}
+  else{var P=[12,14,16,18,20][Hub.rnd(0,4)],h=P/2,best=Math.floor(h/2)*Math.ceil(h/2);task={t:'maxA',P:P,best:best};$('task').innerHTML='摆一个<b>周长是 '+P+' 厘米</b>的图形（要连在一起），让它的<b>面积尽量大</b>'}
+  $('m').textContent='';draw()}
+$('chk').onclick=function(){var t=stat();if(free||!task){$('m').className='msg';$('m').textContent='自由摆：看看周长和面积怎么变化';return}
+  if(!t.a||!t.conn){$('m').className='msg bad';$('m').textContent='图形要连在一起（至少涂一格）';return}
+  var ok=false,msg='';
+  if(task.t==='minP'){if(t.a!==task.N)msg='面积要刚好是 '+task.N+'，现在是 '+t.a;else if(t.p<=task.best){ok=true;msg='周长 '+t.p+' 厘米，已经是最短了！越接近正方形周长越短'}else msg='周长 '+t.p+'，还能更短，试试摆得更接近正方形'}
+  else{if(t.p!==task.P)msg='周长要刚好是 '+task.P+'，现在是 '+t.p;else if(t.a>=task.best){ok=true;msg='面积 '+t.a+' 平方厘米，已经是最大了！越接近正方形面积越大'}else msg='面积 '+t.a+'，还能更大，试试摆得更接近正方形'}
+  $('m').className='msg '+(ok?'ok':'bad');$('m').textContent=(ok?'✔ ':'✘ ')+msg;Hub.beep(ok);if(ok){sc++;Hub.star('cell-shape',sc>=4?3:sc>=2?2:1)}};
+function cell(e){var r=$('s').getBoundingClientRect();return [Math.floor((e.clientX-r.left)/r.width*W),Math.floor((e.clientY-r.top)/r.height*Hh)]}
+$('s').addEventListener('pointerdown',function(e){var c=cell(e);if(c[0]<0||c[0]>=W||c[1]<0||c[1]>=Hh)return;paint=!g[c[1]][c[0]];$('s').setPointerCapture(e.pointerId);g[c[1]][c[0]]=paint?1:0;draw()});
+$('s').addEventListener('pointermove',function(e){if(paint===null)return;var c=cell(e);if(c[0]<0||c[0]>=W||c[1]<0||c[1]>=Hh)return;var v=paint?1:0;if(g[c[1]][c[0]]!==v){g[c[1]][c[0]]=v;draw()}});
+['pointerup','pointercancel'].forEach(function(n){$('s').addEventListener(n,function(){paint=null})});
+$('clr').onclick=function(){clr();draw()};$('nx').onclick=newTask;$('fr').onclick=function(){free=true;task=null;clr();$('task').textContent='自由摆：随便涂，观察周长和面积';$('m').textContent='';draw()};
+clr();newTask();
+</script></body></html>

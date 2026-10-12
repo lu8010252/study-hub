@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>运算律实验室</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">输入你喜欢的数，验证运算律是不是总成立</div>
+<div class="cc" id="tabs"></div>
+<div class="cc"><label>a <input type="number" id="a" value="25" style="width:80px;font-size:22px;text-align:center"></label><label>b <input type="number" id="b" value="4" style="width:80px;font-size:22px;text-align:center"></label><label>c <input type="number" id="c" value="17" style="width:80px;font-size:22px;text-align:center"></label></div>
+<div id="out" style="font-size:22px;line-height:1.9;margin:8px 0"></div></div>
+<div class="panel"><div class="qtext">⚡ 简便计算：选对运算律</div><div class="big2" id="qq"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('运算律实验室');
+var $=function(i){return document.getElementById(i)};
+
+var LAWS=[['加法交换律','a+b','b+a',function(a,b,c){return [a+b,b+a]},'a + b = b + a'],['加法结合律','(a+b)+c','a+(b+c)',function(a,b,c){return [(a+b)+c,a+(b+c)]},''],['乘法交换律','a×b','b×a',function(a,b,c){return [a*b,b*a]},''],['乘法结合律','(a×b)×c','a×(b×c)',function(a,b,c){return [a*b*c,a*(b*c)]},''],['乘法分配律','(a+b)×c','a×c+b×c',function(a,b,c){return [(a+b)*c,a*c+b*c]},''],['减法也能交换吗？','a−b','b−a',function(a,b,c){return [a-b,b-a]},''],['除法也能交换吗？','a÷b','b÷a',function(a,b,c){return [b?a/b:NaN,a?b/a:NaN]},'']],ti=4;
+function fill(s,a,b,c){return s.replace(/a/g,a).replace(/b/g,b).replace(/c/g,c)}
+function draw(){var a=+$('a').value||0,b=+$('b').value||0,c=+$('c').value||0,L=LAWS[ti],r=L[3](a,b,c),f=function(x){return isNaN(x)?'无意义':+x.toFixed(4)},eq=Math.abs(r[0]-r[1])<1e-9;
+  $('tabs').innerHTML=LAWS.map(function(x,i){return '<button class="btn '+(i===ti?'':'ghost')+'" data-t="'+i+'" style="min-height:40px">'+x[0]+'</button>'}).join('');
+  $('out').innerHTML='<div>'+L[1]+' = '+fill(L[1],a,b,c)+' = <b>'+f(r[0])+'</b></div><div>'+L[2]+' = '+fill(L[2],a,b,c)+' = <b>'+f(r[1])+'</b></div><div style="font-size:26px;font-weight:800;color:'+(eq?'#22a06b':'#e5484d')+'">'+(eq?'左边 = 右边  ✔':'左边 ≠ 右边  ✘')+'</div>'}
+document.addEventListener('click',function(e){var t=e.target.dataset.t;if(t!==undefined){ti=+t;draw()}});['a','b','c'].forEach(function(i){$(i).addEventListener('input',draw)});
+var Q,sc=0,TP=[function(){var a=Hub.rnd(2,9)*4+1,b=Hub.rnd(2,9);return {e:'25 × '+a+' × 4',l:'乘法结合律（和乘法交换律）',v:25*4*a}},function(){var a=Hub.rnd(2,9);return {e:'125 × '+a+' × 8',l:'乘法结合律（和乘法交换律）',v:125*8*a}},function(){var a=Hub.rnd(11,59);return {e:'99 × '+a+' + '+a,l:'乘法分配律',v:100*a}},function(){var a=Hub.rnd(12,48);return {e:'101 × '+a+' − '+a,l:'乘法分配律',v:100*a}},function(){var a=Hub.rnd(13,89),b=Hub.rnd(11,49);return {e:a+' + '+b+' + '+(100-a%100||100),l:'加法交换律（和加法结合律）',v:a+b+(100-a%100||100)}},function(){var a=Hub.rnd(3,9)*8;return {e:'(40 + 8) × '+(a%9+2),l:'乘法分配律',v:48*(a%9+2)}}],OP=['乘法结合律（和乘法交换律）','乘法分配律','加法交换律（和加法结合律）','不用运算律，直接算'];
+function newQ(){Q=TP[Hub.rnd(0,TP.length-1)]();$('qq').textContent=Q.e;$('ch').innerHTML=OP.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+'</button>'}).join('');$('m').textContent=''}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var good=c===Q.l;Hub.beep(good);if(good){sc++;Hub.star('laws-lab',sc>=4?3:sc>=2?2:1)}
+  $('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ '+Q.e+' = '+Q.v+'（用'+Q.l+'凑整，算起来更简便）':'✘ 再想想：能不能把数凑成整十、整百？正确是 '+Q.l+'，结果 '+Q.v;Q=null});
+$('nx').onclick=newQ;draw();newQ();
+</script></body></html>

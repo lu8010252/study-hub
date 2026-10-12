@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>数轴上的近似数</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="w">省略万位后面的尾数</button><button class="btn ghost" data-m="y">省略亿位后面的尾数</button></div>
+<div class="qtext" id="q"></div>
+<svg id="s" viewBox="0 0 380 130" style="width:100%;max-width:600px"></svg>
+<div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="exp" id="ex" style="display:none"></div>
+<div class="cc"><button class="btn ghost" id="nx">换一个数</button></div></div>
+<div class="panel"><b>四舍五入：</b>要省略的尾数最高位上的数是 4 或比 4 小，就把尾数舍去；是 5 或比 5 大，就向前一位进 1。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('数轴上的近似数');
+var $=function(i){return document.getElementById(i)};
+
+var mode='w',Nn,Q,sc=0;
+function fmt(n){return String(n).replace(/\B(?=(\d{4})+$)/g,' ')}
+function gen(){var base=mode==='w'?10000:100000000,lo=Hub.rnd(mode==='w'?10:2,mode==='w'?900:90)*base,half=lo+base/2,off=Hub.rnd(1,9999)/10000;
+  Nn=Math.round(lo+base*off);if(Math.random()<.15)Nn=half;/* 恰好在中间 */
+  var near=Nn>=half?lo+base:lo;Q={lo:lo,hi:lo+base,half:half,base:base,ans:near};
+  $('q').innerHTML='把 <b style="color:#4f46e5">'+fmt(Nn)+'</b> 省略'+(mode==='w'?'万':'亿')+'位后面的尾数，约是多少'+(mode==='w'?'万':'亿')+'？';
+  var f=function(x){return (x/base).toString()+(mode==='w'?'万':'亿')},o=[Q.ans,Q.ans===lo?lo+base:lo];if(mode==='w'){o.push(lo-base,lo+2*base)}else{o.push(lo-base,lo+2*base)}o=o.filter(function(x,i){return o.indexOf(x)===i}).slice(0,4);o.sort(function(){return Math.random()-.5});
+  $('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+f(x)+'</button>'}).join('');$('m').textContent='';$('ex').style.display='none';draw(false)}
+function draw(rev){var X=function(v){return 30+(v-Q.lo)/Q.base*320},s='<line x1="30" y1="70" x2="350" y2="70" stroke="#334155" stroke-width="3"/>',f=function(x){return (x/Q.base)+(mode==='w'?'万':'亿')};
+  [[Q.lo,'#334155'],[Q.hi,'#334155']].forEach(function(t){s+='<line x1="'+X(t[0])+'" y1="60" x2="'+X(t[0])+'" y2="80" stroke="'+t[1]+'" stroke-width="3"/><text x="'+X(t[0])+'" y="102" text-anchor="middle" font-size="14" font-weight="700">'+f(t[0])+'</text>'});
+  s+='<line x1="'+X(Q.half)+'" y1="62" x2="'+X(Q.half)+'" y2="78" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3 3"/><text x="'+X(Q.half)+'" y="102" text-anchor="middle" font-size="12" fill="#64748b">中点</text>';
+  s+='<circle cx="'+X(Nn)+'" cy="70" r="9" fill="#f59e0b" stroke="#fff" stroke-width="3"/><text x="'+X(Nn)+'" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">'+fmt(Nn)+'</text>';
+  if(rev)s+='<circle cx="'+X(Q.ans)+'" cy="70" r="14" fill="none" stroke="#22a06b" stroke-width="3"/>';$('s').innerHTML=s}
+$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var good=+c===Q.ans;Hub.beep(good);if(good){sc++;Hub.star('round-line',sc>=5?3:sc>=3?2:1)}
+  var d=mode==='w'?Math.floor(Nn/1000)%10:Math.floor(Nn/1e7)%10,nm=mode==='w'?'千':'千万';
+  $('m').className='msg '+(good?'ok':'bad');$('m').textContent=good?'✔ 答对了（已对 '+sc+' 题）':'✘ 再看数轴：'+fmt(Nn)+' 离 '+(Q.ans/Q.base)+(mode==='w'?'万':'亿')+' 更近';
+  $('ex').innerHTML='尾数最高位（'+nm+'位）是 <b>'+d+'</b>，'+(d>=5?'5 或比 5 大，向前一位进 1':'4 或比 4 小，把尾数舍去')+'。≈ '+(Q.ans/Q.base)+(mode==='w'?'万':'亿');$('ex').style.display='block';draw(true);Q=null});
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==m)});gen()}});
+$('nx').onclick=gen;gen();
+</script></body></html>
