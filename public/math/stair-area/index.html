@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>楼梯铺地毯：平移求面积</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">楼梯要铺地毯，地毯有多长？把每一级的横、竖都平移出来看看</div>
+<svg id="s" viewBox="0 0 380 220" style="width:100%;max-width:640px"></svg>
+<div class="sl"><b>平移</b><input type="range" min="0" max="100" value="0" id="t"></div>
+<div class="sl"><b id="ln"></b><input type="range" min="2" max="10" value="5" id="n"></div><div class="sl"><b id="lh"></b><input type="range" min="10" max="30" value="20" id="h"></div><div class="sl"><b id="ld"></b><input type="range" min="20" max="40" value="30" id="d"></div><div class="sl"><b id="lw"></b><input type="range" min="60" max="150" value="100" id="w"></div>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel"><b>想一想：</b>把每一级台阶的横着的部分（红）平移到最下面，竖着的部分（蓝）平移到最右边，台阶就变成了一个直角：地毯的长 = 总的横长 + 总的竖高。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('楼梯铺地毯：平移求面积');
+var $=function(i){return document.getElementById(i)};
+
+function draw(){var n=+$('n').value,h=+$('h').value,d=+$('d').value,w=+$('w').value,t=+$('t').value/100,k=Math.min(300/(n*d),170/(n*h)),ox=30,oy=200,s='',i;
+  $('ln').textContent=n+' 级台阶';$('lh').textContent='每级高 '+h+' 厘米';$('ld').textContent='每级宽 '+d+' 厘米';$('lw').textContent='楼梯宽 '+w+' 厘米';
+  var X=function(x){return ox+x*k},Y=function(y){return oy-y*k};
+  for(i=1;i<=n;i++){/* 竖 i */var x1=(i-1)*d,y1=(i-1)*h,y2=i*h,fx=n*d,fy1=(i-1)*h,fy2=i*h;
+    var ax=x1+(fx-x1)*t,ay=0+(fy1-y1)*t;s+='<line x1="'+X(ax)+'" y1="'+Y(y1+(fy1-y1)*t)+'" x2="'+X(ax)+'" y2="'+Y(y2+(fy2-y2)*t)+'" stroke="#3b82f6" stroke-width="5" stroke-linecap="round"/>';
+    /* 横 i */var tx1=(i-1)*d,tx2=i*d,ty=i*h,fy=0,cy=ty+(fy-ty)*t;s+='<line x1="'+X(tx1)+'" y1="'+Y(cy)+'" x2="'+X(tx2)+'" y2="'+Y(cy)+'" stroke="#e5484d" stroke-width="5" stroke-linecap="round"/>'}
+  if(t>0.98)s+='<text x="'+X(n*d/2)+'" y="'+(oy+18)+'" text-anchor="middle" font-size="14" font-weight="700" fill="#e5484d">横：'+n+' × '+d+' = '+n*d+' 厘米</text><text x="'+(X(n*d)+8)+'" y="'+Y(n*h/2)+'" font-size="14" font-weight="700" fill="#3b82f6">竖：'+n+' × '+h+' = '+n*h+'</text>';
+  $('s').innerHTML=s;var len=n*d+n*h;$('out').innerHTML='地毯长 = '+n+' × '+d+' + '+n+' × '+h+' = <b>'+len+'</b> 厘米<br>地毯面积 = '+len+' × '+w+' = <b style="color:#4f46e5">'+len*w+'</b> 平方厘米 = '+(len*w/10000).toFixed(2)+' 平方米';
+  Hub.star('stair-area',t>.9?3:1)}
+['n','h','d','w','t'].forEach(function(k){$(k).addEventListener('input',draw)});draw();
+</script></body></html>

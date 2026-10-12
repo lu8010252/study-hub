@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>圆柱的体积：切拼成长方体</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">把圆柱的底面平均分成很多份，拼起来，就变成了（近似的）长方体</div>
+<svg id="s" viewBox="0 0 420 190" style="width:100%;max-width:640px"></svg>
+<div class="sl"><b id="ln"></b><input type="range" min="2" max="32" value="8" id="n"></div>
+<div class="sl"><b id="lr"></b><input type="range" min="2" max="10" value="4" id="r"></div><div class="sl"><b id="lh"></b><input type="range" min="2" max="12" value="6" id="h"></div>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel"><b>推导：</b>圆柱 → 近似长方体：体积不变；底面积不变；高不变。长方体的底面积 = 圆的面积 πr²，所以<b>圆柱的体积 = 底面积 × 高 = πr²h</b>。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('圆柱的体积：切拼成长方体');
+var $=function(i){return document.getElementById(i)};
+
+var COL=['#6366f1','#f59e0b'];
+function draw(){var N=+$('n').value*2,r=+$('r').value,h=+$('h').value,R=48,s='',i,th=2*Math.PI/N,cx=60,cy=80;
+  $('ln').textContent='平均分成 '+N+' 份';$('lr').textContent='底面半径 '+r+' 厘米';$('lh').textContent='高 '+h+' 厘米';
+  for(i=0;i<N;i++){var a0=i*th-Math.PI/2,a1=(i+1)*th-Math.PI/2;s+='<path d="M'+cx+' '+cy+' L'+(cx+R*Math.cos(a0))+' '+(cy+R*Math.sin(a0))+' A'+R+' '+R+' 0 0 1 '+(cx+R*Math.cos(a1))+' '+(cy+R*Math.sin(a1))+' Z" fill="'+COL[i%2]+'" fill-opacity=".8" stroke="#fff" stroke-width="'+(N>40?.4:1)+'"/>'}
+  s+='<text x="'+cx+'" y="152" text-anchor="middle" font-size="12" fill="#64748b">圆柱的底面</text><text x="140" y="85" font-size="26">→</text>';
+  var w=2*R*Math.sin(th/2),ch=R*Math.cos(th/2),x0=165,y0=130;
+  for(i=0;i<N;i++){var up=i%2===0,x=x0+w/2+i*w/2,x1,x2,y1,y2,ay;
+    if(up){s+='<path d="M'+x+' '+(y0-ch+0)+' L'+(x-w/2)+' '+(y0-0)+' A'+R+' '+R+' 0 0 0 '+(x+w/2)+' '+(y0-0)+' Z" fill="'+COL[i%2]+'" fill-opacity=".8" stroke="#fff" stroke-width="'+(N>40?.4:1)+'" transform="translate(0,'+(-ch+ch)+')"/>'}
+    else{s+='<path d="M'+x+' '+(y0)+' L'+(x-w/2)+' '+(y0-ch)+' A'+R+' '+R+' 0 0 1 '+(x+w/2)+' '+(y0-ch)+' Z" fill="'+COL[i%2]+'" fill-opacity=".8" stroke="#fff" stroke-width="'+(N>40?.4:1)+'"/>'}}
+  var tw=(N/2)*w+w/2;s+='<line x1="'+x0+'" y1="'+(y0+8)+'" x2="'+(x0+tw)+'" y2="'+(y0+8)+'" stroke="#e5484d" stroke-width="2"/><text x="'+(x0+tw/2)+'" y="'+(y0+24)+'" text-anchor="middle" font-size="12" fill="#e5484d" font-weight="700">长 ≈ 圆周长的一半 = πr</text><line x1="'+(x0+tw+8)+'" y1="'+(y0-ch)+'" x2="'+(x0+tw+8)+'" y2="'+y0+'" stroke="#22a06b" stroke-width="2"/><text x="'+(x0+tw+14)+'" y="'+(y0-ch/2+4)+'" font-size="12" fill="#22a06b" font-weight="700">宽 = r</text>';
+  s+='<text x="'+(x0+tw/2)+'" y="160" text-anchor="middle" font-size="12" fill="#64748b">拼成的图形（再乘高 h，就是近似长方体）</text>';$('s').innerHTML=s;
+  var base=3.14*r*r;$('out').innerHTML='长方体：长 = 3.14 × '+r+' = '+(3.14*r).toFixed(2)+'，宽 = '+r+'，高 = '+h+'<br>体积 = 长 × 宽 × 高 = '+(3.14*r).toFixed(2)+' × '+r+' × '+h+' = <b style="color:#4f46e5">'+(base*h).toFixed(2)+'</b> 立方厘米<br>圆柱：V = πr²h = 3.14 × '+r+'² × '+h+' = <b>'+(base*h).toFixed(2)+'</b> 立方厘米<br><span class="mut">分的份数越多，拼成的越接近长方体</span>';
+  if(N>=32)Hub.star('cylinder-cut',3);else Hub.star('cylinder-cut',N>=16?2:1)}
+['n','r','h'].forEach(function(k){$(k).addEventListener('input',draw)});draw();
+</script></body></html>

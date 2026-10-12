@@ -1309,6 +1309,135 @@
   "color": "#99f6e4"
  },
  {
+  "id": "cut-log",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4,
+   5
+  ],
+  "topic": "应用与思维",
+  "icon": "🪵",
+  "name": "锯木头：锯几次分几段",
+  "desc": "点一点锯木头，找次数与段数的关系",
+  "kw": "锯木头 植树 段数 次数 圆柱 表面积",
+  "color": "#fbcfe8",
+  "tbs": [
+   {
+    "b": "四下",
+    "u": "解决问题的策略",
+    "o": 4
+   }
+  ]
+ },
+ {
+  "id": "half-cut",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "应用与思维",
+  "icon": "✂️",
+  "name": "无限对半切",
+  "desc": "一半一半地切，看分数越加越接近1",
+  "kw": "分数 一半 极限 1/2 1/4 加法",
+  "color": "#fbcfe8"
+ },
+ {
+  "id": "cuboid-parts",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "📦",
+  "name": "认识长方体：面、棱、顶点",
+  "desc": "能转的长方体，数面、棱、顶点",
+  "kw": "长方体 面 棱 顶点 立体",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "volume-units",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5
+  ],
+  "topic": "图形与几何",
+  "icon": "🧱",
+  "name": "数一数：体积和体积单位",
+  "desc": "一层层摆小方块，1立方分米=1000立方厘米",
+  "kw": "体积 立方厘米 立方分米 单位 长方体",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "cylinder-cut",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🥫",
+  "name": "圆柱的体积：切拼成长方体",
+  "desc": "把圆柱切成扇形再拼起来",
+  "kw": "圆柱 体积 切拼 转化 底面积",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "roll-cylinder",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "📜",
+  "name": "卷圆柱：两种卷法",
+  "desc": "长方形纸卷成圆柱，比一比体积",
+  "kw": "圆柱 卷 侧面 体积 比较",
+  "color": "#99f6e4"
+ },
+ {
+  "id": "rope-fold",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   4
+  ],
+  "topic": "应用与思维",
+  "icon": "🪢",
+  "name": "绳子对折再剪",
+  "desc": "对折几次剪一刀，会断成几段",
+  "kw": "对折 剪 段数 规律 找规律",
+  "color": "#fbcfe8",
+  "tbs": [
+   {
+    "b": "四下",
+    "u": "解决问题的策略",
+    "o": 4
+   }
+  ]
+ },
+ {
+  "id": "stair-area",
+  "cat": "math",
+  "kind": "tool",
+  "grades": [
+   5,
+   6
+  ],
+  "topic": "图形与几何",
+  "icon": "🪜",
+  "name": "楼梯铺地毯：平移求面积",
+  "desc": "把横竖边平移，算地毯长度",
+  "kw": "平移 楼梯 地毯 面积 周长",
+  "color": "#99f6e4"
+ },
+ {
   "id": "time-line",
   "cat": "math",
   "kind": "tool",

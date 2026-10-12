@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>卷一卷：长方形纸卷成圆柱</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">一张长方形纸，可以怎样卷成圆柱？卷法不同，圆柱一样吗？</div>
+<div class="sl"><b id="la"></b><input type="range" min="8" max="40" value="30" id="a"></div><div class="sl"><b id="lb"></b><input type="range" min="8" max="40" value="20" id="b"></div>
+<div class="sl"><b>卷起来</b><input type="range" min="0" max="100" value="0" id="t"></div>
+<svg id="s1" viewBox="-110 -75 220 150" style="width:100%;max-width:300px"></svg>
+<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><div id="c1" style="flex:1;min-width:230px"></div><div id="c2" style="flex:1;min-width:230px"></div></div>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel"><b>发现：</b>不管怎么卷，圆柱的<b>侧面积 = 纸的面积</b>。但是底面周长和高换了位置，圆柱的<b>体积</b>就不同了。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('卷一卷：长方形纸卷成圆柱');
+var $=function(i){return document.getElementById(i)};
+
+function cyl(r,h,col){var k=Math.min(4.5,120/Math.max(2*r,h)),R=r*k,H=h*k,s='';s+='<ellipse cx="0" cy="'+(H/2)+'" rx="'+R+'" ry="'+R*.3+'" fill="'+col+'" fill-opacity=".5" stroke="#4338ca" stroke-width="2"/><rect x="'+-R+'" y="'+(-H/2)+'" width="'+2*R+'" height="'+H+'" fill="'+col+'" fill-opacity=".35"/><line x1="'+-R+'" y1="'+(-H/2)+'" x2="'+-R+'" y2="'+(H/2)+'" stroke="#4338ca" stroke-width="2"/><line x1="'+R+'" y1="'+(-H/2)+'" x2="'+R+'" y2="'+(H/2)+'" stroke="#4338ca" stroke-width="2"/><ellipse cx="0" cy="'+(-H/2)+'" rx="'+R+'" ry="'+R*.3+'" fill="'+col+'" fill-opacity=".8" stroke="#4338ca" stroke-width="2"/>';return '<svg viewBox="-80 -85 160 170" style="width:100%;max-width:220px">'+s+'</svg>'}
+function draw(){var a=+$('a').value,b=+$('b').value,t=+$('t').value/100;$('la').textContent='纸的长 '+a+' 厘米';$('lb').textContent='纸的宽 '+b+' 厘米';
+  /* 端面看：把长为 a 的边卷成圆 */var s='',N=60,i,k=Math.max(0.0001,t*2*Math.PI/a),sc=Math.min(1,130/a)*1.0,pts=[];
+  for(i=0;i<=N;i++){var u=a*i/N,phi=k*u,x=t<0.01?u-a/2:Math.sin(phi)/k,y=t<0.01?0:(1-Math.cos(phi))/k;pts.push([x,y])}
+  var cx=pts.reduce(function(m,p){return m+p[0]/pts.length},0),cy=pts.reduce(function(m,p){return m+p[1]/pts.length},0),S=Math.min(100/a*1.2,3);
+  s='<polyline points="'+pts.map(function(p){return ((p[0]-cx)*S).toFixed(1)+','+((p[1]-cy)*S).toFixed(1)}).join(' ')+'" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/><text x="0" y="68" text-anchor="middle" font-size="13" fill="#64748b">从侧面看：长 '+a+' 厘米的边卷成一圈</text>';$('s1').innerHTML=s;
+  var r1=a/(2*3.14),h1=b,r2=b/(2*3.14),h2=a,v1=3.14*r1*r1*h1,v2=3.14*r2*r2*h2;
+  $('c1').innerHTML='<div class="mut">① 长边 '+a+' 当底面周长</div>'+cyl(r1,h1,'#a5b4fc')+'<div>底面周长 '+a+' → r = '+r1.toFixed(2)+'<br>高 = '+b+'<br>体积 ≈ <b>'+v1.toFixed(0)+'</b> 立方厘米</div>';
+  $('c2').innerHTML='<div class="mut">② 宽边 '+b+' 当底面周长</div>'+cyl(r2,h2,'#fde68a')+'<div>底面周长 '+b+' → r = '+r2.toFixed(2)+'<br>高 = '+a+'<br>体积 ≈ <b>'+v2.toFixed(0)+'</b> 立方厘米</div>';
+  $('out').innerHTML='侧面积都是 '+a+' × '+b+' = <b>'+a*b+'</b> 平方厘米；'+(Math.abs(v1-v2)<1?'两个圆柱一样大':'<b style="color:#e5484d">'+(v1>v2?'①':'②')+' 的体积更大</b>（底面周长大的体积大）');
+  Hub.star('roll-cylinder',t>.9?3:1)}
+['a','b','t'].forEach(function(k){$(k).addEventListener('input',draw)});draw();
+</script></body></html>

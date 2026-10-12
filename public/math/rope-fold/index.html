@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>绳子对折再剪</title><link rel="stylesheet" href="/css/hub.css">
+<title>绳子对折再剪开</title><link rel="stylesheet" href="/css/hub.css">
 <style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
 .big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
 input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
 </style></head>
 <body><div class="page">
 <div class="panel" style="text-align:center">
-<div class="sl"><b id="l1"></b><input type="range" min="1" max="4" value="2" id="f"></div>
-<div class="sl"><b id="l2"></b><input type="range" min="1" max="4" value="1" id="k"></div>
-<svg id="s" viewBox="0 0 380 150" style="width:100%;max-width:600px"></svg>
-<div class="big2" id="eq"></div><div class="mut" id="tip"></div>
-<hr style="margin:12px 0;border:0;border-top:1px solid var(--line)">
-<div class="qtext" id="qq"></div><div class="chs" id="ch"></div><div class="msg" id="m"></div><div class="cc"><button class="btn ghost" id="nx">换一题</button></div></div>
+<div class="qtext">把一根绳子对折几次，在中间剪一刀，会剪成几段？</div>
+<div class="cc" id="fb"></div>
+<svg id="s" viewBox="0 0 380 230" style="width:100%;max-width:640px"></svg>
+<div class="sl"><b>剪的位置</b><input type="range" min="10" max="90" value="50" id="c"></div>
+<div id="out" style="font-size:19px;line-height:1.9"></div>
+<table id="tb" style="margin:6px auto;border-collapse:collapse"></table></div>
+<div class="panel"><b>规律：</b>对折 1 次剪一刀是 3 段；对折 2 次是 5 段；对折 3 次是 9 段……对折 n 次，剪一刀，一共 <b>2ⁿ + 1</b> 段。因为每对折一次，叠起来的层数加倍，一刀剪断了 2ⁿ 处。</div>
 </div>
 <script src="/js/tool.js"></script>
 <script>
-Hub.bar('绳子对折再剪');
+Hub.bar('绳子对折再剪开');
 var $=function(i){return document.getElementById(i)};
 
-var Q,sc=0;
-function draw(){var f=+$('f').value,k=+$('k').value,L=Math.pow(2,f);$('l1').textContent='对折 '+f+' 次（'+L+' 层）';$('l2').textContent='剪 '+k+' 刀';
-  var xs=[],i,j,cuts=[];for(i=1;i<=k;i++)xs.push(i/(k+1)*0.9+0.05);
-  var s='<line x1="20" y1="60" x2="360" y2="60" stroke="#94a3b8" stroke-width="3"/><text x="20" y="40" font-size="12" fill="#64748b">把绳子拉直后的样子：</text>';
-  for(j=0;j<L;j++)xs.forEach(function(x){var pos=(j+(j%2===0?x:1-x))/L;cuts.push(pos)});cuts.sort(function(a,b){return a-b});
-  s+='<rect x="20" y="52" width="340" height="16" rx="8" fill="#fbcfe8" stroke="#be185d"/>';
-  cuts.forEach(function(p){var x=20+p*340;s+='<line x1="'+x+'" y1="42" x2="'+x+'" y2="78" stroke="#e5484d" stroke-width="3"/>'});
-  var pts=[0].concat(cuts).concat([1]);for(i=0;i<pts.length-1;i++)s+='<text x="'+(20+(pts[i]+pts[i+1])/2*340)+'" y="100" text-anchor="middle" font-size="'+(pts.length>20?9:12)+'" font-weight="700" fill="#4f46e5">'+(i+1)+'</text>';
-  s+='<text x="190" y="130" text-anchor="middle" font-size="14" fill="#334155">折后的绳子有 '+L+' 层，每剪一刀剪断 '+L+' 处</text>';
-  $('s').innerHTML=s;var seg=k*L+1;$('eq').textContent='段数 = '+k+' × '+L+' + 1 = '+seg;$('tip').textContent='每剪一刀同时剪断 '+L+' 根，剪 '+k+' 刀共 '+(k*L)+' 处，绳子分成 '+(k*L)+' + 1 = '+seg+' 段';
-  if(f>=3&&k>=2)Hub.star('rope-fold',2)}
-['f','k'].forEach(function(i){$(i).addEventListener('input',draw)});
-function newQ(){var f=Hub.rnd(1,4),k=Hub.rnd(1,4),r=k*Math.pow(2,f)+1;Q={a:r};var o=[r,k*Math.pow(2,f),Math.pow(2,f)*(k+1),(k+1)*f+1,r+2].filter(function(x,i,a){return a.indexOf(x)===i}).slice(0,4);if(o.indexOf(r)<0)o[0]=r;o.sort(function(){return Math.random()-.5});
-  $('qq').textContent='一根绳子对折 '+f+' 次，从折后的中间剪 '+k+' 刀，绳子被剪成几段？';$('ch').innerHTML=o.map(function(x){return '<button class="ch" data-c="'+x+'">'+x+' 段</button>'}).join('');$('m').textContent=''}
-$('ch').addEventListener('click',function(e){var c=e.target.dataset.c;if(c===undefined||!Q)return;var g=+c===Q.a;Hub.beep(g);if(g){sc++;Hub.star('rope-fold',sc>=3?3:2)}$('m').className='msg '+(g?'ok':'bad');$('m').textContent=g?'✔ 对了':'✘ 正确答案 '+Q.a+' 段：用上面的滑块试试看';Q=null});
-$('nx').onclick=newQ;draw();newQ();
+var k=2,seen={};
+var COL=['#6366f1','#f59e0b','#22a06b','#e5484d','#0ea5e9','#a855f7','#ec4899','#14b8a6','#84cc16'];
+function draw(){var c=+$('c').value/100,n=Math.pow(2,k),s='',i;$('fb').innerHTML=[0,1,2,3,4].map(function(x){return '<button class="btn '+(x===k?'':'ghost')+'" data-k="'+x+'" style="min-height:40px">'+(x?'对折 '+x+' 次':'不对折')+'</button>'}).join('');
+  /* 折叠后的叠层 */var L=300,seg=L/n,x0=40,layers=n,y0=20;
+  for(i=0;i<layers;i++){var y=y0+i*Math.min(9,100/layers);s+='<line x1="'+x0+'" y1="'+y+'" x2="'+(x0+seg)+'" y2="'+y+'" stroke="'+COL[i%9]+'" stroke-width="5" stroke-linecap="round"/>';if(i<layers-1){var yy=y+Math.min(9,100/layers),right=i%2===0,xx=right?x0+seg:x0;s+='<path d="M'+xx+' '+y+' q'+(right?10:-10)+' '+(yy-y)/2+' 0 '+(yy-y)+'" fill="none" stroke="#94a3b8" stroke-width="2"/>'}}
+  var cx=x0+c*seg,yb=y0+(layers-1)*Math.min(9,100/layers);s+='<line x1="'+cx+'" y1="'+(y0-10)+'" x2="'+cx+'" y2="'+(yb+10)+'" stroke="#e5484d" stroke-width="2" stroke-dasharray="4 3"/><text x="'+cx+'" y="'+(y0-14)+'" text-anchor="middle" font-size="14">✂️</text><text x="'+(x0+seg+24)+'" y="'+(y0+10)+'" font-size="12" fill="#64748b">折好的样子（共 '+layers+' 层）</text>';
+  /* 展开后的绳子 */var cuts=[];for(i=0;i<n;i++){cuts.push(i%2===0?(i+c)/n:(i+1-c)/n)}cuts.sort(function(a,b){return a-b});
+  var pts=[0].concat(cuts,[1]),oy=185;s+='<text x="40" y="160" font-size="12" fill="#64748b">展开后的绳子：</text>';
+  for(i=0;i<pts.length-1;i++){s+='<line x1="'+(40+pts[i]*300+(i?2:0))+'" y1="'+oy+'" x2="'+(40+pts[i+1]*300-(i<pts.length-2?2:0))+'" y2="'+oy+'" stroke="'+COL[i%9]+'" stroke-width="9" stroke-linecap="round"/>'}
+  cuts.forEach(function(q){s+='<text x="'+(40+q*300)+'" y="'+(oy-12)+'" text-anchor="middle" font-size="13">✂️</text>'});$('s').innerHTML=s;
+  seen[k]=1;$('out').innerHTML='对折 <b>'+k+'</b> 次，叠成 <b>'+n+'</b> 层，一刀剪断 <b>'+n+'</b> 处 → <b style="color:#4f46e5;font-size:24px">'+(n+1)+'</b> 段';
+  $('tb').innerHTML='<tr><th style="padding:3px 12px;border:1px solid var(--line)">对折次数</th>'+[0,1,2,3,4].map(function(x){return '<td style="padding:3px 12px;border:1px solid var(--line);background:'+(x===k?'#fef3c7':'#fff')+'">'+x+'</td>'}).join('')+'</tr><tr><th style="padding:3px 12px;border:1px solid var(--line)">剪成段数</th>'+[0,1,2,3,4].map(function(x){return '<td style="padding:3px 12px;border:1px solid var(--line);background:'+(x===k?'#fef3c7':'#fff')+'">'+(Math.pow(2,x)+1)+'</td>'}).join('')+'</tr>';
+  var cnt=Object.keys(seen).length;Hub.star('rope-fold',cnt>=5?3:cnt>=3?2:1)}
+$('c').addEventListener('input',draw);document.addEventListener('click',function(e){var x=e.target.dataset.k;if(x!==undefined){k=+x;draw()}});draw();
 </script></body></html>
