@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>垂直线段最短</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="qtext">红点是直线外的一点。拖动蓝点，在直线上找一找：连到哪里最短？</div>
+<svg id="s" viewBox="0 0 360 220" style="width:100%;max-width:560px;background:#fff;border-radius:10px"></svg>
+<div class="big2" id="len"></div><div id="rec" style="margin:6px 0;line-height:1.7"></div><div class="msg" id="m"></div>
+<div class="cc"><button class="btn ghost" id="nx">换位置</button></div></div>
+<div class="panel"><b>结论：</b>从直线外一点到这条直线所画的线段中，<b>垂直线段最短</b>。这条垂直线段的长度，叫做这个点到直线的距离。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('垂直线段最短');
+var $=function(i){return document.getElementById(i)};
+
+var P=[200,50],bx=80,drag=false,best=1e9,sc=0,hit=false;
+function draw(){var y=170,L=Math.hypot(P[0]-bx,P[1]-y)/20,perp=(y-P[1])/20,s='<line x1="10" y1="'+y+'" x2="350" y2="'+y+'" stroke="#334155" stroke-width="4"/>';
+  s+='<line x1="'+P[0]+'" y1="'+P[1]+'" x2="'+bx+'" y2="'+y+'" stroke="#6366f1" stroke-width="3"/><line x1="'+P[0]+'" y1="'+P[1]+'" x2="'+P[0]+'" y2="'+y+'" stroke="#e5484d" stroke-width="2" stroke-dasharray="5 4" opacity="'+(Math.abs(bx-P[0])<4?1:.35)+'"/>';
+  if(Math.abs(bx-P[0])<4)s+='<rect x="'+(P[0]-12)+'" y="'+(y-12)+'" width="12" height="12" fill="none" stroke="#e5484d"/>';
+  s+='<circle cx="'+P[0]+'" cy="'+P[1]+'" r="8" fill="#e5484d"/><circle id="h" cx="'+bx+'" cy="'+y+'" r="14" fill="#3b82f6" stroke="#fff" stroke-width="3" style="cursor:grab"/>';
+  $('s').innerHTML=s;$('len').textContent='线段长 '+L.toFixed(2)+' 厘米';
+  if(L<best)best=L;$('rec').innerHTML='目前量到的最短长度：<b>'+best.toFixed(2)+'</b> 厘米（垂直线段 '+perp.toFixed(2)+' 厘米）';
+  var near=Math.abs(bx-P[0])<4;if(near&&!hit){hit=true;sc++;Hub.beep(true);Hub.star('perp-shortest',sc>=3?3:sc>=2?2:1);$('m').className='msg ok';$('m').textContent='✔ 垂直的时候最短！点到直线的距离是 '+perp.toFixed(2)+' 厘米'}else if(!near){hit=false;$('m').className='msg';$('m').textContent='往左右拖一拖，看看长度怎么变'}}
+function pt(e){var r=$('s').getBoundingClientRect();return [(e.clientX-r.left)/r.width*360,(e.clientY-r.top)/r.height*220]}
+$('s').addEventListener('pointerdown',function(e){if(e.target.id==='h'){drag=true;$('s').setPointerCapture(e.pointerId)}});
+$('s').addEventListener('pointermove',function(e){if(!drag)return;bx=Math.max(15,Math.min(345,pt(e)[0]));draw()});
+['pointerup','pointercancel'].forEach(function(k){$('s').addEventListener(k,function(){drag=false})});
+$('nx').onclick=function(){P=[Hub.rnd(60,300),Hub.rnd(30,90)];bx=Hub.rnd(15,345);best=1e9;hit=false;draw()};draw();
+</script></body></html>

@@ -4,33 +4,7 @@
   function dec(n, k) { return U.r(n / Math.pow(10, k), k); }   /* 整数 n 缩小 10^k 倍，去掉多余的 0 */
   function mix(w, n, d) { return w + fr(n, d); }
 
-  D['decimal-add'] = {
-    title: '小数加减法', n: 10, levels: ['一位小数', '两位小数', '位数不同'],
-    intro: '<p><b>小数加减法</b>：<b>小数点对齐</b>（也就是相同数位对齐），再按整数加减法计算，得数的小数点和上面对齐。</p><div class="eg">3.5 + 2.75：把 3.5 看成 3.50，3.50 + 2.75 = 6.25</div><p>得数的末尾有 0，可以去掉（4.30 = 4.3）。</p>',
-    gen: function (l) {
-      var k = l === 0 ? 1 : 2, a, b, add = rnd(0, 1), A, B, ka = k, kb = k;
-      if (l === 2) { ka = 1; kb = 2; if (rnd(0, 1)) { ka = 2; kb = 1; } }
-      A = rnd(11, 999); B = rnd(11, 999);
-      var sa = Math.pow(10, 2 - ka), sb = Math.pow(10, 2 - kb); a = A * sa; b = B * sb; /* 统一成两位小数的整数 */
-      if (!add && a <= b) { var t = a; a = b; b = t; var tk = ka; ka = kb; kb = tk; }
-      var qa = dec(a, 2), qb = dec(b, 2);
-      var r = add ? a + b : a - b;
-      return { q: qa + (add ? ' + ' : ' − ') + qb + ' =', a: dec(r, 2), dec: true, exp: '小数点对齐：' + qa + (add ? ' + ' : ' − ') + qb + ' = ' + dec(r, 2) + '（位数不同时，把少的位数补 0 再算）。' };
-    }
-  };
 
-  D['decimal-mul'] = {
-    title: '小数乘除法', n: 10, levels: ['小数 × 整数', '小数 × 小数', '小数 ÷ 整数', '除数是小数的除法'],
-    intro: '<p><b>小数乘法</b>：先当作整数乘，再看两个因数<b>一共有几位小数</b>，就从积的右边起数出几位点上小数点。</p><div class="eg">0.6 × 0.4：6 × 4 = 24，两个因数共 2 位小数，积是 0.24</div><p><b>小数除以整数</b>：商的小数点要和被除数的小数点对齐。</p><p><b>除数是小数</b>：把除数和被除数<b>同时扩大</b>相同的倍数，使除数变成整数再除。</p><div class="eg">3.6 ÷ 0.4 = 36 ÷ 4 = 9</div>',
-    gen: function (l) {
-      var a, b, c;
-      if (l === 0) { a = rnd(12, 99); b = rnd(2, 9); return { q: dec(a, 1) + ' × ' + b + ' =', a: dec(a * b, 1), dec: true, exp: '先算 ' + a + ' × ' + b + ' = ' + (a * b) + '，因数里有 1 位小数，所以积是 ' + dec(a * b, 1) + '。' }; }
-      if (l === 1) { a = rnd(12, 99); b = rnd(2, 99); return { q: dec(a, 1) + ' × ' + dec(b, 1) + ' =', a: dec(a * b, 2), dec: true, exp: '先算 ' + a + ' × ' + b + ' = ' + (a * b) + '，两个因数共 2 位小数，积是 ' + dec(a * b, 2) + '。' }; }
-      if (l === 2) { c = rnd(12, 99); b = rnd(2, 9); a = c * b; return { q: dec(a, 1) + ' ÷ ' + b + ' =', a: dec(c, 1), dec: true, exp: dec(a, 1) + ' ÷ ' + b + '：先按整数除 ' + a + ' ÷ ' + b + ' = ' + c + '，商的小数点和被除数对齐，得 ' + dec(c, 1) + '。' }; }
-      b = rnd(2, 9); c = rnd(2, 30); a = b * c;
-      return { q: dec(a, 1) + ' ÷ ' + dec(b, 1) + ' =', a: String(c), dec: true, exp: '除数 ' + dec(b, 1) + ' 扩大 10 倍变成 ' + b + '，被除数也扩大 10 倍变成 ' + a + '。' + a + ' ÷ ' + b + ' = ' + c + '。' };
-    }
-  };
 
   D['frac-meaning'] = {
     title: '分数的意义', n: 10, levels: ['几分之一', '几分之几', '分数单位、假分数与带分数'],
@@ -47,82 +21,14 @@
     }
   };
 
-  D['frac-add-same'] = {
-    title: '同分母分数加减', n: 10, levels: ['同分母（和不超过 1）', '同分母（和大于 1，用假分数）', '带分数加减'],
-    intro: '<p><b>同分母分数相加减</b>：<b>分母不变，只把分子相加减</b>。</p><div class="eg"><span class="fr">2<i></i>7</span> + <span class="fr">3<i></i>7</span> = <span class="fr">5<i></i>7</span></div><p>得数能约分的要约成最简分数。答案可以写成假分数（如 7/5）；输入时用“/”键。</p>',
-    gen: function (l) {
-      var d, a, b, add = rnd(0, 1);
-      if (l === 0) { d = rnd(4, 12); if (add) { a = rnd(1, d - 2); b = rnd(1, d - 1 - a); return { q: fr(a, d) + ' + ' + fr(b, d) + ' =', a: U.fa(a + b, d), frac: true, exp: '分母不变，分子相加：' + a + ' + ' + b + ' = ' + (a + b) + '，得 ' + U.frs(a + b, d) + '。' }; } a = rnd(2, d - 1); b = rnd(1, a - 1); return { q: fr(a, d) + ' − ' + fr(b, d) + ' =', a: U.fa(a - b, d), frac: true, exp: '分母不变，分子相减：' + a + ' − ' + b + ' = ' + (a - b) + '，得 ' + U.frs(a - b, d) + '。' }; }
-      if (l === 1) { d = rnd(4, 12); a = rnd(Math.ceil(d / 2), d - 1); b = rnd(Math.ceil(d / 2), d - 1); return { q: fr(a, d) + ' + ' + fr(b, d) + ' =', a: U.fa(a + b, d), frac: true, exp: '分子相加：' + a + ' + ' + b + ' = ' + (a + b) + '，是 ' + fr(a + b, d) + '（假分数，也可以化成带分数）。' }; }
-      d = rnd(4, 9); var w1 = rnd(1, 3), w2 = rnd(1, 3), n1 = rnd(1, d - 1), n2 = rnd(1, d - 1);
-      if (add) return { q: mix(w1, n1, d) + ' + ' + mix(w2, n2, d) + ' =', a: U.fa((w1 + w2) * d + n1 + n2, d), frac: true, exp: '整数部分相加 ' + w1 + ' + ' + w2 + ' = ' + (w1 + w2) + '，分数部分 ' + n1 + '/' + d + ' + ' + n2 + '/' + d + ' = ' + (n1 + n2) + '/' + d + '，合起来是假分数 ' + U.frs((w1 + w2) * d + n1 + n2, d) + '。' };
-      if (w1 === w2 && n1 <= n2) w1++;
-      if (w1 < w2) { var t = w1; w1 = w2; w2 = t; t = n1; n1 = n2; n2 = t; }
-      var big = w1 * d + n1, small = w2 * d + n2; if (big <= small) { w1 = w2 + 1; big = w1 * d + n1; }
-      return { q: mix(w1, n1, d) + ' − ' + mix(w2, n2, d) + ' =', a: U.fa(big - small, d), frac: true, exp: '都化成假分数：' + big + '/' + d + ' − ' + small + '/' + d + ' = ' + (big - small) + '/' + d + '，约分得 ' + U.frs(big - small, d) + '。' };
-    }
-  };
 
-  D['frac-add'] = {
-    title: '异分母分数加减', n: 10, levels: ['一个分母是另一个的倍数', '分母互质', '一般情况'],
-    intro: '<p><b>异分母分数相加减</b>：先<b>通分</b>（化成分母相同的分数），再按同分母分数加减。</p><div class="eg"><span class="fr">1<i></i>4</span> + <span class="fr">1<i></i>6</span>：4 和 6 的最小公倍数是 12，<br>= <span class="fr">3<i></i>12</span> + <span class="fr">2<i></i>12</span> = <span class="fr">5<i></i>12</span></div><p>通分用<b>最小公倍数</b>做公分母最简单；结果要约成最简分数。</p>',
-    gen: function (l) {
-      var d1, d2, n1, n2, add = rnd(0, 1), L;
-      if (l === 0) { d1 = rnd(2, 6); d2 = d1 * rnd(2, 4); }
-      else if (l === 1) { do { d1 = rnd(2, 9); d2 = rnd(2, 9); } while (d1 === d2 || U.gcd(d1, d2) !== 1); }
-      else { do { d1 = rnd(3, 12); d2 = rnd(3, 12); } while (d1 === d2 || U.gcd(d1, d2) === d1 || U.gcd(d1, d2) === d2 || U.gcd(d1, d2) === 1); }
-      n1 = rnd(1, d1 - 1); n2 = rnd(1, d2 - 1); L = U.lcm(d1, d2);
-      var x = n1 * (L / d1), y = n2 * (L / d2);
-      if (!add && x <= y) { var t = n1; n1 = n2; n2 = t; t = d1; d1 = d2; d2 = t; x = n1 * (L / d1); y = n2 * (L / d2); }
-      var r = add ? x + y : x - y;
-      return { q: fr(n1, d1) + (add ? ' + ' : ' − ') + fr(n2, d2) + ' =', a: U.fa(r, L), frac: true, exp: '通分，公分母取 ' + d1 + ' 和 ' + d2 + ' 的最小公倍数 ' + L + '：' + x + '/' + L + (add ? ' + ' : ' − ') + y + '/' + L + ' = ' + r + '/' + L + '，约分得 ' + U.frs(r, L) + '。' };
-    }
-  };
 
-  D['frac-mul-div'] = {
-    title: '分数乘除法', n: 10, levels: ['分数 × 整数', '分数 × 分数', '分数 ÷ 分数', '分数乘除应用题'],
-    intro: '<p><b>分数乘法</b>：分子乘分子，分母乘分母；能约分的先约分。</p><div class="eg"><span class="fr">2<i></i>3</span> × <span class="fr">3<i></i>4</span> = <span class="fr">6<i></i>12</span> = <span class="fr">1<i></i>2</span>（先约分更简单：2 和 4、3 和 3 约去）</div><p><b>分数除法</b>：<b>除以一个数，等于乘它的倒数</b>。</p><div class="eg"><span class="fr">2<i></i>3</span> ÷ <span class="fr">4<i></i>5</span> = <span class="fr">2<i></i>3</span> × <span class="fr">5<i></i>4</span> = <span class="fr">5<i></i>6</span></div>',
-    gen: function (l) {
-      var a, b, c, d, r;
-      if (l === 0) { b = rnd(3, 9); a = rnd(1, b - 1); c = rnd(2, 9); return { q: fr(a, b) + ' × ' + c + ' =', a: U.fa(a * c, b), frac: true, exp: '分子乘整数，分母不变：' + a + ' × ' + c + ' = ' + (a * c) + '，' + (a * c) + '/' + b + ' 约分得 ' + U.frs(a * c, b) + '。' }; }
-      if (l === 1) { b = rnd(2, 9); a = rnd(1, b - 1); d = rnd(2, 9); c = rnd(1, d - 1); return { q: fr(a, b) + ' × ' + fr(c, d) + ' =', a: U.fa(a * c, b * d), frac: true, exp: '分子乘分子、分母乘分母：' + (a * c) + '/' + (b * d) + '，约分得 ' + U.frs(a * c, b * d) + '。' }; }
-      if (l === 2) { b = rnd(2, 9); a = rnd(1, b - 1); d = rnd(2, 9); c = rnd(1, d - 1); return { q: fr(a, b) + ' ÷ ' + fr(c, d) + ' =', a: U.fa(a * d, b * c), frac: true, exp: '除以 ' + fr(c, d) + ' 就是乘它的倒数 ' + fr(d, c) + '：' + fr(a, b) + ' × ' + fr(d, c) + ' = ' + (a * d) + '/' + (b * c) + '，约分得 ' + U.frs(a * d, b * c) + '。' }; }
-      var p = rnd(0, 1);
-      if (p === 0) { c = rnd(2, 6); b = rnd(3, 8); a = rnd(1, b - 1); d = rnd(2, 5) * b; return { q: '一桶油重 ' + c * 3 + ' 千克，用去它的 ' + fr(a, b) + '，用去 ( ) 千克（填分数或整数）', a: U.fa(c * 3 * a, b), frac: true, exp: '求一个数的几分之几用乘法：' + (c * 3) + ' × ' + fr(a, b) + ' = ' + U.frs(c * 3 * a, b) + ' 千克。' }; }
-      a = rnd(2, 6); b = a + rnd(1, 4); d = rnd(2, 9); r = a * d;
-      return { q: '某班男生有 ' + r + ' 人，占全班的 ' + fr(a, b) + '，全班共 ( ) 人', a: U.fa(r * b, a), frac: true, exp: '已知部分求整体用除法：' + r + ' ÷ ' + fr(a, b) + ' = ' + r + ' × ' + fr(b, a) + ' = ' + U.frs(r * b, a) + ' 人。' };
-    }
-  };
 
-  D['simplify-frac'] = {
-    title: '约分与通分', n: 10, levels: ['约分（写最简分数）', '通分（公分母）', '比较分数大小'],
-    intro: '<p><b>约分</b>：分子、分母同时除以它们的<b>公因数</b>；除到分子分母<b>只有公因数 1</b>（互质）就是最简分数。</p><div class="eg">12/18：12 和 18 的最大公因数是 6，12 ÷ 6 = 2，18 ÷ 6 = 3，得 2/3</div><p><b>通分</b>：把异分母分数化成同分母分数，公分母取各分母的<b>最小公倍数</b>。</p><p><b>比较分数大小</b>：同分母比分子；异分母先通分。</p>',
-    gen: function (l) {
-      var n, d, k, a, b;
-      if (l === 0) { do { d = rnd(3, 11); n = rnd(1, d - 1); } while (U.gcd(n, d) !== 1); k = rnd(2, 6); return { q: '把 ' + fr(n * k, d * k) + ' 约成最简分数 =', a: n + '/' + d, strict: true, frac: true, exp: '分子分母同时除以最大公因数 ' + k + '：' + (n * k) + ' ÷ ' + k + ' = ' + n + '，' + (d * k) + ' ÷ ' + k + ' = ' + d + '，得 ' + fr(n, d) + '。（要写成最简分数哦）' }; }
-      if (l === 1) { do { a = rnd(2, 12); b = rnd(2, 12); } while (a === b); var L = U.lcm(a, b); return { q: fr(1, a) + ' 和 ' + fr(1, b) + ' 通分，最小的公分母是', a: String(L), exp: a + ' 和 ' + b + ' 的最小公倍数是 ' + L + '，所以公分母是 ' + L + '。' }; }
-      var d1, d2, n1, n2;
-      do { d1 = rnd(3, 12); d2 = rnd(3, 12); n1 = rnd(1, d1 - 1); n2 = rnd(1, d2 - 1); } while (n1 * d2 === n2 * d1);
-      var r = n1 * d2 > n2 * d1 ? '＞' : '＜'; return { q: fr(n1, d1) + ' ○ ' + fr(n2, d2), a: r, choices: ['＞', '＜'], exp: '通分比较：' + (n1 * d2) + '/' + (d1 * d2) + ' 与 ' + (n2 * d1) + '/' + (d1 * d2) + '，' + (n1 * d2 > n2 * d1 ? (n1 * d2) + ' 比 ' + (n2 * d1) + ' 大' : (n1 * d2) + ' 比 ' + (n2 * d1) + ' 小') + '。' };
-    }
-  };
 
   function factors(n) { var r = [], i; for (i = 1; i <= n; i++) if (n % i === 0) r.push(i); return r; }
   function isPrime(n) { if (n < 2) return false; for (var i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; }
   function pf(n) { var r = [], i = 2; while (n > 1) { while (n % i === 0) { r.push(i); n /= i; } i++; } return r; }
 
-  D['gcd-lcm'] = {
-    title: '最大公因数与最小公倍数', n: 10, levels: ['最大公因数', '最小公倍数', '应用题'],
-    intro: '<p><b>公因数</b>：几个数公有的因数。其中最大的叫<b>最大公因数</b>。</p><div class="eg">12 的因数：1、2、3、4、6、12；18 的因数：1、2、3、6、9、18；公因数 1、2、3、6，最大公因数是 6</div><p><b>公倍数</b>：几个数公有的倍数。其中最小的叫<b>最小公倍数</b>。</p><div class="eg">4 的倍数：4、8、12、16、20、24…；6 的倍数：6、12、18、24…；最小公倍数是 12</div><p>短除法、分解质因数都可以快速求出。</p>',
-    gen: function (l) {
-      var a, b, g, k1, k2;
-      if (l === 0) { g = rnd(2, 9); do { k1 = rnd(2, 8); k2 = rnd(2, 8); } while (k1 === k2 || U.gcd(k1, k2) !== 1); a = g * k1; b = g * k2; return { q: a + ' 和 ' + b + ' 的最大公因数是', a: String(g), exp: a + ' = ' + pf(a).join(' × ') + '，' + b + ' = ' + pf(b).join(' × ') + '，公有的质因数相乘得最大公因数 ' + g + '。' }; }
-      if (l === 1) { g = rnd(1, 5); do { k1 = rnd(2, 9); k2 = rnd(2, 9); } while (k1 === k2 || U.gcd(k1, k2) !== 1); a = g * k1; b = g * k2; var L = U.lcm(a, b); return { q: a + ' 和 ' + b + ' 的最小公倍数是', a: String(L), exp: a + ' = ' + pf(a).join(' × ') + '，' + b + ' = ' + pf(b).join(' × ') + '，最大公因数是 ' + g + '，最小公倍数 = ' + a + ' × ' + b + ' ÷ ' + g + ' = ' + L + '。' }; }
-      if (rnd(0, 1)) { g = rnd(2, 8); do { k1 = rnd(2, 8); k2 = rnd(2, 8); } while (k1 === k2 || U.gcd(k1, k2) !== 1); a = g * k1; b = g * k2; return { q: '把长 ' + a + ' 厘米、宽 ' + b + ' 厘米的长方形纸裁成同样大的正方形，不浪费，正方形边长最大是', a: String(g), unit: '厘米', exp: '求边长最大就是求 ' + a + ' 和 ' + b + ' 的最大公因数 ' + g + '。' }; }
-      var x = rnd(2, 8), y; do { y = rnd(2, 8); } while (x === y);
-      return { q: '甲车每 ' + x + ' 分钟发一班，乙车每 ' + y + ' 分钟发一班，8:00 同时发车后，下一次同时发车要隔', a: String(U.lcm(x, y)), unit: '分钟', exp: '同时发车间隔 = ' + x + ' 和 ' + y + ' 的最小公倍数 = ' + U.lcm(x, y) + ' 分钟。' };
-    }
-  };
 
   D['prime-factor'] = {
     title: '因数、倍数、质数与合数', n: 10, levels: ['因数和倍数', '质数和合数', '2、3、5 的倍数特征'],
@@ -246,18 +152,6 @@
     }
   };
 
-  D['equations'] = {
-    title: '解方程', n: 10, levels: ['x ± a = b', 'ax = b、x ÷ a = b', 'ax ± b = c'],
-    intro: '<p><b>方程</b>：含有未知数的等式。<b>解方程</b>：求出方程中未知数的值。</p><p><b>等式的性质</b>：等式两边<b>同时加上（或减去）同一个数</b>，等式仍然成立；等式两边<b>同时乘（或除以）同一个不为 0 的数</b>，等式仍然成立。</p><div class="eg">x + 8 = 20：两边同时减 8，x = 12<br>3x = 24：两边同时除以 3，x = 8<br>2x + 5 = 17：先减 5 得 2x = 12，再除以 2，x = 6</div><p>解完后要<b>检验</b>：把 x 的值代回原方程看两边是否相等。</p>',
-    gen: function (l) {
-      var x, a, b, p;
-      if (l === 0) { x = rnd(2, 40); a = rnd(2, 30); p = rnd(0, 2); if (p === 0) return { q: 'x + ' + a + ' = ' + (x + a) + '，x =', a: String(x), exp: '两边同时减 ' + a + '：x = ' + (x + a) + ' − ' + a + ' = ' + x + '。检验：' + x + ' + ' + a + ' = ' + (x + a) + ' ✓' }; if (p === 1) return { q: 'x − ' + a + ' = ' + x + '，x =', a: String(x + a), exp: '两边同时加 ' + a + '：x = ' + x + ' + ' + a + ' = ' + (x + a) + '。检验：' + (x + a) + ' − ' + a + ' = ' + x + ' ✓' }; return { q: (x + a) + ' − x = ' + a + '，x =', a: String(x), exp: '被减数 − 差 = 减数：x = ' + (x + a) + ' − ' + a + ' = ' + x + '。' }; }
-      if (l === 1) { x = rnd(2, 20); a = rnd(2, 12); if (rnd(0, 1)) return { q: a + 'x = ' + (a * x) + '，x =', a: String(x), exp: '两边同时除以 ' + a + '：x = ' + (a * x) + ' ÷ ' + a + ' = ' + x + '。' }; return { q: 'x ÷ ' + a + ' = ' + x + '，x =', a: String(x * a), exp: '两边同时乘 ' + a + '：x = ' + x + ' × ' + a + ' = ' + (x * a) + '。' }; }
-      x = rnd(2, 15); a = rnd(2, 9); b = rnd(1, 30);
-      if (rnd(0, 1)) return { q: a + 'x + ' + b + ' = ' + (a * x + b) + '，x =', a: String(x), exp: '先两边减 ' + b + '：' + a + 'x = ' + (a * x) + '，再两边除以 ' + a + '：x = ' + x + '。' };
-      return { q: a + 'x − ' + b + ' = ' + (a * x - b) + '，x =', a: String(x), exp: '先两边加 ' + b + '：' + a + 'x = ' + (a * x) + '，再两边除以 ' + a + '：x = ' + x + '。' };
-    }
-  };
 
   var NM = ['小明', '小红', '小刚', '小丽', '阳阳', '乐乐'], OBJ = ['苹果', '铅笔', '糖果', '贴纸', '邮票', '弹珠'];
   D['word-problems'] = {

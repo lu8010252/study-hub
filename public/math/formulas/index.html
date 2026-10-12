@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>公式大全与计算器</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="search" style="margin:0 0 8px"><input id="q" type="search" placeholder="🔍 搜公式，如：面积、体积、路程、圆" autocomplete="off" style="width:100%;font-size:18px;padding:10px 14px;border:2px solid var(--line);border-radius:14px"></div>
+<div class="cc" id="cs"></div><div class="mut" id="cnt" style="text-align:center"></div>
+<div id="list"></div>
+<div class="panel" id="units"></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('公式大全与计算器');
+var $=function(i){return document.getElementById(i)};
+
+var PI=3.14;
+var F=[
+['平面图形','长方形的周长','C = (a + b) × 2','三年级','rect',[['a','长','厘米',8],['b','宽','厘米',5]],'(a+b)*2','C = ({a} + {b}) × 2','厘米'],
+['平面图形','长方形的面积','S = a × b','三年级','rect',[['a','长','厘米',8],['b','宽','厘米',5]],'a*b','S = {a} × {b}','平方厘米'],
+['平面图形','正方形的周长','C = a × 4','三年级','square',[['a','边长','厘米',6]],'a*4','C = {a} × 4','厘米'],
+['平面图形','正方形的面积','S = a × a','三年级','square',[['a','边长','厘米',6]],'a*a','S = {a} × {a}','平方厘米'],
+['平面图形','平行四边形的面积','S = a × h（底 × 高）','五年级','para',[['a','底','厘米',10],['h','高','厘米',6]],'a*h','S = {a} × {h}','平方厘米'],
+['平面图形','三角形的面积','S = a × h ÷ 2','五年级','tri',[['a','底','厘米',10],['h','高','厘米',6]],'a*h/2','S = {a} × {h} ÷ 2','平方厘米'],
+['平面图形','梯形的面积','S = (a + b) × h ÷ 2','五年级','trap',[['a','上底','厘米',6],['b','下底','厘米',10],['h','高','厘米',5]],'(a+b)*h/2','S = ({a} + {b}) × {h} ÷ 2','平方厘米'],
+['平面图形','圆的周长','C = 2πr = πd','六年级','circle',[['r','半径','厘米',5]],'2*PI*r','C = 2 × 3.14 × {r}','厘米'],
+['平面图形','圆的面积','S = πr²','六年级','circle',[['r','半径','厘米',5]],'PI*r*r','S = 3.14 × {r} × {r}','平方厘米'],
+['平面图形','圆环的面积','S = π(R² − r²)','六年级','ring',[['R','外圆半径','厘米',6],['r','内圆半径','厘米',3]],'PI*(R*R-r*r)','S = 3.14 × ({R} × {R} − {r} × {r})','平方厘米'],
+['立体图形','长方体的表面积','S = (ab + ah + bh) × 2','五年级','cuboid',[['a','长','厘米',6],['b','宽','厘米',4],['h','高','厘米',3]],'(a*b+a*h+b*h)*2','S = ({a}×{b} + {a}×{h} + {b}×{h}) × 2','平方厘米'],
+['立体图形','长方体的体积','V = a × b × h = 底面积 × 高','五年级','cuboid',[['a','长','厘米',6],['b','宽','厘米',4],['h','高','厘米',3]],'a*b*h','V = {a} × {b} × {h}','立方厘米'],
+['立体图形','正方体的表面积','S = a × a × 6','五年级','cube',[['a','棱长','厘米',4]],'a*a*6','S = {a} × {a} × 6','平方厘米'],
+['立体图形','正方体的体积','V = a × a × a','五年级','cube',[['a','棱长','厘米',4]],'a*a*a','V = {a} × {a} × {a}','立方厘米'],
+['立体图形','圆柱的侧面积','S = 2πrh = 底面周长 × 高','六年级','cyl',[['r','底面半径','厘米',3],['h','高','厘米',8]],'2*PI*r*h','S = 2 × 3.14 × {r} × {h}','平方厘米'],
+['立体图形','圆柱的表面积','S = 2πrh + 2πr²','六年级','cyl',[['r','底面半径','厘米',3],['h','高','厘米',8]],'2*PI*r*h+2*PI*r*r','S = 2×3.14×{r}×{h} + 2×3.14×{r}×{r}','平方厘米'],
+['立体图形','圆柱的体积','V = πr²h = 底面积 × 高','六年级','cyl',[['r','底面半径','厘米',3],['h','高','厘米',8]],'PI*r*r*h','V = 3.14 × {r} × {r} × {h}','立方厘米'],
+['立体图形','圆锥的体积','V = πr²h ÷ 3','六年级','cone',[['r','底面半径','厘米',3],['h','高','厘米',9]],'PI*r*r*h/3','V = 3.14 × {r} × {r} × {h} ÷ 3','立方厘米'],
+['数量关系','总价','总价 = 单价 × 数量','三年级','',[['a','单价','元',6],['b','数量','个',5]],'a*b','总价 = {a} × {b}','元'],
+['数量关系','路程','路程 = 速度 × 时间','三年级','',[['a','速度','米/分',60],['b','时间','分',4]],'a*b','路程 = {a} × {b}','米'],
+['数量关系','工作总量','工作总量 = 工作效率 × 工作时间','四年级','',[['a','工作效率','个/时',30],['b','工作时间','时',5]],'a*b','工作总量 = {a} × {b}','个'],
+['数量关系','相遇问题','路程 = (速度1 + 速度2) × 相遇时间','四年级','',[['a','甲速度','米/分',60],['b','乙速度','米/分',50],['t','相遇时间','分',8]],'(a+b)*t','路程 = ({a} + {b}) × {t}','米'],
+['数量关系','平均数','平均数 = 总数 ÷ 份数','三年级','',[['a','总数','',96],['b','份数','',8]],'a/b','平均数 = {a} ÷ {b}',''],
+['数量关系','有余数的除法','被除数 = 商 × 除数 + 余数','二年级','',[['q','商','',12],['d','除数','',35],['r','余数（小于除数）','',9]],'q*d+r','被除数 = {q} × {d} + {r}',''],
+['数量关系','打折','现价 = 原价 × 折扣 ÷ 10（几折）','六年级','',[['a','原价','元',200],['b','几折','折',8]],'a*b/10','现价 = {a} × {b} ÷ 10','元'],
+['数量关系','利息','利息 = 本金 × 利率 × 时间','六年级','',[['a','本金','元',5000],['b','年利率','%',2.5],['t','时间','年',3]],'a*b/100*t','利息 = {a} × {b}% × {t}','元'],
+['数量关系','百分率','百分率 = 部分 ÷ 总数 × 100%','六年级','',[['a','部分','',45],['b','总数','',60]],'a/b*100','百分率 = {a} ÷ {b} × 100','%'],
+['数量关系','比例尺','比例尺 = 图上距离 ÷ 实际距离','六年级','',[['a','图上距离','厘米',4],['b','实际距离','厘米',20000]],'a/b','比例尺 = {a} ÷ {b}（即 1 : '+'{x}'+'）',''],
+['角与多边形','三角形的内角和','∠C = 180° − ∠A − ∠B','四年级','',[['a','∠A','度',50],['b','∠B','度',60]],'180-a-b','∠C = 180 − {a} − {b}','度'],
+['角与多边形','多边形的内角和','内角和 = (n − 2) × 180°','四年级','',[['n','边数 n','',6]],'(n-2)*180','内角和 = ({n} − 2) × 180','度']
+];
+var CATS=['全部','平面图形','立体图形','数量关系','角与多边形'],cat='全部',open=-1,vals={};
+var UN=[['长度','1 千米 = 1000 米　1 米 = 10 分米 = 100 厘米　1 厘米 = 10 毫米'],['面积','1 平方米 = 100 平方分米　1 平方分米 = 100 平方厘米　1 公顷 = 10000 平方米　1 平方千米 = 100 公顷'],['体积·容积','1 立方米 = 1000 立方分米　1 立方分米 = 1000 立方厘米　1 升 = 1000 毫升 = 1 立方分米'],['质量','1 吨 = 1000 千克　1 千克 = 1000 克'],['时间','1 世纪 = 100 年　1 年 = 12 个月　1 日 = 24 时　1 时 = 60 分　1 分 = 60 秒'],['人民币','1 元 = 10 角　1 角 = 10 分']];
+$('units').innerHTML='<h3 style="margin-top:0">📏 单位进率</h3>'+UN.map(function(u){return '<div style="margin:6px 0"><b>'+u[0]+'：</b>'+u[1]+'</div>'}).join('');
+function round(x){return +(+x).toFixed(2)}
+function calc(f){var v=vals[f[1]],names=f[5].map(function(x){return x[0]}),args=names.map(function(k){return +v[k]||0});var r;try{r=Function.apply(null,['PI'].concat(names).concat(['return '+f[6]])).apply(null,[PI].concat(args))}catch(e){r=NaN}
+  var t=f[7].replace(/\{(\w)\}/g,function(_,k){return v[k]});if(f[1]==='比例尺'){t=t.replace('{x}',round(v.b/v.a))}return {t:t,r:r}}
+function diag(f){var d=f[4],v=vals[f[1]],g=function(k){return +v[k]||0},s='',W=200;if(!d)return '';
+  var mx=Math.max.apply(null,f[5].map(function(x){return g(x[0])}))||1,k=110/mx,L=function(x,y,t,a){return '<text x="'+x+'" y="'+y+'" font-size="12" fill="#4f46e5" font-weight="700" text-anchor="'+(a||'middle')+'">'+t+'</text>'},st='fill="rgba(99,102,241,.18)" stroke="#4338ca" stroke-width="2.5" stroke-linejoin="round"';
+  if(d==='rect'){var a=g('a')*k,b=g('b')*k;s='<rect x="'+(100-a/2)+'" y="'+(70-b/2)+'" width="'+a+'" height="'+b+'" '+st+'/>'+L(100,70-b/2-5,'长 '+g('a'))+L(100+a/2+4,72,'宽 '+g('b'),'start')}
+  else if(d==='square'){var a=g('a')*k;s='<rect x="'+(100-a/2)+'" y="'+(70-a/2)+'" width="'+a+'" height="'+a+'" '+st+'/>'+L(100,70-a/2-5,'边长 '+g('a'))}
+  else if(d==='para'){var a=g('a')*k,h=g('h')*k,o=h*.5;s='<polygon points="'+(100-a/2-o/2)+','+(70+h/2)+' '+(100+a/2-o/2)+','+(70+h/2)+' '+(100+a/2+o/2)+','+(70-h/2)+' '+(100-a/2+o/2)+','+(70-h/2)+'" '+st+'/><line x1="'+(100-a/2+o/2)+'" y1="'+(70-h/2)+'" x2="'+(100-a/2+o/2)+'" y2="'+(70+h/2)+'" stroke="#e5484d" stroke-dasharray="4 3" stroke-width="2"/>'+L(100-o/2,70+h/2+16,'底 '+g('a'))+L(100-a/2+o/2+4,72,'高 '+g('h'),'start')}
+  else if(d==='tri'){var a=g('a')*k,h=g('h')*k;s='<polygon points="'+(100-a/2)+','+(70+h/2)+' '+(100+a/2)+','+(70+h/2)+' '+(100-a/4)+','+(70-h/2)+'" '+st+'/><line x1="'+(100-a/4)+'" y1="'+(70-h/2)+'" x2="'+(100-a/4)+'" y2="'+(70+h/2)+'" stroke="#e5484d" stroke-dasharray="4 3" stroke-width="2"/>'+L(100,70+h/2+16,'底 '+g('a'))+L(100-a/4+4,72,'高 '+g('h'),'start')}
+  else if(d==='trap'){var a=g('a')*k,b=g('b')*k,h=g('h')*k;s='<polygon points="'+(100-b/2)+','+(70+h/2)+' '+(100+b/2)+','+(70+h/2)+' '+(100+a/2)+','+(70-h/2)+' '+(100-a/2)+','+(70-h/2)+'" '+st+'/>'+L(100,70-h/2-5,'上底 '+g('a'))+L(100,70+h/2+16,'下底 '+g('b'))+L(100+a/2+6,72,'高 '+g('h'),'start')}
+  else if(d==='circle'){var r=g('r')*k;s='<circle cx="100" cy="70" r="'+r+'" '+st+'/><line x1="100" y1="70" x2="'+(100+r)+'" y2="70" stroke="#e5484d" stroke-width="2"/><circle cx="100" cy="70" r="3" fill="#e5484d"/>'+L(100+r/2,64,'r='+g('r'))}
+  else if(d==='ring'){var R=g('R')*k,r=g('r')*k;s='<circle cx="100" cy="70" r="'+R+'" '+st+'/><circle cx="100" cy="70" r="'+r+'" fill="#fff" stroke="#4338ca" stroke-width="2.5"/>'+L(100,70-R-4,'R='+g('R'))+L(100,74,'r='+g('r'))}
+  else if(d==='cuboid'||d==='cube'){var a=(d==='cube'?g('a'):g('a'))*k*.8,b=(d==='cube'?g('a'):g('b'))*k*.5,h=(d==='cube'?g('a'):g('h'))*k*.8,x0=100-a/2-b/4,y0=70+h/2+b/4;s='<polygon points="'+x0+','+y0+' '+(x0+a)+','+y0+' '+(x0+a)+','+(y0-h)+' '+x0+','+(y0-h)+'" '+st+'/><polygon points="'+x0+','+(y0-h)+' '+(x0+a)+','+(y0-h)+' '+(x0+a+b/2)+','+(y0-h-b/2)+' '+(x0+b/2)+','+(y0-h-b/2)+'" fill="rgba(245,158,11,.25)" stroke="#4338ca" stroke-width="2.5"/><polygon points="'+(x0+a)+','+y0+' '+(x0+a+b/2)+','+(y0-b/2)+' '+(x0+a+b/2)+','+(y0-h-b/2)+' '+(x0+a)+','+(y0-h)+'" fill="rgba(34,160,107,.25)" stroke="#4338ca" stroke-width="2.5"/>'+L(x0+a/2,y0+14,(d==='cube'?'棱长 ':'长 ')+g('a'))+(d==='cube'?'':L(x0+a+b/2+4,y0-b/4,'宽 '+g('b'),'start')+L(x0-4,y0-h/2,'高 '+g('h'),'end'))}
+  else if(d==='cyl'){var r=g('r')*k*.7,h=g('h')*k*.9;s='<ellipse cx="100" cy="'+(70+h/2)+'" rx="'+r+'" ry="'+r*.3+'" '+st+'/><rect x="'+(100-r)+'" y="'+(70-h/2)+'" width="'+r*2+'" height="'+h+'" fill="rgba(99,102,241,.18)" stroke="none"/><line x1="'+(100-r)+'" y1="'+(70-h/2)+'" x2="'+(100-r)+'" y2="'+(70+h/2)+'" stroke="#4338ca" stroke-width="2.5"/><line x1="'+(100+r)+'" y1="'+(70-h/2)+'" x2="'+(100+r)+'" y2="'+(70+h/2)+'" stroke="#4338ca" stroke-width="2.5"/><ellipse cx="100" cy="'+(70-h/2)+'" rx="'+r+'" ry="'+r*.3+'" '+st+'/>'+L(100+r+6,74,'高 '+g('h'),'start')+L(100,70-h/2+4,'r='+g('r'))}
+  else if(d==='cone'){var r=g('r')*k*.7,h=g('h')*k*.9;s='<ellipse cx="100" cy="'+(70+h/2)+'" rx="'+r+'" ry="'+r*.3+'" '+st+'/><line x1="'+(100-r)+'" y1="'+(70+h/2)+'" x2="100" y2="'+(70-h/2)+'" stroke="#4338ca" stroke-width="2.5"/><line x1="'+(100+r)+'" y1="'+(70+h/2)+'" x2="100" y2="'+(70-h/2)+'" stroke="#4338ca" stroke-width="2.5"/><line x1="100" y1="'+(70-h/2)+'" x2="100" y2="'+(70+h/2)+'" stroke="#e5484d" stroke-dasharray="4 3" stroke-width="2"/>'+L(106,74,'高 '+g('h'),'start')+L(100,70+h/2+r*.3+14,'r='+g('r'))}
+  return '<svg viewBox="0 0 200 150" style="width:100%;max-width:220px">'+s+'</svg>'}
+function render(){var k=$('q').value.trim().toLowerCase(),n=0,h='';
+  $('cs').innerHTML=CATS.map(function(c){return '<button class="btn '+(c===cat?'':'ghost')+'" data-c="'+c+'" style="min-height:40px;padding:0 14px">'+c+'</button>'}).join('');
+  F.forEach(function(f,i){if(cat!=='全部'&&f[0]!==cat)return;if(k&&(f[1]+f[2]+f[0]+f[3]).toLowerCase().indexOf(k)<0)return;n++;
+    if(!vals[f[1]]){vals[f[1]]={};f[5].forEach(function(x){vals[f[1]][x[0]]=x[3]})}
+    var on=open===i,c=on?calc(f):null;
+    h+='<div class="panel" style="margin:10px 0;padding:12px 16px"><div data-o="'+i+'" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px"><div><b style="font-size:18px">'+f[1]+'</b> <span style="font-size:12px;background:var(--bg);border-radius:8px;padding:1px 8px;color:var(--sub)">'+f[3]+'</span><div style="font-size:20px;font-weight:800;color:#4338ca;margin-top:2px">'+f[2]+'</div></div><span style="font-size:22px">'+(on?'▲':'▼')+'</span></div>';
+    if(on){h+='<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;margin-top:10px"><div>'+diag(f)+'</div><div style="flex:1;min-width:220px">'+f[5].map(function(x){return '<div class="sl" style="justify-content:flex-start"><b style="min-width:110px">'+x[1]+(x[2]?'（'+x[2]+'）':'')+'</b><input type="number" step="any" min="0" value="'+vals[f[1]][x[0]]+'" data-k="'+x[0]+'" style="width:100px;font-size:20px;text-align:center;border:2px solid var(--line);border-radius:10px;padding:6px"></div>'}).join('')+'<div style="margin-top:8px;font-size:18px;line-height:1.7"><span class="mut">代入：</span>'+c.t+'<br><b style="font-size:24px;color:#22a06b">= '+(isNaN(c.r)||!isFinite(c.r)?'？':round(c.r))+' '+f[8]+'</b></div></div></div>'+(f[6].indexOf('PI')>=0?'<div class="mut" style="margin-top:6px">π 取 3.14</div>':'')}
+    h+='</div>'});
+  $('list').innerHTML=h||'<div class="empty" style="text-align:center;padding:30px;color:var(--sub)">没有找到这个公式</div>';$('cnt').textContent='共 '+n+' 个公式（点一下展开，改数字就能算）'}
+document.addEventListener('click',function(e){var c=e.target.dataset.c,o=e.target.closest('[data-o]');if(c){cat=c;render()}else if(o){var i=+o.dataset.o;open=open===i?-1:i;render()}});
+document.addEventListener('input',function(e){var k=e.target.dataset.k;if(!k)return;var f=F[open];vals[f[1]][k]=e.target.value;var p=e.target.selectionStart;render();var n=document.querySelector('[data-k="'+k+'"]');if(n){n.focus();try{n.setSelectionRange(p,p)}catch(x){}}});
+$('q').addEventListener('input',render);open=1;render();
+</script></body></html>

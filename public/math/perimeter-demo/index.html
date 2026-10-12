@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>周长展开演示</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="r">长方形</button><button class="btn ghost" data-m="s">正方形</button><button class="btn ghost" data-m="l">L 形</button></div>
+<div class="sl"><b id="la"></b><input type="range" min="2" max="10" value="6" id="a"></div><div class="sl"><b id="lb"></b><input type="range" min="2" max="8" value="4" id="b"></div>
+<svg id="s" viewBox="0 0 380 220" style="width:100%;max-width:600px"></svg>
+<div class="cc"><button class="btn" id="go">▶ 把周长拉直</button><button class="btn ghost" id="bk">还原</button></div>
+<div class="big2" id="eq"></div></div>
+<div class="panel"><b>周长：</b>围成一个图形所有边的长度的和。长方形周长 = (长 + 宽) × 2；正方形周长 = 边长 × 4。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('周长展开演示');
+var $=function(i){return document.getElementById(i)};
+
+var mode='r',t=0,tm=null,U=22;
+function pts(){var a=+$('a').value,b=+$('b').value;if(mode==='s')b=a;
+  if(mode==='l'){var c=Math.max(1,Math.floor(a/2)),d=Math.max(1,Math.floor(b/2));return {poly:[[0,0],[a,0],[a,d],[c,d],[c,b],[0,b]],a:a,b:b,c:c,d:d}}
+  return {poly:[[0,0],[a,0],[a,b],[0,b]],a:a,b:b}}
+function draw(){var g=pts(),p=g.poly,n=p.length,i,s='',col=['#6366f1','#f59e0b','#22a06b','#e5484d','#0ea5e9','#a855f7'],segs=[],tot=0;
+  $('la').textContent=(mode==='s'?'边长 ':'长 ')+g.a+' 厘米';$('lb').textContent=mode==='s'?'':'宽 '+g.b+' 厘米';$('b').style.visibility=mode==='s'?'hidden':'visible';
+  for(i=0;i<n;i++){var A=p[i],B=p[(i+1)%n],l=Math.abs(B[0]-A[0])+Math.abs(B[1]-A[1]);segs.push({A:A,B:B,l:l});tot+=l}
+  var ox=20,oy=20;
+  segs.forEach(function(sg,i){var x1=ox+sg.A[0]*U,y1=oy+sg.A[1]*U,x2=ox+sg.B[0]*U,y2=oy+sg.B[1]*U,start=0;for(var j=0;j<i;j++)start+=segs[j].l;
+    var lx1=20+start*U*(360/(tot*U)),lx2=20+(start+sg.l)*U*(360/(tot*U)),ly=190;
+    var X1=x1+(lx1-x1)*t,Y1=y1+(ly-y1)*t,X2=x2+(lx2-x2)*t,Y2=y2+(ly-y2)*t;
+    s+='<line x1="'+X1+'" y1="'+Y1+'" x2="'+X2+'" y2="'+Y2+'" stroke="'+col[i%6]+'" stroke-width="6" stroke-linecap="round"/>';
+    if(t>0.98)s+='<text x="'+((X1+X2)/2)+'" y="'+(ly+20)+'" text-anchor="middle" font-size="13" font-weight="700" fill="'+col[i%6]+'">'+sg.l+'</text>'});
+  if(t<0.02)s+='<polygon points="'+p.map(function(q){return (ox+q[0]*U)+','+(oy+q[1]*U)}).join(' ')+'" fill="rgba(99,102,241,.08)"/>';
+  $('s').innerHTML=s;
+  var parts=segs.map(function(x){return x.l});$('eq').textContent=t>0.98?'周长 = '+parts.join(' + ')+' = '+tot+' 厘米':'周长 = 所有边的长度和';
+  if(mode==='r'&&t>0.98)$('eq').textContent+='　（'+g.a+' + '+g.b+'）× 2 = '+tot;if(mode==='s'&&t>0.98)$('eq').textContent+='　'+g.a+' × 4 = '+tot;if(t>0.98)Hub.star('perimeter-demo',3)}
+function anim(to){clearInterval(tm);tm=setInterval(function(){t+=(to>t?1:-1)*0.04;if((to>t?t>=to:t<=to)||Math.abs(t-to)<0.04){t=to;clearInterval(tm)}draw()},25)}
+$('go').onclick=function(){anim(1)};$('bk').onclick=function(){anim(0)};['a','b'].forEach(function(k){$(k).addEventListener('input',function(){t=0;draw()})});
+document.addEventListener('click',function(e){var m=e.target.dataset.m;if(m){mode=m;t=0;[].forEach.call(document.querySelectorAll('[data-m]'),function(x){x.classList.toggle('ghost',x.dataset.m!==m)});draw()}});draw();
+</script></body></html>
