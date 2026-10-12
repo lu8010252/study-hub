@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>集合图：公因数和公倍数</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="f">公因数</button><button class="btn ghost" data-m="m">公倍数</button></div>
+<div class="sl"><b id="la"></b><input type="range" min="2" max="60" value="12" id="a"></div><div class="sl"><b id="lb"></b><input type="range" min="2" max="60" value="18" id="b"></div>
+<svg id="s" viewBox="0 0 440 250" style="width:100%;max-width:680px"></svg>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel" id="rule"></div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('集合图：公因数和公倍数');
+var $=function(i){return document.getElementById(i)};
+
+var mode='f';
+function gcd(a,b){return b?gcd(b,a%b):a}
+function wrap(arr,n){var rows=[],i;for(i=0;i<arr.length;i+=n)rows.push(arr.slice(i,i+n).join(' '));return rows}
+function lines(x,y,rows,col,anchor){var s='';rows.forEach(function(r,i){s+='<text x="'+x+'" y="'+(y+i*20)+'" text-anchor="middle" font-size="16" font-weight="700" fill="'+col+'">'+r+'</text>'});return s}
+function draw(){var a=+$('a').value,b=+$('b').value,i,A=[],B=[],g=gcd(a,b),l=a*b/g;
+  if(mode==='f'){$('la').textContent='数 A = '+a;$('lb').textContent='数 B = '+b;for(i=1;i<=a;i++)if(a%i===0)A.push(i);for(i=1;i<=b;i++)if(b%i===0)B.push(i)}
+  else{if(a>12)$('a').value=a=12;if(b>12)$('b').value=b=12;g=gcd(a,b);l=a*b/g;$('la').textContent='数 A = '+a;$('lb').textContent='数 B = '+b;for(i=a;i<=l;i+=a)A.push(i);for(i=b;i<=l;i+=b)B.push(i)}
+  var both=A.filter(function(x){return B.indexOf(x)>=0}),oa=A.filter(function(x){return both.indexOf(x)<0}),ob=B.filter(function(x){return both.indexOf(x)<0});
+  var s='<circle cx="165" cy="130" r="105" fill="#6366f1" fill-opacity=".18" stroke="#4f46e5" stroke-width="3"/><circle cx="275" cy="130" r="105" fill="#f59e0b" fill-opacity=".2" stroke="#d97706" stroke-width="3"/>';
+  s+='<text x="110" y="22" text-anchor="middle" font-size="15" font-weight="800" fill="#4f46e5">'+a+' 的'+(mode==='f'?'因数':'倍数')+'</text><text x="330" y="22" text-anchor="middle" font-size="15" font-weight="800" fill="#d97706">'+b+' 的'+(mode==='f'?'因数':'倍数')+'</text><text x="220" y="250" text-anchor="middle" font-size="14" font-weight="800" fill="#e5484d">公'+(mode==='f'?'因数':'倍数')+'</text>';
+  var r1=wrap(oa,3),r2=wrap(both,2),r3=wrap(ob,3);
+  s+=lines(115,130-r1.length*10+6,r1,'#3730a3')+lines(220,130-r2.length*10+6,r2,'#be123c')+lines(325,130-r3.length*10+6,r3,'#92400e');$('s').innerHTML=s;
+  if(mode==='f')$('out').innerHTML=a+' 和 '+b+' 的公因数有：<b>'+both.join('、')+'</b><br>最大公因数是 <b style="color:#e5484d">'+g+'</b>'+(g===1?'（只有公因数 1，它们是互质数）':'');
+  else $('out').innerHTML=a+' 和 '+b+' 的公倍数（在 '+l+' 以内）：<b>'+both.join('、')+'</b><br>最小公倍数是 <b style="color:#e5484d">'+l+'</b>（再往后是 '+2*l+'、'+3*l+'……）';
+  $('rule').innerHTML=mode==='f'?'<b>想一想：</b>两个圈重叠的地方，就是两个数<b>共有</b>的因数，叫公因数；其中最大的叫最大公因数。拖滑块换数，看看重叠部分怎么变。试试 8 和 9，重叠只剩 1。':'<b>想一想：</b>重叠的地方是两个数共有的倍数，叫公倍数；其中最小的叫最小公倍数。公倍数有无穷多个，所以只看到最小的这个。';
+  Hub.star('venn-factors',1)}
+document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){mode=b.getAttribute('data-m');document.querySelectorAll('[data-m]').forEach(function(x){x.classList.toggle('ghost',x!==b)});$('a').max=mode==='f'?60:12;$('b').max=mode==='f'?60:12;if(mode==='m'){$('a').value=4;$('b').value=6}draw()}});
+['a','b'].forEach(function(k){$(k).addEventListener('input',draw)});draw();
+</script></body></html>

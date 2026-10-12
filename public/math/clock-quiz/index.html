@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>钟表练习：读一读、拨一拨</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="cc"><button class="btn" data-m="r">读钟：这是几时几分？</button><button class="btn ghost" data-m="s">拨钟：拖分针</button></div>
+<div id="q" class="qtext"></div>
+<svg id="s" viewBox="-110 -110 220 220" style="width:100%;max-width:340px"></svg>
+<div class="cc" id="ch"></div>
+<div id="out" style="font-size:19px;min-height:30px"></div>
+<div class="cc"><button class="btn" id="nx">下一题</button></div></div>
+<div class="panel"><b>看钟：</b>短针指几是几时，长针指几是几个五分钟（指 3 是 15 分，指 6 是 30 分）。分针转一圈，时针走一大格。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('钟表练习：读一读、拨一拨');
+var $=function(i){return document.getElementById(i)};
+
+var mode='r',h,m,tot=0,pm=0,ok=0,drag=false,ans=false,lvl=1;
+function two(n){return (n<10?'0':'')+n}
+function ticks(){var s='<circle r="100" fill="#fff" stroke="#4f46e5" stroke-width="5"/>',i;for(i=0;i<60;i++){var a=i*6*Math.PI/180,r=i%5?96:90;s+='<line x1="'+Math.sin(a)*r+'" y1="'+-Math.cos(a)*r+'" x2="'+Math.sin(a)*98+'" y2="'+-Math.cos(a)*98+'" stroke="#64748b" stroke-width="'+(i%5?1:2.5)+'"/>'}
+  for(i=1;i<=12;i++){var a2=i*30*Math.PI/180;s+='<text x="'+Math.sin(a2)*74+'" y="'+(-Math.cos(a2)*74+7)+'" text-anchor="middle" font-size="20" font-weight="800" fill="#312e81">'+i+'</text>'}return s}
+function hands(hAng,mAng){return '<line x1="0" y1="0" x2="'+Math.sin(hAng)*48+'" y2="'+-Math.cos(hAng)*48+'" stroke="#312e81" stroke-width="7" stroke-linecap="round"/><line x1="0" y1="0" x2="'+Math.sin(mAng)*76+'" y2="'+-Math.cos(mAng)*76+'" stroke="#e5484d" stroke-width="4" stroke-linecap="round"/><circle r="6" fill="#312e81"/>'+(mode==='s'?'<circle id="tip" cx="'+Math.sin(mAng)*76+'" cy="'+-Math.cos(mAng)*76+'" r="14" fill="#e5484d" fill-opacity=".35" style="cursor:grab"/>':'')}
+function newq(){ans=false;h=1+Math.floor(Math.random()*12);m=Math.random()<.5?0:[5,10,15,20,25,30,35,40,45,50,55][Math.floor(Math.random()*11)];if(ok>=4&&Math.random()<.6)m=Math.floor(Math.random()*60);
+  tot=0;pm=0;$('out').textContent='';
+  if(mode==='r'){$('q').textContent='这是几时几分？';var opts=[h+':'+two(m)],t;while(opts.length<4){t=(1+Math.floor(Math.random()*12))+':'+two(Math.random()<.5?m:Math.floor(Math.random()*12)*5);if(opts.indexOf(t)<0)opts.push(t)}opts.sort(function(){return Math.random()-.5});
+    $('ch').innerHTML=opts.map(function(o){return '<button class="btn ghost" data-o="'+o+'" style="font-size:22px;min-width:96px">'+o+'</button>'}).join('');
+    $('s').innerHTML=ticks()+hands((h%12*60+m)/720*2*Math.PI,m/60*2*Math.PI)}
+  else{$('q').innerHTML='请拨出 <b style="color:#e5484d;font-size:30px">'+h+':'+two(m)+'</b>（拖红色的分针）';$('ch').innerHTML='';draw()}}
+function draw(){if(mode==='s')$('s').innerHTML=ticks()+hands(tot/720*2*Math.PI,(tot%60)/60*2*Math.PI)}
+function finish(good){if(good){ok++;$('out').innerHTML='✅ 对了！'+h+':'+two(m);Hub.beep&&Hub.beep(1);Hub.star('clock-quiz',ok>=8?3:ok>=4?2:1)}else $('out').innerHTML='❌ 再看看，短针指几时、长针指几分'}
+$('ch').addEventListener('click',function(e){var o=e.target.getAttribute('data-o');if(!o||ans)return;ans=true;finish(o===h+':'+two(m));if(o!==h+':'+two(m))$('out').innerHTML+='，正确答案是 '+h+':'+two(m)});
+function ang(e){var r=$('s').getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);var a=Math.atan2(x,-y)*180/Math.PI;return (a+360)%360}
+$('s').addEventListener('pointerdown',function(e){if(mode!=='s')return;drag=true;$('s').setPointerCapture(e.pointerId);move(e)});
+function move(e){var mm=Math.round(ang(e)/6)%60,d=((mm-pm+90)%60)-30;tot=Math.max(0,tot+d);pm=mm;tot=((tot%720)+720)%720;draw();if(!ans&&tot%720===(h%12*60+m)){ans=true;finish(true)}}
+$('s').addEventListener('pointermove',function(e){if(drag)move(e)});$('s').addEventListener('pointerup',function(){drag=false});$('s').addEventListener('pointercancel',function(){drag=false});
+$('nx').onclick=newq;
+document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){mode=b.getAttribute('data-m');document.querySelectorAll('[data-m]').forEach(function(x){x.classList.toggle('ghost',x!==b)});newq()}});
+newq();
+</script></body></html>

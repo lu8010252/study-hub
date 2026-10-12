@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>分数加法：条形图通分</title><link rel="stylesheet" href="/css/hub.css">
+<style>.cc{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}.cc .btn{min-height:44px}
+.big2{font-size:26px;font-weight:800}.mut{color:var(--sub)}svg{touch-action:none}
+input[type=range]{width:100%;max-width:320px;height:36px}.sl{display:flex;align-items:center;gap:10px;justify-content:center;margin:4px 0}.sl b{min-width:90px;text-align:right}
+</style></head>
+<body><div class="page">
+<div class="panel" style="text-align:center">
+<div class="mut">左滑块调分子，右滑块调分母</div><div class="sl"><b id="l1"></b><input type="range" min="1" max="11" value="1" id="n1"><input type="range" min="2" max="12" value="2" id="d1" style="max-width:150px"></div>
+<div class="sl"><b id="l2"></b><input type="range" min="1" max="11" value="1" id="n2"><input type="range" min="2" max="12" value="3" id="d2" style="max-width:150px"></div>
+<div class="cc"><button class="btn" id="go">通分：把格子切一样大</button></div>
+<svg id="s" viewBox="0 0 400 270" style="width:100%;max-width:640px"></svg>
+<div id="out" style="font-size:19px;line-height:1.9"></div></div>
+<div class="panel"><b>道理：</b>分母不同，每份大小不同，不能直接加。先把格子切成一样大（通分），再数有几份。分母变成最小公倍数，分子也跟着变。</div>
+</div>
+<script src="/js/tool.js"></script>
+<script>
+Hub.bar('分数加法：条形图通分');
+var $=function(i){return document.getElementById(i)};
+
+var split=false;
+function gcd(a,b){return b?gcd(b,a%b):a}
+function bar(y,n,d,W,col,total){var s='',w=W/d,i;for(i=0;i<d;i++)s+='<rect x="'+(20+i*w)+'" y="'+y+'" width="'+w+'" height="34" fill="'+(i<n?col:'#fff')+'" fill-opacity="'+(i<n?.75:1)+'" stroke="#334155" stroke-width="1.5"/>';return s}
+function draw(){var n1=+$('n1').value,d1=+$('d1').value,n2=+$('n2').value,d2=+$('d2').value;
+  if(n1>=d1)$('n1').value=n1=d1-1;if(n2>=d2)$('n2').value=n2=d2-1;if(n1<1)n1=1;if(n2<1)n2=1;
+  $('l1').innerHTML=n1+'/'+d1+' +';$('l2').innerHTML=n2+'/'+d2;
+  var W=170,L=d1*d2/gcd(d1,d2),a=n1*L/d1,b=n2*L/d2,sum=a+b,g=gcd(sum,L),s='';
+  s+='<text x="20" y="18" font-size="15" font-weight="700">'+n1+'/'+d1+'</text>'+bar(24,n1,d1,W,'#6366f1');
+  s+='<text x="210" y="18" font-size="15" font-weight="700">'+n2+'/'+d2+'</text>'+bar(24,n2,d2,W,'#f59e0b').replace(/x="(\d+(?:\.\d+)?)"/g,function(m,x){return 'x="'+(+x+190)+'"'});
+  if(split){var wL=W/L,i;
+    s+='<text x="20" y="92" font-size="15" font-weight="700" fill="#4f46e5">'+n1+'/'+d1+' = '+a+'/'+L+'</text>'+bar(98,a,L,W,'#6366f1');
+    s+='<text x="210" y="92" font-size="15" font-weight="700" fill="#d97706">'+n2+'/'+d2+' = '+b+'/'+L+'</text>'+bar(98,b,L,W,'#f59e0b').replace(/x="(\d+(?:\.\d+)?)"/g,function(m,x){return 'x="'+(+x+190)+'"'});
+    var W2=W*2,w2=W2/L/1;
+    s+='<text x="20" y="170" font-size="15" font-weight="700" fill="#e5484d">合起来：'+a+'/'+L+' + '+b+'/'+L+' = '+sum+'/'+L+'</text>';
+    var Wl=W*1.7,wl=Wl/L;for(i=0;i<Math.max(L,sum);i++){var cx=20+i*wl,col=i<a?'#6366f1':(i<sum?'#f59e0b':'#fff');s+='<rect x="'+cx+'" y="178" width="'+wl+'" height="34" fill="'+col+'" fill-opacity="'+(i<sum?.75:1)+'" stroke="#334155" stroke-width="1.2"/>'}
+    s+='<text x="'+(20+Wl)+'" y="232" text-anchor="middle" font-size="12" fill="#64748b">↑ 这里是 1（'+L+'/'+L+'）</text><line x1="'+(20+Wl)+'" y1="172" x2="'+(20+Wl)+'" y2="218" stroke="#e5484d" stroke-width="2.5"/>';}
+  $('s').innerHTML=s;
+  var res=sum/g+'/'+L/g;if(sum>L){var wh=Math.floor(sum/L),rm=sum%L;res=rm?wh+' '+rm/g+'/'+L/g:''+wh}
+  $('out').innerHTML=split?'通分：'+n1+'/'+d1+' + '+n2+'/'+d2+' = '+a+'/'+L+' + '+b+'/'+L+' = '+sum+'/'+L+(g>1||sum>L?' = <b style="color:#4f46e5">'+res+'</b>（约分/化带分数）':' <b style="color:#4f46e5">（最简）</b>'):'分母不同（'+d1+' 和 '+d2+'），格子大小不一样，不能直接数。点“通分”按钮。';
+  if(split)Hub.star('fraction-add',2)}
+$('go').onclick=function(){split=!split;$('go').textContent=split?'还原':'通分：把格子切一样大';draw()};
+['n1','d1','n2','d2'].forEach(function(k){$(k).addEventListener('input',function(){split=false;$('go').textContent='通分：把格子切一样大';draw()})});draw();
+</script></body></html>
