@@ -82,14 +82,54 @@ function streak(){
 }
 
 /* ---------- 朗读和提示 ---------- */
-function say(t,slow){
+let SPK=0,SPT=null;   // SPK：当前这一次朗读的编号（换了新的朗读，旧的就不再继续）
+const FEM=/female|woman|zira|samantha|susan|hazel|jenny|aria|ava|serena|karen|moira|tessa|fiona|libby|sonia|emma|joanna|salli|kimberly|ivy|amy/i;
+const MAL=/\bmale\b|david|mark|daniel|george|guy|ryan|alex|fred|james|oliver|thomas|arthur|brian|matthew|joey|justin|kevin/i;
+const enVoices=()=>'speechSynthesis' in window?speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang)):[];
+/* 对话用的两个声音：优先一男一女；只有一个声音时，用高低音区分 */
+function voicePair(){
+  const all=enVoices(),of=l=>all.filter(v=>v.lang.replace('_','-').toLowerCase()===l);
+  const base=[of('en-gb'),of('en-us')].find(a=>a.length>=2)||all;
+  const f=base.find(v=>FEM.test(v.name)),m=base.find(v=>v!==f&&MAL.test(v.name));
+  if(f&&m)return {v:[f,m],p:[1,1]};
+  if(base.length>=2)return {v:[base[0],base[1]],p:[1,1]};
+  const one=all.find(v=>/^en[-_]GB/i.test(v.lang))||all.find(v=>/^en[-_]US/i.test(v.lang))||all[0]||null;
+  return {v:[one,one],p:[1.25,.8]};
+}
+/* 一问一答自动分成两个人：问句说完，下一句换人 */
+function turns(t){
+  const ps=(t.match(/[^.?!]+[.?!]*\s*/g)||[t]).map(s=>s.trim()).filter(Boolean);
+  if(ps.length<2||!/\?/.test(t))return [{t,s:0}];
+  let s=0;return ps.map(x=>{const o={t:x,s};if(/\?$/.test(x))s=1-s;return o});
+}
+function stopSpeak(){SPK++;clearTimeout(SPT);try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
+function speakSeq(items,rate,done){
   if(!('speechSynthesis' in window)){toast('这个浏览器不支持朗读');return}
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=slow?.55:.85;
-  const vs=speechSynthesis.getVoices();
-  const v=vs.find(x=>/^en[-_]GB/i.test(x.lang))||vs.find(x=>/^en[-_]US/i.test(x.lang))||vs.find(x=>/^en/i.test(x.lang));
-  if(v){u.voice=v;u.lang=v.lang}
-  speechSynthesis.speak(u);
+  speechSynthesis.cancel();clearTimeout(SPT);const my=++SPK;
+  const vp=items.some(x=>x.s)?voicePair():null;
+  const vs=enVoices(),base=vs.find(x=>/^en[-_]GB/i.test(x.lang))||vs.find(x=>/^en[-_]US/i.test(x.lang))||vs[0]||null;
+  let i=0;
+  (function nxt(){
+    if(my!==SPK)return;
+    if(i>=items.length){if(done)done();return}
+    const it=items[i++],u=new SpeechSynthesisUtterance(it.t);u.rate=rate;
+    const v=vp?vp.v[it.s]:base;
+    if(v){u.voice=v;u.lang=v.lang}else u.lang='en-US';
+    if(vp)u.pitch=vp.p[it.s];
+    u.onend=u.onerror=()=>{if(my!==SPK)return;SPT=setTimeout(nxt,i<items.length?(items[i].s!==items[i-1].s?450:250):0)};
+    speechSynthesis.speak(u);
+  })();
+}
+function say(t,slow){speakSeq(turns(t),slow?.55:.85)}
+/* 考试模式：自动播放两遍，中间停几秒，不能重听 */
+function examPlay(text,slow){
+  const st=m=>{const e=document.getElementById('exst');if(e)e.textContent=m},tr=turns(text),r=slow?.55:.85;
+  st('🎧 第 1 遍，请听…');
+  speakSeq(tr,r,()=>{
+    st('第 1 遍播放完了，马上播第 2 遍…');
+    const my=SPK;
+    SPT=setTimeout(()=>{if(my!==SPK)return;st('🎧 第 2 遍，请听…');speakSeq(tr,r,()=>st('✅ 播放完了，请作答'))},3500);
+  });
 }
 let tt;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200)}
@@ -121,6 +161,8 @@ function home(){
     ${nxt?`<button class="btn go" data-act="lesson" data-u="${nxt.id}">${done?'继续':'开始'}：${nxt.cn}</button>`:''}
     <button class="btn" data-act="daily">每日一练（10 题）</button>
     <button class="btn" data-act="listen">听力训练（10 题）</button>
+    <button class="btn" data-act="listenexam">听力考试模拟（10 题，每题听两遍）</button>
+    <button class="btn alt" data-act="audio">真人录音（课本原声）</button>
     <button class="btn alt" data-act="textbook">课本对照</button>
     <button class="btn alt" data-act="mix">综合测验（20 题）</button>
   </section>
@@ -138,6 +180,7 @@ function lessonV(){
   return `<div class="lh"><span class="bd c${i%5}">${i+1}</span><div><h1>${u.cn}</h1><div class="en2"><span class="sp" data-say="${esc(u.en)}">${u.en}</span></div></div></div>
   <p class="intro">${u.intro}</p>${u.lesson}
   <p class="foot">这个单元共有 ${u.qs.length} 道题。“开始练习”每次随机抽 10 题（会优先带上你做错过的题）。</p><button class="btn alt" data-act="practiceall" data-u="${u.id}">把 ${u.qs.length} 道题全部做一遍</button>
+  ${u.qs.some(q=>q.t==='l'||q.t==='d')?`<button class="btn alt" data-act="practiceexam" data-u="${u.id}">考试模式练习（每题自动听两遍）</button>`:''}
   <div class="lnav">${i>0?`<button class="btn alt" data-act="lesson" data-u="${U[i-1].id}">上一单元</button>`:'<span></span>'}${i<U.length-1?`<button class="btn alt" data-act="lesson" data-u="${U[i+1].id}">下一单元</button>`:'<span></span>'}</div>
   <button class="btn go fab" data-act="practice" data-u="${u.id}">开始练习（${u.qs.length>12?'随机 10 题':u.qs.length+' 题'}）</button>`;
 }
@@ -156,10 +199,12 @@ function fullSentence(q){
 const qPlain=q=>q.t==='o'?q.cn:q.t==='l'||q.t==='d'?'（听力）'+q.s:q.t==='j'?'判断：'+q.q:q.q.replace('___','＿＿');
 const qAnswer=q=>q.t==='c'||q.t==='l'?q.o[q.a]:q.t==='j'?(q.a?'对的':'错的'):q.a[0];
 
-function listenBtns(q){
-  const o=S.D.opts,t=esc(q.s);
+function listenBtns(q,a){
+  const o=S.D.opts,z=S.quiz,t=esc(q.s),ex=!!(z&&z.exam);
+  const tog=`<button class="nb" data-act="examtog">考试模式（听两遍）：${ex?'开':'关'}</button>`;
+  if(ex&&!a)return `<div class="exst" id="exst">🎧 准备播放…</div><div class="lopt"><button class="nb" data-act="slowtog">慢速播放：${o.slow?'开':'关'}</button>${tog}</div>`;
   return `<div class="lbtns"><button class="btn alt big" data-say="${t}">🔊 正常</button><button class="btn alt big" data-say="${t}" data-rate="slow">🐢 慢速</button></div>
-  <div class="lopt"><button class="nb" data-act="slowtog">自动慢速播放：${o.slow?'开':'关'}</button>${q.t==='l'?`<button class="nb" data-act="textog">显示文字：${o.text?'开':'关'}</button>`:''}</div>
+  <div class="lopt"><button class="nb" data-act="slowtog">自动慢速播放：${o.slow?'开':'关'}</button>${q.t==='l'?`<button class="nb" data-act="textog">显示文字：${o.text?'开':'关'}</button>`:''}${tog}</div>
   ${q.t==='l'&&o.text?`<div class="lines htext">${t}</div>`:''}`;
 }
 function qBody(it,a){
@@ -168,12 +213,12 @@ function qBody(it,a){
     s+=`<div class="qtype">${TYPE[q.t]}</div>`;
     if(q.t==='c')s+=`<div class="qtext">${blank(q.q)}</div>`;
     else if(q.t==='j')s+=`<div class="cnq">下面这句话对不对？</div><div class="lines jsent">${esc(q.q)}</div>`;
-    else s+=listenBtns(q)+`<div class="qtext">${q.q}</div>`;
+    else s+=listenBtns(q,a)+`<div class="qtext">${q.q}</div>`;
     s+=`<div class="opts">`+it.opts.map((o,i)=>{
       let c='opt';if(a){if(o.ok)c+=' ok';else if(a.pick===i)c+=' bad';else c+=' dim'}
       return `<button class="${c}" data-act="pick" data-i="${i}" ${a?'disabled':''}><span class="lt">${'ABCD'[i]}</span><span>${esc(o.t)}</span></button>`}).join('')+`</div>`;
   }else if(q.t==='d'){
-    s+=`<div class="qtype">听写题</div>${listenBtns(q)}<div class="qtext">${q.q}${q.hint?`<br><span class="cnq">提示：${esc(q.hint)}</span>`:''}</div>`;
+    s+=`<div class="qtype">听写题</div>${listenBtns(q,a)}<div class="qtext">${q.q}${q.hint?`<br><span class="cnq">提示：${esc(q.hint)}</span>`:''}</div>`;
     s+=`<input class="fill wide ${a?(a.ok?'ok':'bad'):''}" id="fi" value="${a?esc(a.val):''}" ${a?'disabled':''} autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="写下你听到的">`;
     if(!a)s+=`<div><button class="btn" data-act="submit">提交</button></div>`;
   }else if(q.t==='f'){
@@ -296,17 +341,49 @@ const hideTip=()=>{const t=$('#wtip');if(t)t.classList.remove('show')};
 function textbookV(){
   const vol=TEXTBOOK[TBV]||TEXTBOOK[0];
   if(!vol)return '<h1>课本对照</h1><p>还没有课本目录。</p>';
-  return `<h1>课本对照</h1><p>人教PEP新版四年级。每个课本单元下面列出重点句型，以及本网站里可以用来复习的单元。点英文可以听读音。</p>
+  return `<h1>课本对照</h1><p>人教PEP新版四年级。每个课本单元下面列出课本目录（Part A / B / C）、重点句型，以及本网站里可以用来复习的单元。点英文可以听读音。</p>
   <div class="seg">${TEXTBOOK.map((v,i)=>`<button class="${i===TBV?'on':''}" data-act="tbvol" data-v="${i}">${v.vol}</button>`).join('')}</div>
   ${vol.units.map(u=>`<div class="tbu"><div class="tbh"><span class="bd c${(u.n-1)%5}">${u.n}</span><div><div class="t"><span class="sp" data-say="${esc(u.en)}">${u.en}</span></div><div class="en2">${u.cn}</div></div></div>
+   ${u.parts?`<div class="tbparts">${u.parts.map(x=>`<div>${x}</div>`).join('')}</div>`:''}
    <ul>${u.focus.map(f=>`<li>${f}</li>`).join('')}</ul>
-   <p class="foot" style="margin:6px 0">${u.ok?'重点句型来自公开的教学资料，和课本原句可能略有出入。':'这个单元没能核对到具体内容，下面是按单元主题推测的复习内容。'}</p>
+   <p class="foot" style="margin:6px 0">${u.ok?'重点句型来自公开的教学资料，和课本原句可能略有出入。':u.parts?'上面的 Part 标题来自课本目录；重点句型没能核对，是按单元主题推测的。':'这个单元没能核对到具体内容，下面是按单元主题推测的复习内容。'}</p>
    <div class="chs">${u.link.map(id=>{const x=byId(id);if(!x)return '';const b=S.D.best[id];return `<button class="nb" data-act="lesson" data-u="${id}">${x.cn}${b?' '+stars(starCount(b)):''}</button>`}).join('')}</div></div>`).join('')}
   ${vol.note?`<p class="foot">${vol.note}</p>`:''}`;
 }
+/* ---- 真人录音：播放服务器 audio 文件夹里的音频（课本 mp3 等） ---- */
+let AUD=[];const AP={i:-1,rate:1,loop:false,auto:true};
+const audName=f=>f.path.split('/').pop().replace(/\.[^.]+$/,'');
+function audioV(){
+  if(!AUD.length)return `<h1>真人录音</h1><p>这里可以播放课本的真人录音（人教点读 App 或学校发的 mp3 等），比机器朗读更接近考试的声音。可以调慢速度，也可以单曲循环。</p>
+  <div class="box rule"><b>怎么放进来</b><ol><li>把音频文件复制到服务器上这个项目的 <code>audio</code> 文件夹里（和 <code>data</code> 文件夹放在一起）。</li><li>可以建子文件夹分类，比如 <code>四上/Unit1/</code>，页面里会按文件夹分组。</li><li>刷新页面，再点“真人录音”。</li></ol></div>
+  <p class="foot">支持 mp3、m4a、wav、ogg。音频只放在你自己的服务器上，不会传到别处。</p>`;
+  const groups=[];AUD.forEach((f,i)=>{const k=f.path.includes('/')?f.path.slice(0,f.path.lastIndexOf('/')):'';let g=groups.find(x=>x.k===k);if(!g)groups.push(g={k,a:[]});g.a.push({f,i})});
+  return `<h1>真人录音</h1><p>共 ${AUD.length} 个音频。点一个开始播放，可以调速度；放完会自动播下一个。</p>
+  <div class="aplayer"><div class="apt" id="apt">${AP.i>=0&&AUD[AP.i]?esc(AUD[AP.i].path):'点下面的文件开始播放'}</div>
+  <audio id="ap" controls preload="none"></audio>
+  <div class="seg">${[[.75,'慢一点 0.75×'],[1,'正常 1×'],[1.25,'快一点 1.25×']].map(([v,n])=>`<button class="${AP.rate===v?'on':''}" data-act="arate" data-v="${v}">${n}</button>`).join('')}</div>
+  <div class="lopt" style="margin-top:10px"><button class="nb" data-act="aloop">单曲循环：${AP.loop?'开':'关'}</button><button class="nb" data-act="aauto">连续播放：${AP.auto?'开':'关'}</button></div></div>
+  ${groups.map(g=>`<h2>${g.k?esc(g.k):'音频文件'}</h2><div class="alist">${g.a.map(x=>`<button class="arow ${x.i===AP.i?'on':''}" data-act="aplay" data-i="${x.i}">▶ ${esc(audName(x.f))}</button>`).join('')}</div>`).join('')}`;
+}
+async function openAudio(){
+  try{AUD=await api('GET','api/audio-files')}catch(e){AUD=[]}
+  AP.i=-1;S.view='audio';render(true);
+}
+function apPlay(i){
+  const a=$('#ap');if(!a||!AUD[i])return;
+  stopSpeak();AP.i=i;
+  a.src='audio/'+AUD[i].path.split('/').map(encodeURIComponent).join('/');
+  a.defaultPlaybackRate=a.playbackRate=AP.rate;a.loop=AP.loop;
+  a.play().catch(()=>toast('这个文件播放不了，请换一个，或点播放键再试'));
+  document.querySelectorAll('.arow').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+  $('#apt').textContent=AUD[i].path;
+}
+document.addEventListener('ended',e=>{if(e.target&&e.target.id==='ap'&&AP.auto&&!AP.loop&&AP.i<AUD.length-1)apPlay(AP.i+1)},true);
+
 function render(scroll){
   const v=S.view;
-  $('#app').innerHTML=v==='boot'?'<p>加载中…</p>':v==='profiles'?profilesV():v==='home'?home():v==='lesson'?lessonV():v==='quiz'?quizV():v==='result'?resultV():v==='report'?reportV():v==='settings'?settingsV():v==='textbook'?textbookV():bookV();
+  if(scroll&&v!=='quiz')stopSpeak();
+  $('#app').innerHTML=v==='boot'?'<p>加载中…</p>':v==='profiles'?profilesV():v==='home'?home():v==='lesson'?lessonV():v==='quiz'?quizV():v==='result'?resultV():v==='report'?reportV():v==='settings'?settingsV():v==='textbook'?textbookV():v==='audio'?audioV():bookV();
   document.body.classList.toggle('nonav',v==='profiles'||v==='boot');
   document.body.dataset.view=v;
   hideTip();
@@ -329,18 +406,18 @@ function prep(q){
   }
   return it;
 }
-function autoplay(){const z=S.quiz,q=z&&z.items[z.i].q;if(q&&(q.t==='l'||q.t==='d')&&!z.ans)say(q.s,S.D.opts.slow)}
-function start(list,title,uid,mode){
-  S.quiz={title,uid,mode,items:list.map(prep),i:0,score:0,ans:null,wrong:[]};
+function autoplay(){const z=S.quiz,q=z&&z.items[z.i].q;if(q&&(q.t==='l'||q.t==='d')&&!z.ans){if(z.exam)examPlay(q.s,S.D.opts.slow);else say(q.s,S.D.opts.slow)}}
+function start(list,title,uid,mode,exam){
+  S.quiz={title,uid,mode,exam:!!exam,items:list.map(prep),i:0,score:0,ans:null,wrong:[]};
   S.view='quiz';render(true);autoplay();
 }
-function startUnit(id,all){
+function startUnit(id,all,exam){
   const u=byId(id);let list=u.qs;
   if(!all&&list.length>12){
     const inBook=shuffle(list.filter(q=>S.D.book[q.id])).slice(0,3),ids=new Set(inBook.map(q=>q.id));
     list=shuffle(inBook.concat(shuffle(list.filter(q=>!ids.has(q.id))).slice(0,10-inBook.length)));
   }
-  start(list,u.cn+(all?'（全部题）':'练习'),id,all?'unitall':'unit');
+  start(list,u.cn+(all?'（全部题）':'练习')+(exam?'（考试模式）':''),id,all?'unitall':'unit',exam);
 }
 function startMix(){start(shuffle(poolQ()).slice(0,20),'综合测验',null,'mix')}
 function startDaily(){
@@ -348,10 +425,10 @@ function startDaily(){
   const rest=shuffle(poolQ().filter(q=>!ids.has(q.id))).slice(0,10-book.length);
   start(shuffle(book.concat(rest)),'每日一练',null,'daily');
 }
-function startListen(){
+function startListen(exam){
   const l=shuffle(poolQ().filter(q=>q.t==='l'||q.t==='d')).slice(0,10);
   if(!l.length){toast('这个年级里还没有听力题，试试“全部”');return}
-  start(l,'听力训练',null,'listen');
+  start(l,exam?'听力考试模拟':'听力训练',null,'listen',exam);
 }
 function startBook(){
   const l=bookList();
@@ -457,6 +534,14 @@ document.addEventListener('click',e=>{
     case 'mix':startMix();break;
     case 'daily':startDaily();break;
     case 'listen':startListen();break;
+    case 'listenexam':startListen(true);break;
+    case 'practiceexam':startUnit(d.u,false,true);break;
+    case 'examtog':{const f=$('#fi'),v=f&&!f.disabled?f.value:'';z.exam=!z.exam;render(false);const g=$('#fi');if(g&&!g.disabled)g.value=v;if(!z.ans){if(z.exam)autoplay();else stopSpeak()}break}
+    case 'audio':openAudio();break;
+    case 'aplay':apPlay(+d.i);break;
+    case 'arate':{AP.rate=+d.v;const a=$('#ap');if(a)a.defaultPlaybackRate=a.playbackRate=AP.rate;document.querySelectorAll('[data-act=arate]').forEach(b=>b.classList.toggle('on',+b.dataset.v===AP.rate));break}
+    case 'aloop':{AP.loop=!AP.loop;const a=$('#ap');if(a)a.loop=AP.loop;el.textContent='单曲循环：'+(AP.loop?'开':'关');break}
+    case 'aauto':AP.auto=!AP.auto;el.textContent='连续播放：'+(AP.auto?'开':'关');break;
     case 'textbook':S.view='textbook';render(true);break;
     case 'tbvol':TBV=+d.v;render(false);break;
     case 'grade':GF=d.v;try{localStorage.setItem('eg_grade',GF)}catch(e){}render(false);break;
@@ -476,7 +561,7 @@ document.addEventListener('click',e=>{
     case 'import':$('#imp').click();break;
     case 'startbook':startBook();break;
     case 'quit':if(z.uid){S.uid=z.uid;S.view='lesson'}else S.view='home';render(true);break;
-    case 'retry':z.mode==='unit'?startUnit(z.uid):z.mode==='unitall'?startUnit(z.uid,true):z.mode==='book'?startBook():z.mode==='daily'?startDaily():z.mode==='listen'?startListen():startMix();break;
+    case 'retry':z.mode==='unit'?startUnit(z.uid,false,z.exam):z.mode==='unitall'?startUnit(z.uid,true,z.exam):z.mode==='book'?startBook():z.mode==='daily'?startDaily():z.mode==='listen'?startListen(z.exam):startMix();break;
     case 'pick':if(!z.ans)grade(it.opts[+d.i].ok,{pick:+d.i});break;
     case 'submit':submitFill();break;
     case 'bank':if(!z.ans){it.picked.push(it.bank.find(b=>b.i===+d.k));render(false)}break;

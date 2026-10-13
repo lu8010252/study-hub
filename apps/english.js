@@ -11,6 +11,7 @@ const zlib = require('zlib');
 const DATA_DIR = path.join(process.env.DATA_DIR || '/data', 'english');
 const ADMIN_PIN = process.env.ADMIN_PIN || '';
 const FILE = path.join(DATA_DIR, 'data.json');
+const AUDIO_DIR = process.env.AUDIO_DIR || '/audio';   // 真人录音（课本 mp3）放这里，只读
 const PUB = path.join(__dirname, 'english-public');
 const MAX_BODY = 4 * 1024 * 1024;
 const MAX_PROFILES = 50;
@@ -122,6 +123,9 @@ async function api(req, res, url) {
     return send(res, 200, names);
   }
 
+  // 真人录音清单：AUDIO_DIR 里的音频文件（最多往下 3 层子文件夹）
+  if (p === '/api/audio-files' && m === 'GET') return send(res, 200, listAudio());
+
   if (p === '/api/export' && m === 'GET') {
     const stamp = new Date().toISOString().slice(0, 10);
     return send(res, 200, { version: 1, exported: new Date().toISOString(), profiles: DB.profiles },
@@ -183,6 +187,50 @@ async function api(req, res, url) {
   throw fail(404, '没有这个接口');
 }
 
+/* ---------- 真人录音 ---------- */
+const AUDIO_MIME = { '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.wav': 'audio/wav', '.ogg': 'audio/ogg' };
+function listAudio() {
+  const out = [];
+  (function walk(dir, rel, depth) {
+    let ents;
+    try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch (e) { return; }
+    for (const e of ents) {
+      if (e.name.startsWith('.')) continue;
+      if (e.isDirectory()) { if (depth < 3) walk(path.join(dir, e.name), rel + e.name + '/', depth + 1); }
+      else if (AUDIO_MIME[path.extname(e.name).toLowerCase()] && out.length < 1000) out.push({ path: rel + e.name });
+    }
+  })(AUDIO_DIR, '', 0);
+  const col = new Intl.Collator('zh-CN', { numeric: true });
+  return out.sort((a, b) => col.compare(a.path, b.path));
+}
+function serveAudio(req, res, url) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
+  let rel;
+  try { rel = decodeURIComponent(url.pathname.slice('/audio/'.length)); } catch (e) { res.writeHead(400); return res.end(); }
+  if (rel.includes('\0')) { res.writeHead(400); return res.end(); }
+  const root = path.resolve(AUDIO_DIR), file = path.resolve(root, rel);
+  const mime = AUDIO_MIME[path.extname(file).toLowerCase()];
+  if (!file.startsWith(root + path.sep) || !mime) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Not found'); }
+  fs.stat(file, (err, st) => {
+    if (err || !st.isFile()) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Not found'); }
+    const h = { 'Content-Type': mime, 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-cache' };
+    let start = 0, end = st.size - 1, code = 200;
+    const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (m && (m[1] || m[2])) {
+      if (m[1] === '') start = Math.max(0, st.size - +m[2]);
+      else { start = +m[1]; if (m[2] !== '') end = Math.min(end, +m[2]); }
+      if (start > end || start >= st.size) { res.writeHead(416, { 'Content-Range': 'bytes */' + st.size }); return res.end(); }
+      code = 206; h['Content-Range'] = `bytes ${start}-${end}/${st.size}`;
+    }
+    h['Content-Length'] = st.size ? end - start + 1 : 0;
+    res.writeHead(code, h);
+    if (req.method === 'HEAD' || !st.size) return res.end();
+    const s = fs.createReadStream(file, { start, end });
+    s.on('error', () => res.destroy());
+    s.pipe(res);
+  });
+}
+
 /* ---------- 静态文件 ---------- */
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.txt': 'text/plain; charset=utf-8' };
@@ -221,6 +269,7 @@ async function handle(req, res, url) {
     catch (e) { if (!res.headersSent) send(res, e.status || 500, { error: e.message || '服务器出错了' }); if (!e.status) console.error(e); }
     return;
   }
+  if (url.pathname.startsWith('/audio/')) return serveAudio(req, res, url);
   serveStatic(req, res, url);
 }
 module.exports = { handle, saveSync, pinRequired: !!ADMIN_PIN };

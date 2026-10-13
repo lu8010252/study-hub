@@ -48,6 +48,7 @@ rule('<ul><li>可数名词：单数前面可以加 a / an，复数要变形。</
 h('不可数名词怎么数？加“量词”')+
 xs([["a <b>glass of</b> water","一杯水（玻璃杯）"],["a <b>cup of</b> tea","一杯茶"],["a <b>bottle of</b> milk","一瓶牛奶"],["a <b>bowl of</b> rice","一碗米饭"],["a <b>piece of</b> bread","一片面包"],["two <b>glasses of</b> water","两杯水（量词变复数，water 不变）"]])+
 h('名词变复数的规则')+
+tip('规则有点多，先记住<b>最常用的三条</b>：①直接加 s（book → books）；②以 s, x, sh, ch 结尾加 es（box → boxes）；③“辅音 + y”去 y 加 ies（baby → babies）。其余的遇到再查。')+
 tbl(['变化规则','例子'],[
  ['一般情况，直接加 <b>s</b>','book → books<br>pen → pens<br>cat → cats'],
  ['以 s, x, sh, ch 结尾，加 <b>es</b>','bus → buses<br>box → boxes<br>dish → dishes<br>watch → watches'],
@@ -58,7 +59,8 @@ tbl(['变化规则','例子'],[
  ['不规则变化，要单独记','man → men<br>woman → women<br>child → children<br>foot → feet<br>tooth → teeth<br>mouse → mice'],
  ['单复数一样','sheep → sheep<br>fish → fish']])+
 warn('<s>two book</s>　数词比 1 大，名词要用复数：<b>two books</b>。<br><s>a milk</s>　milk 不可数：<b>some milk</b> 或 <b>a bottle of milk</b>。')+
-tip('people（人们）本身就是复数，不能再加 s。'),
+tip('people（人们）本身就是复数，不能再加 s。')+
+tip('加 s / es 以后怎么读？<br>在 k, p, t 等清辅音后面读 <b>/s/</b>：books, caps<br>在元音和 b, d, g 等浊辅音后面读 <b>/z/</b>：pens, dogs<br>在 s, x, sh, ch 后面读 <b>/ɪz/</b>：boxes, buses, watches'),
 qs:[
  F('I have two ___.（box）','boxes','box 以 x 结尾，加 es。'),
  F('There are three ___ in the park.（baby）','babies','baby 是“辅音 b + y”，去 y 加 ies。'),
@@ -121,7 +123,9 @@ h('指示代词：this, that, these, those')+
 tbl(['','近处','远处'],[['单数','this（这个）','that（那个）'],['复数','these（这些）','those（那些）']])+
 xs([["<b>This</b> is my pen.","这是我的钢笔。"],["<b>Those</b> are my friends.","那些是我的朋友。"]])+
 warn('<s>He is I friend.</s>　应该用“我的”：He is <b>my</b> friend.<br><s>Give the book to I.</s>　to 后面用宾格：Give the book to <b>me</b>.<br><s>Her is a teacher.</s>　做主语用主格：<b>She</b> is a teacher.')+
-tip('名字加 <b>’s</b> 也表示“……的”：Tom<b>’s</b> bag（汤姆的书包）。'),
+tip('名字加 <b>’s</b> 也表示“……的”：Tom<b>’s</b> bag（汤姆的书包）。')+
+tip('怎么选 I 还是 me？<b>做事的人</b>用 I / he / she / we / they：<b>She</b> helps me.<br><b>被帮、被看、被叫的人</b>用 me / him / her / us / them：She helps <b>me</b>.')+
+warn('<b>her</b> 和 <b>his</b> 有两个身份，要看后面有没有名词：<br>I like <b>her</b>.（她，后面没有名词）　I like <b>her</b> bag.（她的，后面有名词 bag）<br><b>its</b> 是“它的”（The dog wags its tail.），<b>it’s</b> 是 it is 的缩写（It’s a dog.），两个不一样。'),
 qs:[
  C('___ is my teacher.（她）',['She','Her','Hers','Hes'],0,'做主语用主格 She。'),
  C('I like ___.（他们）',['they','them','their','theirs'],1,'like 的后面是宾语，用宾格 them。'),
@@ -150,7 +154,8 @@ tbl(['主语','be 动词','缩写','例句'],[
  ['we','are','we’re','We are in the park.'],
  ['they','are','they’re','They are happy.'],
  ['单数名词（Tom, the book）','is','—','Tom is tall.'],
- ['复数名词（my parents）','are','—','My parents are at home.']])+
+ ['复数名词（my parents）','are','—','My parents are at home.'],
+ ['A and B（两个人或两样东西）','are','—','Tom and Lucy are friends.']])+
 xs([["I <b>am</b> ten years old.","我十岁了。"],["Tom <b>is</b> in the classroom.","汤姆在教室里。"],["The books <b>are</b> on the desk.","书在桌子上。"]])+
 h('否定句：be 后面加 not')+
 xs([["I am <b>not</b> a doctor.","我不是医生。（am not 不能缩写）"],["He <b>isn’t</b> at home.","他不在家。（is not = isn’t）"],["They <b>aren’t</b> students.","他们不是学生。（are not = aren’t）"]])+
@@ -189,7 +194,8 @@ h('否定句：don’t / doesn’t + 动词原形')+
 xs([["I <b>don’t</b> like milk.","我不喜欢牛奶。"],["She <b>doesn’t</b> like milk.","她不喜欢牛奶。"]])+
 h('疑问句：Do / Does 放句首')+
 xs([["<b>Do</b> you like cats?","你喜欢猫吗？"],["Yes, I <b>do</b>.　/　No, I <b>don’t</b>.","是的 / 不是。"],["<b>Does</b> he play football?","他踢足球吗？"],["Yes, he <b>does</b>.　/　No, he <b>doesn’t</b>.","是的 / 不是。"]])+
-warn('<s>She doesn’t likes milk.</s> <s>Does he plays football?</s><br>有了 doesn’t / Does，后面的动词就要<b>还原成原形</b>：She doesn’t <b>like</b> milk. Does he <b>play</b> football?'),
+warn('<s>She doesn’t likes milk.</s> <s>Does he plays football?</s><br>有了 doesn’t / Does，后面的动词就要<b>还原成原形</b>：She doesn’t <b>like</b> milk. Does he <b>play</b> football?')+
+tip('动词加 s / es 的读音和名词复数一样：reads /z/，helps /s/，watches /ɪz/。<br>注意：<b>does</b> 有时是“做”：She <b>does</b> her homework.，这时它是真正的动词，不是帮手。'),
 qs:[
  F('He ___ to school by bus.（go）','goes','go 以 o 结尾，三单加 es。'),
  F('My mother ___ TV every night.（watch）','watches','watch 以 ch 结尾，加 es。'),
@@ -243,13 +249,13 @@ tbl(['变化规则','原级','比较级','最高级'],[
  ['一般加 er / est','tall<br>long','taller<br>longer','tallest<br>longest'],
  ['以 e 结尾加 r / st','nice<br>large','nicer<br>larger','nicest<br>largest'],
  ['“辅音 + y”变 y 为 i 再加 er / est','happy<br>easy<br>heavy','happier<br>easier<br>heavier','happiest<br>easiest<br>heaviest'],
- ['重读闭音节，双写最后字母','big<br>hot<br>thin','bigger<br>hotter<br>thinner','biggest<br>hottest<br>thinnest'],
- ['多音节词，前面加 more / most','beautiful<br>interesting','more beautiful<br>more interesting','most beautiful<br>most interesting'],
+ ['“一个元音 + 一个辅音”结尾的短词（w、x、y 结尾除外），双写最后一个字母','big<br>hot<br>thin','bigger<br>hotter<br>thinner','biggest<br>hottest<br>thinnest'],
+ ['较长的词（像 beautiful, interesting 这样的）：前面加 more / most','beautiful<br>interesting','more beautiful<br>more interesting','most beautiful<br>most interesting'],
  ['不规则','good / well<br>bad<br>many / much','better<br>worse<br>more','best<br>worst<br>most']])+
 warn('<s>more taller</s>　比较级只能“加 er”或“加 more”，不能一起用：<b>taller</b>。<br><s>He is tall than me.</s>　比较级要写完整：He is <b>taller</b> than me.<br>最高级前面一般要加 <b>the</b>。'),
 qs:[
  F('A cat is ___ than a dog.（small）','smaller','small 加 er。'),
- F('Today is ___ than yesterday.（hot）','hotter','hot 是重读闭音节，双写 t 再加 er。'),
+ F('Today is ___ than yesterday.（hot）','hotter','hot 是“一个元音 + 一个辅音”结尾的短词，双写 t 再加 er。'),
  F('This book is ___ than that one.（interesting）','more interesting','interesting 是多音节词，前面加 more。'),
  F('She is the ___ girl in our class.（tall）','tallest','最高级：the + tallest。'),
  F('This is the ___ apple.（big）','biggest','big 双写 g 再加 est。'),
@@ -300,13 +306,16 @@ tbl(['介词','意思','例子'],[
  ['next to / beside','紧挨着','She sits <b>next to</b> me.'],
  ['between … and …','在两者之间','The school is <b>between</b> the park and the hospital.'],
  ['near','在……附近','My home is <b>near</b> the school.'],
- ['at','在某个地点（小地方）','at school, at home, at the bus stop']])+
+ ['at','在某个地点（小地方）','at school, at home, at the bus stop'],
+ ['to','到……去','go <b>to</b> school, walk <b>to</b> the park'],
+ ['with','和……一起；用……','play <b>with</b> me；write <b>with</b> a pen'],
+ ['of','……的（东西的）','a picture <b>of</b> my family；the name <b>of</b> the school']])+
 xs([["The cat is <b>under</b> the table.","猫在桌子下面。"],["I live <b>near</b> the park.","我住在公园附近。"]])+
 h('表示时间：at / on / in')+
 tbl(['介词','用在','例子'],[
  ['<b>at</b>','具体的钟点、中午、夜里','at 7 o’clock, at noon, at night'],
  ['<b>on</b>','星期、具体的日期、某一天的上午下午','on Monday, on May 1st, on Sunday morning, on my birthday'],
- ['<b>in</b>','月份、年份、季节、一天里的早中晚','in March, in 2024, in summer, in the morning / afternoon / evening']])+
+ ['<b>in</b>','月份、年份、季节、一天里的早中晚','in March, in 2026, in summer, in the morning / afternoon / evening']])+
 xs([["I get up <b>at</b> six o’clock.","我六点起床。"],["We have English <b>on</b> Monday.","我们星期一上英语课。"],["My birthday is <b>in</b> October.","我的生日在十月。"]])+
 h('还有几个常用的')+
 xs([["I go to school <b>by</b> bike.","我骑自行车上学。（by + 交通工具）"],["This is a gift <b>for</b> you.","这是给你的礼物。"],["He is <b>from</b> China.","他来自中国。"]])+
@@ -337,7 +346,7 @@ h('动词 -ing 怎么变？')+
 tbl(['变化规则','例子'],[
  ['一般直接加 <b>ing</b>','play → playing<br>read → reading<br>eat → eating'],
  ['不发音的 e 结尾，去 e 加 <b>ing</b>','make → making<br>write → writing<br>dance → dancing<br>have → having'],
- ['重读闭音节，双写最后字母加 <b>ing</b>','run → running<br>swim → swimming<br>sit → sitting<br>get → getting'],
+ ['“一个元音 + 一个辅音”结尾的短词（w、x、y 结尾除外），双写最后一个字母再加 <b>ing</b>','run → running<br>swim → swimming<br>sit → sitting<br>get → getting<br>（不双写：snow → snowing，fix → fixing）'],
  ['ie 结尾，变 ie 为 y 加 <b>ing</b>','lie → lying<br>die → dying']])+
 h('否定句和疑问句')+
 xs([["She <b>isn’t</b> sleeping.","她没有在睡觉。（be 后面加 not）"],["<b>Is</b> she sleeping?","她在睡觉吗？（be 提到句首）"],["Yes, she <b>is</b>.　/　No, she <b>isn’t</b>.","是的 / 不是。"],["What <b>are</b> you <b>doing</b>?","你在做什么？"],["I’m reading.","我在看书。"]])+
@@ -368,7 +377,7 @@ tbl(['变化规则','例子'],[
  ['一般直接加 <b>ed</b>','play → played<br>want → wanted<br>help → helped'],
  ['以 e 结尾只加 <b>d</b>','like → liked<br>live → lived<br>dance → danced'],
  ['“辅音 + y”结尾，变 y 为 i 加 <b>ed</b>','study → studied<br>carry → carried<br>try → tried'],
- ['重读闭音节，双写最后字母加 <b>ed</b>','stop → stopped<br>plan → planned']])+
+ ['“一个元音 + 一个辅音”结尾的短词（w、x、y 结尾除外），双写最后一个字母再加 <b>ed</b>','stop → stopped<br>plan → planned<br>（不双写：snow → snowed，fix → fixed）']])+
 tip('-ed 的读音有三种：t 和 d 后面读 /ɪd/（wanted, needed）；清辅音后读 /t/（helped, watched）；其他读 /d/（played, called）。')+
 h('不规则动词：要一个一个记')+
 tbl(['原形','过去式','原形','过去式'],[

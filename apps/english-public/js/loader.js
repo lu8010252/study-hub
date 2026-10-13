@@ -2,7 +2,7 @@
  * 服务器会列出 content/*.js（按文件名排序）；列不出来时用下面的默认清单。
  * 以后加内容：往 content/ 里放一个文件（文件名数字比已有的大），刷新页面就会自动加载。 */
 (function(){
-  var DEFAULT=['10-grammar-1.js','11-grammar-2.js','12-grammar-3.js','20-listening.js','30-phonics.js','45-dictionary.js','46-dictionary-2.js','50-order.js','51-grades.js','52-textbook.js','60-more-questions.js','62-more-4.js'];
+  var DEFAULT=['10-grammar-1.js','11-grammar-2.js','12-grammar-3.js','20-listening.js','30-phonics.js','45-dictionary.js','46-dictionary-2.js','50-order.js','51-grades.js','52-textbook.js','60-more-questions.js','62-more-4.js','63-more-5.js','65-listen-pep4.js','66-listen-more.js'];
   function run(list,i){
     if(i>=list.length)return;
     var s=document.createElement('script');s.src=list[i];

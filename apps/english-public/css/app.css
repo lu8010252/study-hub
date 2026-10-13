@@ -285,3 +285,15 @@ td{padding:7px 12px;border-top:1px solid var(--hair);vertical-align:top}
 .tbu ul{margin:8px 0 4px 1.2em;padding:0}
 .tbu li{margin:3px 0}
 .chs{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+
+/* 考试模式 / 真人录音 */
+.exst{margin:0 0 12px;padding:14px 16px;border-radius:12px;background:var(--tip);border-left:5px solid var(--leaf);font-weight:700;font-size:17px;line-height:1.5}
+.aplayer{border-radius:16px;padding:12px 14px;margin:10px 0 6px;background:var(--panel);border:1px solid var(--bd);box-shadow:var(--shadow)}
+.aplayer audio{width:100%;margin:6px 0 10px}
+.apt{font-weight:800;word-break:break-all}
+.alist{display:flex;flex-direction:column;gap:6px}
+.arow{text-align:left;border:1px solid var(--bd);border-radius:12px;background:var(--panel2);padding:8px 12px;font-size:16px;line-height:1.5;color:var(--ink);word-break:break-all}
+.arow:hover{border-color:var(--accent)}
+.arow.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+code{background:var(--soft);border-radius:6px;padding:0 6px;font-size:.92em}
+.tbparts{margin:6px 0 4px;padding:8px 12px;border-radius:12px;background:var(--soft);font-size:15px;line-height:1.7}

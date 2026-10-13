@@ -128,7 +128,7 @@ qs:[
  L('What are you doing? I am reading a book.','他在做什么？',['看书','写字','看电视','睡觉'],0,'reading a book 是看书。'),
  L('Where did you go yesterday? I went to the park.','他昨天去了哪里？',['公园','学校','商店','没出门'],0,'went to the park 是去了公园。'),
  L('What will you do tomorrow? I will play football with my friends.','他明天打算做什么？',['踢足球','游泳','看电影','写作业'],0,'will play football 是将要踢足球。'),
- L('Can you swim? Yes, I can. But my brother can not.','谁不会游泳？',['说话的人','他的哥哥','两个人都不会','两个人都会'],1,'but my brother can not，哥哥不会游泳。'),
+ L('Can you swim? Yes, I can. But my brother can not.','谁不会游泳？',['说话的人','他的兄弟（哥哥或弟弟）','两个人都不会','两个人都会'],1,'but my brother can not，他的兄弟不会游泳。'),
  L('How much is the book? It is twenty yuan.','书多少钱？',['20 元','12 元','50 元','2 元'],0,'twenty 是 20。'),
  L('Whose bag is this? It is Tom’s.','这是谁的包？',['汤姆的','露西的','我的','老师的'],0,'Tom’s 是汤姆的。'),
  L('There is a cat and two dogs in the room.','房间里一共有几只动物？',['三只','两只','一只','四只'],0,'一只猫加两只狗，一共三只。'),

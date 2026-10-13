@@ -178,7 +178,7 @@ swim|/swɪm/|v.|游泳
 jump|/dʒʌmp/|v.|跳
 walk|/wɔːk/|v.|走
 sleep|/sliːp/|v.|睡觉
-drink|/drɪŋk/|v.|喝
+drink|/drɪŋk/|v.|喝（作名词：饮料）
 make|/meɪk/|v.|做；制作
 take|/teɪk/|v.|拿；带
 get|/ɡet/|v.|得到；到达
@@ -203,7 +203,7 @@ cook|/kʊk/|v.|烹饪
 draw|/drɔː/|v.|画
 ride|/raɪd/|v.|骑
 fly|/flaɪ/|v.|飞
-watch|/wɒtʃ/|v.|看；手表
+watch|/wɒtʃ/|v.|看（作名词：手表）
 study|/ˈstʌdi/|v.|学习
 teach|/tiːtʃ/|v.|教
 buy|/baɪ/|v.|买
@@ -258,7 +258,7 @@ cat|/kæt/|n.|猫
 dog|/dɒɡ/|n.|狗
 rabbit|/ˈræbɪt/|n.|兔子
 bird|/bɜːd/|n.|鸟
-fish|/fɪʃ/|n.|鱼
+fish|/fɪʃ/|n.|鱼（作动词：钓鱼）
 duck|/dʌk/|n.|鸭子
 pig|/pɪɡ/|n.|猪
 cow|/kaʊ/|n.|奶牛
@@ -271,7 +271,7 @@ elephant|/ˈelɪfənt/|n.|大象
 tiger|/ˈtaɪɡə/|n.|老虎
 apple|/ˈæpl/|n.|苹果
 banana|/bəˈnɑːnə/|n.|香蕉
-orange|/ˈɒrɪndʒ/|n.|橙子
+orange|/ˈɒrɪndʒ/|n.|橙子（作形容词：橙色的）
 pear|/peə/|n.|梨
 grape|/ɡreɪp/|n.|葡萄
 tomato|/təˈmɑːtəʊ/|n.|西红柿

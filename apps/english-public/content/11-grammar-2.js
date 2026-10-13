@@ -4,9 +4,10 @@
 U.push(
 /* 0 词类总览 */
 {id:'u0',cn:'认识词类',en:'Parts of Speech',sum:'名词、动词、形容词……单词的“家族”',
-intro:'英语单词按作用分成不同的“家族”，先认识它们，后面学语法就轻松了。',
+intro:'英语单词按作用分成不同的“家族”，先认识它们，后面学语法就轻松了。别怕家族多，先记住最重要的三个：<b>名词、动词、形容词</b>。',
 lesson:
 h('九个常见的词类')+
+tip('先抓<b>三大家族</b>：<b>名词</b>（是什么）、<b>动词</b>（做什么）、<b>形容词</b>（什么样）。下面表格里前三行最重要，其余的是“小帮手”，慢慢认就行。')+
 tbl(['词类','英文（点一点）','作用','例子'],[
  ['名词 n.',spk('noun','/naʊn/'),'人、东西、地方的名字','teacher, book, school, water'],
  ['动词 v.',spk('verb','/vɜːb/'),'做什么、是什么','run, eat, like, is'],
@@ -19,13 +20,15 @@ tbl(['词类','英文（点一点）','作用','例子'],[
  ['连词 conj.',spk('conjunction','/kənˈdʒʌŋkʃn/'),'把词或句子连起来','and, but, or, because']])+
 xs([["The <b>little</b> girl <b>quickly</b> eats <b>a</b> big apple.","这个小女孩很快地吃了一个大苹果。"]])+
 p('这个句子里：girl、apple 是名词；eats 是动词；little、big 是形容词；quickly 是副词；a、The 是冠词。')+
+tip('还有一类<b>感叹词</b>（interj.），表示高兴、惊讶，比如 <b>oh, wow, hello</b>，下一页“词性与缩写”里会见到。<br><b>my, your, his, her</b> 叫“物主代词”（我的、你的……），它们放在名词前面：my book、her bag。')+
 h('动词的四个小家族')+
 tbl(['家族','例子','特点'],[
  ['be 动词','am, is, are, was, were','“是、在”，不表示动作'],
  ['实义动词','run, eat, like, play, go','表示具体的动作或状态'],
  ['情态动词','can, will, must, may','帮别的动词增加意思（能、将、必须），后面接动词原形'],
  ['助动词','do, does, did','帮忙造否定句和疑问句，自己没有意思']])+
-h('句子成分：谁在句子里干什么')+
+tip('<b>do / does</b> 有两种身份：①<b>帮手</b>：Does he like milk?（自己没意思）；②<b>“做”</b>：She does her homework.（做作业，是真正的动词）。')+
+h('句子成分：谁在句子里干什么（选学，先看看就行）')+
 xs([["I <b>like</b> apples.","主语 I（谁）+ 谓语 like（做什么）+ 宾语 apples（做的对象）"],["She <b>is</b> happy.","主语 She + be 动词 is + 表语 happy（说明主语怎么样）"]])+
 tip('判断一个词是什么词类，要看它在<b>句子里</b>的作用。比如 play：I play football（动词）。'),
 qs:[
@@ -353,7 +356,7 @@ qs:[
 ]},
 /* 29 词性与缩写 */
 {id:'u29',cn:'词性与缩写',en:'Parts of Speech: Abbreviations & Tips',sum:'词典里的 n. v. adj. adv. 是什么？怎么分辨、怎么记',
-intro:'查词典、看课本时，单词后面常有 <b>n.</b>、<b>v.</b>、<b>adj.</b> 这样的小标记，它们告诉你这个词属于哪一类。这一页教你认识它们，还有分辨、记忆的办法。',
+intro:'查词典、看课本时，单词后面常有 <b>n.</b>、<b>v.</b>、<b>adj.</b> 这样的小标记，它们告诉你这个词属于哪一类。这一页教你认识它们，还有分辨、记忆的办法。<br>这一页内容比较多，<b>可以分几次看</b>：先看“词典里的小标记”和“用颜色看一个句子”，其余的以后慢慢学。',
 lesson:
 h('词典里的小标记（词性缩写）')+
 p('👆 点<b>英文全称</b>可以听读音，旁边有音标。讲解里<b>任何英文单词</b>都可以点一点，听读音、看音标和意思。')+
@@ -413,7 +416,7 @@ p('<b>第二招：位置法</b>（看它站在句子的哪里）')+
 tbl(['位置','常见词性','例子'],[
  ['a / an / the / my 的后面','名词，或者“形容词 + 名词”','the <b>book</b>；a <b>big</b> bag'],
  ['I / you / she / Tom 的后面','动词','I <b>like</b> cats.　Tom <b>runs</b>.'],
- ['am / is / are 的后面','形容词（或名词）','She is <b>happy</b>.'],
+ ['am / is / are 的后面','形容词、名词，也可能是“动词-ing”或“in / on …”','She is <b>happy</b>.　She is <b>running</b>.　She is <b>in</b> the room.'],
  ['动词的后面，说明“怎么做”','副词','He runs <b>fast</b>.'],
  ['in / on / at 的后面','名词或代词','in <b>the room</b>；with <b>me</b>']])+
 p('<b>第三招：词尾法</b>（看单词的结尾）')+
@@ -423,6 +426,7 @@ tbl(['词性','常见词尾','例子'],[
  ['副词 adv.','-ly（由形容词变来）','quickly, slowly, carefully'],
  ['动词 v.','没有固定词尾；-ed、-ing 结尾的多是动词变形','played, playing']])+
 warn('<b>friendly</b>（友好的）、<b>lovely</b>（可爱的）虽然以 -ly 结尾，却是<b>形容词</b>，不是副词。名词加 -ly 常常变成形容词。')+
+warn('词尾只是“线索”，不是“铁证”，还要看句子：<br>① <b>taller, bigger</b> 以 -er 结尾，却是形容词（比较级），不是 teacher 那样的名词。<br>② <b>family, baby, city, story</b> 以 -y 结尾，却是名词，不是 sunny 那样的形容词。<br>③ <b>animal, hospital</b> 以 -al 结尾，却是名词。<br>④ <b>reading, swimming</b> 以 -ing 结尾，有时是动词，有时是名词（I like swimming.）。')+
 p('<b>第四招：看它在句子里的作用</b>（有些词有好几种词性，见下面）')+
 h('一个词，多种词性')+
 tbl(['单词','词性和例子'],[
@@ -431,6 +435,10 @@ tbl(['单词','词性和例子'],[
  ['light','n.　Turn on the <b>light</b>.（灯）<br>adj.　The bag is <b>light</b>.（轻的）'],
  ['fast','adj.　a <b>fast</b> car（快的）<br>adv.　He runs <b>fast</b>.（跑得快）'],
  ['hard','adj.　This question is <b>hard</b>.（难的）<br>adv.　He works <b>hard</b>.（努力地）'],
+ ['watch','v.　I <b>watch</b> TV.（看）<br>n.　This is my <b>watch</b>.（手表）'],
+ ['orange','n.　I eat an <b>orange</b>.（橙子）<br>adj.　an <b>orange</b> bag（橙色的）'],
+ ['fish','n.　I like <b>fish</b>.（鱼）<br>v.　We <b>fish</b> in the river.（钓鱼）'],
+ ['drink','v.　I <b>drink</b> milk.（喝）<br>n.　I want a <b>drink</b>.（饮料）'],
  ['like','v.　I <b>like</b> cats.（喜欢）<br>prep.　He looks <b>like</b> his father.（像）']])+
 tip('遇到一个词有好几种词性，不要慌：先看它在<b>句子里的位置和作用</b>，再决定是哪一类。')+
 h('词性转换：一个词的“家族”')+
@@ -440,7 +448,8 @@ tbl(['原来的词','变成','例子'],[
  ['名词 / 动词 + ful → 形容词','care → careful<br>help → helpful<br>use → useful<br>colour → colourful'],
  ['形容词 + ly → 副词','quick → quickly<br>slow → slowly<br>careful → carefully'],
  ['形容词 + ness → 名词','happy → happiness<br>kind → kindness'],
- ['不规则','good → well（副词）<br>beauty → beautiful']])+
+ ['名词 y → i + ful → 形容词','beauty → beautiful'],
+ ['不规则','good → well（副词）']])+
 h('记词性的口诀')+
 rule('<ul><li>名词是<b>名字</b>：人、东西、地方都能叫。</li><li>动词会<b>动</b>：跑、跳、吃、喝，还有 is、am、are。</li><li>形容词给名词<b>穿衣服</b>：big, red, nice。</li><li>副词给动作或形容词<b>加调料</b>：quickly, very。</li><li>代词是<b>替身</b>：I, he, it。</li><li>介词是<b>方向牌</b>：in, on, under。</li><li>连词是<b>胶水</b>：and, but, because。</li><li>冠词是名词的<b>小跟班</b>：a, an, the。</li><li>数词会<b>数数</b>：one, two, first。</li></ul>')+
 tip('每学一个新单词，顺手问自己一句：<b>它是名词、动词，还是形容词？</b>在单词本上用不同颜色的笔标出来（比如名词红色、动词蓝色、形容词绿色），看多了就记住了。'),
@@ -494,7 +503,7 @@ tbl(['','例子','意思'],[
  ['肯定','I <b>have to</b> go now.　She <b>has to</b> help her mother.','不得不（因为外在原因）'],
  ['否定','You <b>don’t have to</b> come.　He <b>doesn’t have to</b> go.','不必'],
  ['疑问','<b>Do</b> you <b>have to</b> go?','必须吗？']])+
-warn('<b>mustn’t</b> 是“<b>禁止</b>”：You mustn’t smoke.<br><b>don’t have to</b> 是“<b>不必</b>”：You don’t have to come.<br>两个意思完全不同！')+
+warn('<b>mustn’t</b> 是“<b>禁止</b>”：You mustn’t run in the hall.<br><b>don’t have to</b> 是“<b>不必</b>”：You don’t have to come.<br>两个意思完全不同！')+
 warn('<s>You must to go.</s> <s>She should goes.</s>　must、should 后面直接用动词原形：You must <b>go</b>. She should <b>go</b>.'),
 qs:[
  C('You ___ be quiet in the library.',['must','mustn’t','don’t have to','may not'],0,'图书馆里必须安静，用 must。'),
@@ -535,7 +544,7 @@ tbl(['类型','例子'],[
  ['规则动词：和过去式一样，加 ed','play → played → played<br>watch → watched → watched'],
  ['不规则动词：要一个一个记','go → went → <b>gone</b><br>see → saw → <b>seen</b><br>eat → ate → <b>eaten</b><br>do → did → <b>done</b><br>take → took → <b>taken</b><br>write → wrote → <b>written</b><br>give → gave → <b>given</b><br>be → was / were → <b>been</b>'],
  ['过去式和过去分词一样','have → had → had<br>make → made → made<br>buy → bought → bought'],
- ['三个形式都一样或接近','come → came → <b>come</b><br>run → ran → <b>run</b><br>read → read → read']])+
+ ['原形和过去分词一样','come → came → <b>come</b><br>run → ran → <b>run</b><br>read → read → read']])+
 h('否定句和疑问句')+
 xs([["I <b>haven’t</b> finished my homework <b>yet</b>.","我还没做完作业。"],["<b>Have</b> you ever been to Shanghai?","你去过上海吗？"],["Yes, I <b>have</b>.　/　No, I <b>haven’t</b>.","去过 / 没去过。"],["She <b>hasn’t</b> had lunch.","她还没吃午饭。"]])+
 h('have been to 和 have gone to')+

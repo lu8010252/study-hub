@@ -68,7 +68,7 @@ rule('单词结尾有一个<b>不发音的 e</b>，它像魔法一样，让前�
 h('常见的元音字母组合')+
 tbl(['组合','读音','例词'],[
  ['ee','/iː/','see, tree, green'],
- ['ea','/iː/','eat, tea, read'],
+ ['ea','/iː/','eat, tea, meat'],
  ['ai','/eɪ/','rain, train'],
  ['ay','/eɪ/（常在词尾）','day, play'],
  ['oa','/əʊ/','boat, coat'],
