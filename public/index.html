@@ -49,7 +49,7 @@
     return k.split(/\s+/).every(function(w){return s.indexOf(w)>=0});
   }
   function draw(){
-    $('kc').innerHTML='<b>类型</b>'+[['tool','🧰 工具（动手玩）'],['practice','✏️ 练习题'],['all','全部']].map(function(x){return '<button class="chip'+(x[0]===kd?' on':'')+'" data-kd="'+x[0]+'">'+x[1]+'</button>'}).join('');
+    $('kc').innerHTML='<b>类型</b>'+[['all','全部'],['tool','🧰 工具（动手玩）'],['practice','✏️ 练习题']].map(function(x){return '<button class="chip'+(x[0]===kd?' on':'')+'" data-kd="'+x[0]+'">'+x[1]+'</button>'}).join('');
     $('gc').innerHTML='<b>年级</b>'+GR.map(function(x){return '<button class="chip'+(x[0]===g?' on':'')+'" data-g="'+x[0]+'">'+x[1]+'</button>'}).join('');
     $('bc').innerHTML='<b>教材</b>'+BK.map(function(x){return '<button class="chip'+(x===bk?' on':'')+'" data-b="'+x+'">'+(x==='全部'?'全部':'苏教版'+x)+'</button>'}).join('');
     $('tc').innerHTML='<b>专题</b>'+TP.map(function(x){return '<button class="chip'+(x===tp?' on':'')+'" data-t="'+x+'">'+x+'</button>'}).join('');
