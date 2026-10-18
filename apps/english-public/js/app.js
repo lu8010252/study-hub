@@ -23,7 +23,7 @@ function normData(d){
   return e;
 }
 const S={view:'boot',uid:null,quiz:null,profiles:[],P:null,D:emptyData(),offline:false,pin:false,newAv:'🐯'};
-let TBV=0;
+let TBV=Math.max(0,TEXTBOOK.findIndex(v=>v.vol==='四年级上册'));
 let GF='4';try{GF=localStorage.getItem('eg_grade')||'4'}catch(e){}
 const gradeOf=id=>GRADES[id]||'x';
 const inGrade=u=>GF==='all'||gradeOf(u.id)===GF;
@@ -167,8 +167,8 @@ function home(){
     <button class="btn alt" data-act="mix">综合测验（20 题）</button>
   </section>
   <h2>单元</h2>
-  <div class="seg gseg">${[['4','四年级'],['5','五年级'],['6','六年级'],['x','拓展'],['all','全部']].map(([k,n])=>`<button class="${GF===k?'on':''}" data-act="grade" data-v="${k}">${n}</button>`).join('')}</div>
-  <p class="foot" style="margin:8px 0 14px">${GF==='4'?'四年级先学这些；后面年级的内容可以提前看，但不用着急。':GF==='x'?'拓展内容超出小学课本，学有余力再看。':GF==='all'?'':'这个年级的内容，四年级的孩子可以提前看看。'}</p>
+  <div class="seg gseg">${[['3','三年级'],['4','四年级'],['5','五年级'],['6','六年级'],['x','拓展'],['all','全部']].map(([k,n])=>`<button class="${GF===k?'on':''}" data-act="grade" data-v="${k}">${n}</button>`).join('')}</div>
+  <p class="foot" style="margin:8px 0 14px">${GF==='4'?'四年级先学这些；后面年级的内容可以提前看，但不用着急。':GF==='3'?'三年级的内容，四年级的孩子可以回头复习，打牢基础。':GF==='x'?'拓展内容超出小学课本，学有余力再看。':GF==='all'?'':'这个年级的内容，四年级的孩子可以提前看看。'}</p>
   ${list.map((u,i)=>{const b=D.best[u.id];
     return `<button class="row" data-act="lesson" data-u="${u.id}"><span class="bd c${i%5}">${i+1}</span>
     <span><span class="t">${u.cn}<small>${u.en}</small>${GF==='all'?`<small class="gt">${GRADE_NAMES[gradeOf(u.id)]}</small>`:''}</span><br><span class="s">${u.sum}</span></span>

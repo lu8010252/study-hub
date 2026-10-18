@@ -33,7 +33,7 @@ const W=(s,a,w,hint)=>({t:'d',s,q:'听一听，把你听到的写下来。',a:[]
  * DICT  点读小词典（content/45-dictionary.js）；GRADES 单元对应年级（content/51-grades.js）
  */
 const U=[],MORE=[],ORDER=[],DICT={},GRADES={},TEXTBOOK=[];
-const GRADE_NAMES={'4':'四年级','5':'五年级','6':'六年级','x':'拓展'};
+const GRADE_NAMES={'3':'三年级','4':'四年级','5':'五年级','6':'六年级','x':'拓展'};
 /* 点读小词典：每行 单词|音标|词性|中文 */
 function DICT_ADD(t){t.split('\n').forEach(l=>{const a=l.trim().split('|');if(a.length>=4)DICT[a[0].toLowerCase()]=a})}
 /* 可点读的英文（带音标）：spk('noun','/naʊn/') */
