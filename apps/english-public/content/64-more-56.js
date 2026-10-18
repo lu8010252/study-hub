@@ -1,0 +1,111 @@
+/* 追加题目：五年级（一般现在时、现在进行时、名词所有格、句型转换）和六年级（比较级、过去时、将来时、副词）。
+ * 只追加到各单元末尾，旧题编号不变。 */
+MORE.push({
+u6:[
+ C('My father ___ to work by bus every day.',['goes','go','going','gos'],0,'My father 是第三人称单数，go 加 es 变 goes。'),
+ C('She ___ like carrots.',['doesn’t','don’t','isn’t','not'],0,'She 是第三人称单数，否定用 doesn’t。'),
+ C('___ your brother play football on Sundays?',['Does','Do','Is','Are'],0,'your brother 是第三人称单数，一般疑问句用 Does。'),
+ C('Mike ___ English homework every evening.',['does','do','doing','is do'],0,'Mike 是第三人称单数，do 变 does。'),
+ C('The baby ___ at seven o’clock every morning.',['wakes up','wake up','waking up','is wake up'],0,'The baby 是第三人称单数，wake 加 s：wakes up。'),
+ C('study 的第三人称单数是？',['studies','studys','studyes','studis'],0,'study 以“辅音字母 + y”结尾，变 y 为 i 再加 es。'),
+ C('watch 的第三人称单数是？',['watches','watchs','watchies','watchez'],0,'watch 以 ch 结尾，加 es。'),
+ C('Does he ___ TV after dinner?',['watch','watches','watching','watched'],0,'句子里已经有 Does，动词要用原形 watch。'),
+ F('Lucy ___ (not) like milk.（填 doesn’t / don’t）','doesn’t','Lucy 是第三人称单数，用 doesn’t。'),
+ F('We ___ (play) football on Saturdays.','play','We 是复数，动词用原形 play。'),
+ J('He don’t like fish. 这句话是对的。',false,'He 是第三人称单数，应该说 He doesn’t like fish.'),
+ J('Does she likes apples? 这句话是对的。',false,'有 Does 时，动词用原形：Does she like apples?'),
+ O('她每天早上七点起床。','She gets up at seven every morning.','She 是第三人称单数，gets up 要加 s。'),
+ O('我的妈妈不喜欢咖啡。','My mother doesn’t like coffee.','doesn’t 后面动词用原形 like。')
+],
+u11:[
+ C('Look! The children ___ in the park.',['are playing','play','is playing','plays'],0,'Look! 提示正在发生；the children 是复数，用 are playing。'),
+ C('Listen! Mike ___.',['is singing','sings','are singing','sing'],0,'Listen! 提示正在发生；Mike 是单数，用 is singing。'),
+ C('run 的 -ing 形式是？',['running','runing','runeing','runnning'],0,'run 是“一个元音 + 一个辅音”的短词，双写 n 再加 ing。'),
+ C('make 的 -ing 形式是？',['making','makeing','maked','makking'],0,'make 以不发音的 e 结尾，去掉 e 再加 ing。'),
+ C('swim 的 -ing 形式是？',['swimming','swiming','swimimg','swimmming'],0,'swim 双写 m 再加 ing。'),
+ C('What is she doing? — She ___ a book.',['is reading','reads','are reading','read'],0,'问“正在做什么”，用 is reading 回答。'),
+ C('I ___ a letter now.',['am writing','is writing','are writing','write'],0,'主语是 I，be 动词用 am。'),
+ C('___ they watching TV?',['Are','Is','Do','Does'],0,'they 是复数，现在进行时的疑问句把 Are 放在句首。'),
+ F('My sister is ___ (dance) now.','dancing','dance 以不发音的 e 结尾，去 e 加 ing。'),
+ F('The boys are ___ (sit) under the tree.','sitting','sit 双写 t 再加 ing。'),
+ J('He is play basketball now. 这句话是对的。',false,'is 后面要用 -ing 形式：He is playing basketball now.'),
+ J('We are eating lunch now. 这句话是对的。',true,'are + eating，是现在进行时。'),
+ O('他们正在打扫教室。','They are cleaning the classroom.','They + are + cleaning。'),
+ O('你的妈妈正在做饭吗？','Is your mother cooking?','一般疑问句：Is 放在句首。')
+],
+u16:[
+ C('这是 Tom 的书包。',['This is Tom’s bag.','This is Toms bag.','This is Toms’ bag.','This is Tom bag.'],0,'表示“某人的”，在单数名词后加 ’s。'),
+ C('the girls’ room 是什么意思？',['女孩们的房间','女孩的房间','女孩房间们','房间的女孩'],0,'girls 是复数且以 s 结尾，所有格只加 ’。'),
+ C('下面哪个是正确的？',['the children’s toys','the childrens’ toys','the childrens toys','the children toys'],0,'children 是不规则复数，不以 s 结尾，加 ’s。'),
+ C('“教室的门”用英语怎么说？',['the door of the classroom','the classroom’s door of','the classroom door’s','the of door classroom'],0,'东西的“某部分”常用 the + 名词 + of + the + 名词。'),
+ C('Lucy and Lily’s room 表示？',['Lucy 和 Lily 共同的房间','Lucy 的房间和 Lily 的房间（两间）','Lucy 的朋友','两个房间'],0,'两人共有一样东西，只在最后一个名字后加 ’s。'),
+ F('This is my ___ (teacher) book.',['teacher’s','teacher\'s'],'teacher 是单数，加 ’s：teacher’s。'),
+ F('These are the ___ (boy) shoes.（几个男孩的鞋）',['boys’','boys\''],'boys 是复数且以 s 结尾，只加 ’。'),
+ J('Teachers’ Day 里的 Teachers’ 是复数所有格。',true,'老师们的节日，teachers 以 s 结尾，只加 ’。'),
+ J('This is Mikes bag. 这句话是对的。',false,'缺少 ’，应该是 This is Mike’s bag.'),
+ O('这是我哥哥的自行车。','This is my brother’s bike.','my brother 后面加 ’s。')
+],
+u22:[
+ C('把 I like apples. 变成否定句。',['I don’t like apples.','I doesn’t like apples.','I not like apples.','I am not like apples.'],0,'一般现在时、主语是 I，否定句用 don’t + 动词原形。'),
+ C('把 She is tall. 变成一般疑问句。',['Is she tall?','Does she tall?','She is tall?','Are she tall?'],0,'有 be 动词，把 be 动词移到句首。'),
+ C('把 He plays football. 变成一般疑问句。',['Does he play football?','Does he plays football?','Is he play football?','Do he play football?'],0,'没有 be 动词，三单用 Does，动词用原形。'),
+ C('对 They are reading books. 变否定句。',['They aren’t reading books.','They don’t reading books.','They not are reading books.','They isn’t reading books.'],0,'有 are，直接在 are 后面加 not。'),
+ C('I have a pen. 的否定句是？',['I don’t have a pen.','I not have a pen.','I doesn’t have a pen.','I don’t has a pen.'],0,'have 是实义动词，用 don’t have。'),
+ C('There is a cat in the room. 变一般疑问句。',['Is there a cat in the room?','Does there a cat in the room?','Are there a cat in the room?','Is there have a cat in the room?'],0,'There be 句型把 be 动词放到 there 前面。'),
+ C('Can you swim? 的肯定回答是？',['Yes, I can.','Yes, I do.','Yes, I am.','Yes, you can.'],0,'问 Can，就用 Yes, I can. 回答。'),
+ F('She likes dogs. → She ___ like dogs.（否定句）',['doesn’t','doesn\'t'],'She 是第三人称单数，否定用 doesn’t。'),
+ F('He is a doctor. → ___ he a doctor?','Is','有 be 动词，把 Is 放到句首。'),
+ J('变否定句时，一般现在时的三单句要用 don’t。',false,'三单句应该用 doesn’t。'),
+ O('你喜欢香蕉吗？','Do you like bananas?','Do + 主语 + 动词原形。')
+],
+u8:[
+ C('Tom is ___ than Mike.（高）',['taller','tall','tallest','more tall'],0,'两者比较，用比较级 taller。'),
+ C('This book is ___ than that one.（有趣）',['more interesting','interestinger','most interesting','interesting'],0,'interesting 是较长的词，前面加 more。'),
+ C('She is the ___ girl in our class.（高）',['tallest','taller','most tall','tall'],0,'三者或以上中最高，用最高级 tallest，前面有 the。'),
+ C('good 的比较级是？',['better','gooder','more good','best'],0,'good 是不规则变化：good - better - best。'),
+ C('bad 的最高级是？',['worst','baddest','most bad','worse'],0,'bad - worse - worst 是不规则变化。'),
+ C('funny 的比较级是？',['funnier','funnyer','more funny','funniest'],0,'funny 以“辅音字母 + y”结尾，变 y 为 i 加 er。'),
+ C('My bag is ___ than yours.（重）',['heavier','heavyer','more heavy','heaviest'],0,'heavy 变 y 为 i 加 er：heavier。'),
+ F('Winter is ___ (cold) than autumn.','colder','两个季节比较，用比较级 colder。'),
+ F('Who is the ___ (fast) runner in your class?','fastest','在全班里比，用最高级 fastest。'),
+ J('This pen is more cheap than that one. 这句话是对的。',false,'cheap 是短词，直接加 er：cheaper。'),
+ O('我的书包比你的重。','My bag is heavier than yours.','heavy 变 heavier，后面用 than。')
+],
+u12:[
+ C('I ___ to the zoo yesterday.',['went','go','goes','going'],0,'yesterday 表示过去，go 的过去式是 went。'),
+ C('She ___ TV last night.',['watched','watch','watches','watching'],0,'last night 是过去，watch 加 ed。'),
+ C('Did you ___ your homework?',['do','did','does','done'],0,'有 Did，动词用原形 do。'),
+ C('study 的过去式是？',['studied','studyed','studys','studies'],0,'study 以“辅音字母 + y”结尾，变 y 为 i 加 ed。'),
+ C('plan 的过去式是？',['planned','planed','plans','planning'],0,'plan 双写 n 再加 ed。'),
+ C('have 的过去式是？',['had','haved','has','having'],0,'have 是不规则变化：have - had。'),
+ C('They didn’t ___ to school last Sunday.',['go','went','goes','going'],0,'didn’t 后面动词用原形 go。'),
+ C('What did he do? — He ___ a kite.',['made','make','makes','maked'],0,'make 的过去式是 made。'),
+ F('We ___ (visit) my grandma last weekend.','visited','last weekend 是过去，visit 加 ed。'),
+ F('Mike ___ (not) read a book yesterday.（填 didn’t）',['didn’t','didn\'t'],'过去时的否定用 didn’t。'),
+ J('Did she went to the park? 这句话是对的。',false,'有 Did，动词用原形：Did she go to the park?'),
+ O('我昨天打扫了房间。','I cleaned my room yesterday.','clean 加 ed 变过去式。')
+],
+u13:[
+ C('I ___ visit my grandparents tomorrow.',['will','am','did','was'],0,'tomorrow 表示将来，用 will + 动词原形。'),
+ C('We ___ going to have a picnic this weekend.',['are','is','will','do'],0,'be going to 句型，we 用 are。'),
+ C('She is going to ___ a book.',['buy','buys','bought','buying'],0,'be going to 后面用动词原形 buy。'),
+ C('What are you going to do tomorrow?',['I’m going to play football.','I played football.','I play football.','I am play football.'],0,'问将来的打算，用 be going to 回答。'),
+ C('It will ___ tomorrow.（下雨）',['rain','rains','rained','raining'],0,'will 后面用动词原形 rain。'),
+ C('He ___ going to be a teacher.',['is','are','am','will'],0,'he 用 is。'),
+ F('I will ___ (go) to Beijing next month.','go','will 后面用动词原形。'),
+ F('They are going to ___ (clean) the classroom.','clean','be going to 后面用动词原形。'),
+ J('She will goes to school tomorrow. 这句话是对的。',false,'will 后面用动词原形：She will go to school tomorrow.'),
+ O('明天我打算看电影。','I am going to see a film tomorrow.','be going to + 动词原形。')
+],
+u19:[
+ C('She runs ___.（快）',['fast','quick','quickest','fastly'],0,'fast 既是形容词，也是副词，没有 fastly。'),
+ C('He speaks English ___.（好）',['well','good','goodly','best'],0,'speak 是动词，要用副词 well 修饰。'),
+ C('Please speak ___.（轻声地）',['quietly','quiet','quietest','more quiet'],0,'修饰动词 speak 要用副词 quietly。'),
+ C('quick 的副词形式是？',['quickly','quickily','quick','quicky'],0,'形容词后面加 ly 变副词：quickly。'),
+ C('happy 的副词形式是？',['happily','happyly','happys','happing'],0,'happy 变 y 为 i 再加 ly：happily。'),
+ F('The boy is careful. He walks ___ (care).','carefully','形容词 careful 的副词是 carefully。'),
+ F('She sings very ___ (good).','well','修饰动词 sing 用副词 well。'),
+ J('He is running quick. 这句话是对的。',false,'修饰动词 running 要用副词 quickly。'),
+ J('hard 既可以做形容词，也可以做副词。',true,'He works hard.（副词）/ a hard question（形容词）。')
+]
+});
