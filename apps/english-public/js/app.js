@@ -341,7 +341,7 @@ const hideTip=()=>{const t=$('#wtip');if(t)t.classList.remove('show')};
 function textbookV(){
   const vol=TEXTBOOK[TBV]||TEXTBOOK[0];
   if(!vol)return '<h1>课本对照</h1><p>还没有课本目录。</p>';
-  return `<h1>课本对照</h1><p>人教PEP新版四年级。每个课本单元下面列出课本目录（Part A / B / C）、重点句型，以及本网站里可以用来复习的单元。点英文可以听读音。</p>
+  return `<h1>课本对照</h1><p>人教PEP四、五、六年级。每个课本单元下面列出课本目录（Part A / B / C）、重点句型，以及本网站里可以用来复习的单元。点英文可以听读音。</p>
   <div class="seg">${TEXTBOOK.map((v,i)=>`<button class="${i===TBV?'on':''}" data-act="tbvol" data-v="${i}">${v.vol}</button>`).join('')}</div>
   ${vol.units.map(u=>`<div class="tbu"><div class="tbh"><span class="bd c${(u.n-1)%5}">${u.n}</span><div><div class="t"><span class="sp" data-say="${esc(u.en)}">${u.en}</span></div><div class="en2">${u.cn}</div></div></div>
    ${u.parts?`<div class="tbparts">${u.parts.map(x=>`<div>${x}</div>`).join('')}</div>`:''}
