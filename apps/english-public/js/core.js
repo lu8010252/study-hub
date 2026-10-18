@@ -13,6 +13,7 @@ const p=t=>`<p>${t}</p>`;
 const POSL={n:'n.',v:'v.',adj:'adj.',adv:'adv.',pron:'pron.',prep:'prep.',conj:'conj.',art:'art.',num:'num.'};
 const pos=(w,t)=>`<span class="pos p-${t}">${w}<sup>${POSL[t]}</sup></span>`;
 const rule=b=>`<div class="box rule"><b>记住</b>${b}</div>`;
+const gramBox=b=>`<div class="box rule"><b>语法小讲堂</b>${b}</div>`;
 const warn=b=>`<div class="box warn"><b>易错</b>${b}</div>`;
 const tip=b=>`<div class="box tip"><b>小窍门</b>${b}</div>`;
 const tbl=(hd,rows)=>`<div class="tb"><table><thead><tr>${hd.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
