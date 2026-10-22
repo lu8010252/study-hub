@@ -26,5 +26,6 @@ for (const [id, grades, topic, icon, name, desc, kw, kind] of R.list) {
 }
 /* 其它模块(不属于数学小工具目录) */
 out.push({ id: 'english', cat: 'english', kind: 'practice', href: '/english/', grades: [3, 4, 5, 6], topic: '英语', icon: '🔤', name: '英语语法小课堂', desc: '人教PEP四年级 · 出题', kw: '英语 语法 单词 听力 自然拼读 词性', color: '#fecaca' });
+out.push({ id: 'homework', cat: 'homework', kind: 'tool', href: '/homework/', grades: [1, 2, 3, 4, 5, 6], topic: '作业辅导', icon: '🌟', name: '作业小伙伴', desc: '星星姐姐一步步引导你想明白 · 语数英', kw: '作业 辅导 问答 不会 提问 星星姐姐 数学 语文 英语', color: '#fde68a' });
 fs.writeFileSync(path.join(root, 'tools.json'), JSON.stringify(out, null, 1));
 console.log('tools:', out.length);

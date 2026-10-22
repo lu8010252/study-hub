@@ -45,6 +45,7 @@ services:
 | `/` | 首页 |
 | `/math/<id>/` | 数学小工具（纯前端） |
 | `/english/` | 英语语法小课堂（带服务端存档） |
+| `/homework/` | 作业小伙伴(星星姐姐):语数英作业引导,只引导不给答案;需配置 `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` |
 
 ## 加一个新工具
 

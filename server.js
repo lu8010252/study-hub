@@ -12,6 +12,7 @@ const zlib = require('zlib');
 const PORT = parseInt(process.env.PORT || '8080', 10);
 const PUB = path.join(__dirname, 'public');
 const english = require('./apps/english.js');
+const homework = require('./apps/homework.js');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -52,6 +53,7 @@ http.createServer((req, res) => {
   let url;
   try { url = new URL(req.url, 'http://x'); } catch (e) { res.writeHead(400); return res.end(); }
   if (url.pathname === '/healthz') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end('ok'); }
+  if (url.pathname.startsWith('/api/homework/')) return homework.handle(req, res, url);
   if (url.pathname === '/english') { res.writeHead(301, { Location: '/english/' }); return res.end(); }
   if (url.pathname.startsWith('/english/')) {
     url.pathname = url.pathname.slice('/english'.length) || '/';

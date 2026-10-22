@@ -8,6 +8,10 @@ services:
     environment:
       - TZ=Asia/Shanghai
       - ADMIN_PIN=           # 家长密码：留空=不设；设置后英语模块的「清除数据/删除学习者/导入备份」需要输入
+      # 作业小伙伴(/homework/):填你自己的 OpenAI 兼容接口,如 LLM 转发网关;不填则页面提示未配置
+      - LLM_BASE_URL=        # 例:https://你的网关域名/v1
+      - LLM_API_KEY=
+      - LLM_MODEL=           # 例:你网关里的模型名
     volumes:
       - ./data:/data         # 学习数据，备份只需复制这个目录
       - ./audio:/audio:ro    # 可选：课本真人录音（mp3）放这里，英语模块里播放
