@@ -66,7 +66,7 @@ qs:[
  L('Keep to the right. Don’t run in the hallway.','听一听，不要做什么？',['在走廊里跑','靠右走','说话','吃东西'],0,'don’t run 是不要跑；hallway 是走廊。'),
  L('When is your birthday?','听问句，选出合适的回答。',['It’s on June sixth.','It’s six o’clock.','It’s sunny.','I’m ten.'],0,'问日期，回答 It’s on + 日期。'),
  L('Whose bag is it?','听问句，选出合适的回答。',['It’s Mike’s.','It’s a bag.','Yes, it is.','It’s red.'],0,'问“谁的”，回答 It’s + 某人’s。'),
- W('season','season','season 是季节。','听写：季节'),
+ W('winter','winter','winter 是冬天。','听写：冬天'),
  W('birthday','birthday','birthday 是生日。','听写：生日'),
  W('quietly','quietly','quietly 是安静地。','听写：安静地')
 ]},
@@ -93,7 +93,7 @@ qs:[
  L('How much is the book? It’s thirty yuan.','听一听，书多少钱？',['30 元','13 元','300 元','3 元'],0,'thirty 是 30，注意和 thirteen（13）区分。'),
  L('I want to save money. I’m going to buy a bike.','听一听，他为什么要存钱？',['想买自行车','想买书','想买衣服','想买玩具'],0,'buy a bike 是买自行车。'),
  L('This bag is too expensive. I have only fifty yuan.','听一听，他有多少钱？',['50 元','15 元','500 元','5 元'],0,'fifty 是 50，注意和 fifteen（15）区分。'),
- L('The sun is bigger than the Earth.','听一听，谁更大？',['太阳','地球','月亮','一样大'],0,'bigger than 是比……大。'),
+ L('The moon is smaller than the Earth.','听一听，谁更小？',['月亮','地球','太阳','一样大'],0,'smaller than 是比……小；月亮比地球小。'),
  L('The moon goes around the Earth.','听一听，月亮围着什么转？',['地球','太阳','火星','星星'],0,'goes around 是围着转；the Earth 是地球。'),
  L('Astronauts fly in a spaceship.','听一听，宇航员乘坐什么？',['宇宙飞船','飞机','火车','轮船'],0,'spaceship 是宇宙飞船。'),
  L('We should save water and energy. Turn off the lights when you leave.','听一听，离开时要做什么？',['关灯','开灯','关门','开窗'],0,'turn off the lights 是关灯。'),
@@ -101,7 +101,7 @@ qs:[
  L('What are you going to do tomorrow?','听问句，选出合适的回答。',['I’m going to play football.','I played football.','I like football.','Yes, I am.'],0,'问将来的打算，用 be going to 回答。'),
  W('astronaut','astronaut','astronaut 是宇航员。','听写：宇航员'),
  W('energy','energy','energy 是能源、能量。','听写：能源'),
- W('expensive','expensive','expensive 是贵的。','听写：贵的')
+ W('cheap','cheap','cheap 是便宜的。','听写：便宜的')
 ]},
 {id:'u46',cn:'六年级下册听力',en:'Grade 6 Book 2 Listening',sum:'按下册四个单元的主题：身高体重比较、上个周末、去哪里度假、过去和现在',
 intro:'这一单元按<b>六年级下册</b>的四个单元主题来出题：你有多高、上个周末、你去了哪里、过去和现在。重点是<b>比较级、过去式、数字</b>。下册这张目录是旧版，题目按常见内容出。可以打开<b>考试模式</b>。',
@@ -122,17 +122,17 @@ qs:[
  L('What did you do last weekend? I washed my clothes and cleaned my room.','听一听，他上周末做了什么？',['洗衣服、打扫房间','看电视','去公园','踢足球'],0,'washed my clothes 是洗衣服；cleaned my room 是打扫房间。'),
  L('I watched TV and read a book on Sunday.','听一听，他周日做了什么？',['看电视、看书','去购物','打篮球','游泳'],0,'watched TV 是看电视；read a book 是看书。'),
  L('Did you go to the park? Yes, I did. I saw many flowers.','听一听，他去公园了吗？',['去了，看到很多花','没去','去了，看到很多鸟','去了，没看到花'],0,'Yes, I did. 是去了；saw 是看见了。'),
- L('Where did you go on your holiday? I went to Hainan.','听一听，他去了哪里？',['海南','北京','广州','云南'],0,'Hainan 是海南。'),
+ L('Where did you go on your holiday? I went to Sanya.','听一听，他去了哪里？',['三亚','北京','广州','云南'],0,'Sanya 是三亚。'),
  L('How did you go there? I went by train.','听一听，他怎么去的？',['坐火车','坐飞机','坐船','坐公交'],0,'by train 是坐火车。'),
  L('What did you do there? I went swimming and took many pictures.','听一听，他在那里做了什么？',['游泳、拍照','爬山','钓鱼','骑马'],0,'went swimming 是去游泳；took pictures 是拍照。'),
  L('I bought a hat and ate some noodles.','听一听，他买了什么？',['一顶帽子','一双鞋','一条裙子','一本书'],0,'bought 是买了；a hat 是一顶帽子。'),
  L('I hurt my foot yesterday.','听一听，他怎么了？',['脚受伤了','手受伤了','头疼','肚子疼'],0,'hurt my foot 是脚受伤了。'),
- L('I was short then. I’m tall now.','听一听，他现在怎么样？',['很高','很矮','很瘦','很小'],0,'now 是现在。'),
+ L('I was fat then. I’m thin now.','听一听，他现在怎么样？',['很瘦','很胖','很高','很矮'],0,'now 是现在；thin 是瘦。'),
  L('There was no computer in the past. Now there are computers everywhere.','听一听，现在怎么样？',['到处都有电脑','没有电脑','只有电视','只有电话'],0,'Now there are … everywhere 是现在到处都有……'),
  L('What did you do last weekend?','听问句，选出合适的回答。',['I stayed at home.','I stay at home.','I’m staying home.','Yes, I did.'],0,'问过去的事，回答用过去式 stayed。'),
  L('How did you go there?','听问句，选出合适的回答。',['I went by plane.','I went to Beijing.','Yes, I did.','Two days.'],0,'How 问方式，回答 by + 交通工具。'),
  W('heavier','heavier','heavier 是更重的。','听写：更重的'),
- W('yesterday','yesterday','yesterday 是昨天。','听写：昨天'),
+ W('weekend','weekend','weekend 是周末。','听写：周末'),
  W('holiday','holiday','holiday 是假期。','听写：假期')
 ]}
 );

@@ -62,14 +62,14 @@ u8:[
  C('Tom is ___ than Mike.（高）',['taller','tall','tallest','more tall'],0,'两者比较，用比较级 taller。'),
  C('This book is ___ than that one.（有趣）',['more interesting','interestinger','most interesting','interesting'],0,'interesting 是较长的词，前面加 more。'),
  C('She is the ___ girl in our class.（高）',['tallest','taller','most tall','tall'],0,'三者或以上中最高，用最高级 tallest，前面有 the。'),
- C('good 的比较级是？',['better','gooder','more good','best'],0,'good 是不规则变化：good - better - best。'),
+ C('thin 的比较级是？',['thinner','thiner','more thin','thinnest'],0,'thin 双写 n 再加 er。'),
  C('bad 的最高级是？',['worst','baddest','most bad','worse'],0,'bad - worse - worst 是不规则变化。'),
  C('funny 的比较级是？',['funnier','funnyer','more funny','funniest'],0,'funny 以“辅音字母 + y”结尾，变 y 为 i 加 er。'),
  C('My bag is ___ than yours.（重）',['heavier','heavyer','more heavy','heaviest'],0,'heavy 变 y 为 i 加 er：heavier。'),
- F('Winter is ___ (cold) than autumn.','colder','两个季节比较，用比较级 colder。'),
+ F('An elephant is ___ (big) than a monkey.','bigger','两者比较，big 双写 g 再加 er。'),
  F('Who is the ___ (fast) runner in your class?','fastest','在全班里比，用最高级 fastest。'),
  J('This pen is more cheap than that one. 这句话是对的。',false,'cheap 是短词，直接加 er：cheaper。'),
- O('我的书包比你的重。','My bag is heavier than yours.','heavy 变 heavier，后面用 than。')
+ O('我的房间比你的大。','My room is bigger than yours.','big 双写 g 再加 er。')
 ],
 u12:[
  C('I ___ to the zoo yesterday.',['went','go','goes','going'],0,'yesterday 表示过去，go 的过去式是 went。'),

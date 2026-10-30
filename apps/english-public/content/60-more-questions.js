@@ -115,12 +115,12 @@ u7:[
  F('She ___ swim.（不会）',['can’t','cannot'],'表示不会，用 can’t 或 cannot。'),
  F('Can he ___ the guitar?（play）','play','Can 后面用动词原形。'),
  J('He can’t to swim.',false,'can’t 后面不加 to：He can’t swim.'),
- J('Can you help me?',true,'Can + 主语 + 动词原形，正确。'),
+ J('I can swim very well.',true,'can 后面用动词原形 swim，句子正确。'),
  O('他会骑自行车。','He can ride a bike.','can + 动词原形。'),
  O('你能帮我吗？','Can you help me?','Can 放句首。')
 ],
 u8:[
- F('My bag is ___ than yours.（heavy）','heavier','heavy 变 y 为 i 加 er。'),
+ F('This box is ___ than that one.（heavy）','heavier','heavy 变 y 为 i 加 er。'),
  F('Who is the ___ student in your class?（young）','youngest','最高级：young 加 est。'),
  F('Winter is ___ than autumn.（cold）','colder','cold 加 er。'),
  F('This is the ___ story of all.（funny）','funniest','funny 变 y 为 i 加 est。'),

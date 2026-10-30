@@ -53,8 +53,8 @@ tbl(['单元主题','常听到的词和句子'],[
  ['Numbers in life','How many …?；How much is it? — … yuan.；thirty, forty, fifty …']]),
 qs:[
  L('Excuse me. Can I come in? Yes, please.','听一听，他在做什么？',['请求进门','道谢','道歉','告别'],0,'Excuse me. 是打扰一下，常用来请求。'),
- L('Thank you. You’re welcome.','听一听，第二个人在说什么？',['不客气','谢谢','对不起','再见'],0,'You’re welcome. 是不客气。'),
- L('Sorry. That’s OK.','听一听，第二个人的意思是？',['没关系','谢谢','再见','请坐'],0,'That’s OK. 是没关系。'),
+ L('Here you are. Thank you.','听一听，第二个人在说什么？',['谢谢','不客气','对不起','再见'],0,'Thank you. 是谢谢。'),
+ L('Please open the door. OK.','听一听，第二个人的意思是？',['好的','谢谢','再见','对不起'],0,'OK. 表示同意，意思是“好的”。'),
  L('How do you feel? I’m sad.','听一听，他感觉怎么样？',['难过','开心','累','饿'],0,'sad 是难过的。'),
  L('I’m happy today. It’s my birthday.','听一听，他为什么开心？',['今天是他的生日','要放假','考试了','要吃糖'],0,'It’s my birthday. 今天是我的生日。'),
  L('My bag is big and new.','听一听，他的书包怎么样？',['又大又新','又小又旧','又大又旧','又小又新'],0,'big 是大的；new 是新的。'),

@@ -176,7 +176,7 @@ qs:[
  C('I’m going ___ visit my grandma.',['to','for','at','in'],0,'be going to 表示打算。'),
  C('She ___ eats breakfast.（从不）',['never','always','usually','often'],0,'never 是从不。'),
  C('The sun is ___ than the Earth.',['bigger','big','biggest','more big'],0,'两者比较，big 的比较级是 bigger。'),
- C('My bag is ___ than yours.（重）',['heavier','heavyer','more heavy','heaviest'],0,'heavy 变 y 为 i 加 er：heavier。'),
+ C('This road is ___ than that one.（宽）',['wider','widerer','more wide','widest'],0,'wide 去 e 加 er：wider。'),
  C('Yesterday I ___ to the zoo.',['went','go','goes','going'],0,'go 的过去式是 went。'),
  C('— Did you watch TV? — Yes, I ___.',['did','do','am','was'],0,'一般过去时的问句用 did 回答。'),
  C('— ___ did you go on your holiday? — I went to Sanya.',['Where','When','Who','Why'],0,'回答是地点，用 Where。'),
