@@ -1936,6 +1936,22 @@
   "color": "#fecaca"
  },
  {
+  "id": "words",
+  "cat": "english",
+  "kind": "practice",
+  "href": "/words/",
+  "grades": [
+   3,
+   4
+  ],
+  "topic": "英语",
+  "icon": "⌨️",
+  "name": "英语单词打字练习",
+  "desc": "人教PEP三年级起点 · 听音拼写 · 错词本",
+  "kw": "英语 单词 打字 拼写 默写 背单词 错词 人教 PEP",
+  "color": "#bae6fd"
+ },
+ {
   "id": "homework",
   "cat": "homework",
   "kind": "tool",

@@ -45,6 +45,7 @@ services:
 | `/` | 首页 |
 | `/math/<id>/` | 数学小工具（纯前端） |
 | `/english/` | 英语语法小课堂（带服务端存档） |
+| `/words/` | 英语单词打字练习（人教 PEP 三年级起点 3~4 年级；纯前端，进度和错词本存浏览器） |
 | `/homework/` | 作业小伙伴(星星姐姐):语数英作业引导,只引导不给答案;需配置 `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` |
 
 ## 加一个新工具
@@ -56,3 +57,7 @@ services:
 - **加一个互动演示**：新建 `public/math/<id>/index.html`，引入 `/css/hub.css` 和 `/js/tool.js`，用 `Hub.bar('标题')` 生成顶栏，答对后 `Hub.star('<id>', 1~3)` 记星星；在 `registry.js` 里加一行（类型 `page`）。
 
 触控提示：拖拽用 pointer 事件（鼠标和手指通用），按钮高度不小于 44px。
+
+## 致谢
+
+`/words/` 的单词数据（`public/words/dict.json`）整理自 [qwerty-learner](https://github.com/RealKai42/qwerty-learner)（GPL-3.0）的人教版词库，发音来自有道词典。
