@@ -3,114 +3,82 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>英语句子练习</title>
 <link rel="stylesheet" href="/css/hub.css">
-<style>
-.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.chips b{color:var(--sub);font-size:14px;min-width:44px}
-.chip{min-height:40px;padding:0 16px;border-radius:20px;background:var(--card);border:2px solid var(--line);font-weight:600;font-size:15px}
-.chip.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:transparent}
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
-.cc{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 8px;text-align:center;min-height:92px;touch-action:manipulation}
-.cc b{display:block;font-size:15px}.cc small{display:block;color:var(--sub);font-size:12.5px;margin-top:2px}
-.cc .st{display:block;color:var(--warn);font-size:14px;min-height:20px;letter-spacing:1px}
-.prog{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin-bottom:6px}
-.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--p1),var(--p2));width:0;transition:width .25s}
-.stage{text-align:center;padding:18px 10px 12px;position:relative}
-.zh{font-size:26px;font-weight:800;margin-bottom:14px;line-height:1.4}
-.ans{min-height:74px;border-bottom:3px dashed var(--line);padding:6px 4px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-content:flex-start}
-.bank{min-height:64px;margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.tk{min-height:48px;padding:0 16px;border-radius:14px;background:var(--card);border:2px solid var(--line);font-size:20px;font-weight:700;touch-action:manipulation;box-shadow:0 3px 0 var(--line)}
-.ans .tk{border-color:var(--p1);color:var(--p1)}
-.stage.bad{animation:sh .3s}.stage.good .ans{border-bottom-color:var(--ok)}
-.stage.good .ans .tk{border-color:var(--ok);color:var(--ok)}
-@keyframes sh{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.line{font-size:clamp(22px,5.2vw,34px);font-weight:800;line-height:1.7;min-height:60px;word-break:normal}
-.line .ch{opacity:.5;color:var(--sub);border-bottom:4px solid transparent}
-.line .ch.done{color:var(--ok);opacity:1}
-.line .ch.cur{border-bottom-color:var(--p1);opacity:1;color:var(--ink)}
-.line .ch.hid{color:transparent;border-bottom-color:var(--line);opacity:1}
-.line .ch.hid.cur{border-bottom-color:var(--p1)}
-.line .ch.rv{color:var(--warn);opacity:1}
-.hint{color:var(--sub);font-size:14px;min-height:22px;margin-top:8px}
-.sound{min-width:56px;min-height:56px;border-radius:28px;font-size:26px;background:var(--bg);border:2px solid var(--line);margin-top:6px;touch-action:manipulation}
-.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;margin:10px 0}
-.sum div{background:var(--bg);border-radius:16px;padding:12px 4px}.sum b{display:block;font-size:28px}.sum small{color:var(--sub)}
-.wl{margin:8px 0;display:grid;gap:8px;text-align:left}
-.wl div{background:var(--bg);border-radius:12px;padding:8px 12px}.wl b{font-size:17px}.wl small{display:block;color:var(--sub)}
-#kb{position:fixed;left:-200px;top:0;width:20px;height:20px;opacity:0;border:0;padding:0}
-.note{color:var(--sub);font-size:13px;line-height:1.7}
-</style></head>
+<link rel="stylesheet" href="/css/study.css">
+</head>
 <body><div class="page" id="app"></div>
 <input id="kb" type="text" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="打字输入">
 <script src="/js/tool.js"></script>
+<script src="/js/study.js"></script>
 <script>
 Hub.bar('英语句子练习');
 (function(){
-var KEY='hub.sentences',BOOKS=[],$=function(i){return document.getElementById(i)},app=$('app'),kb=$('kb');
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||'{}');d.wrong=d.wrong||{};d.prog=d.prog||{};d.set=d.set||{};return d}catch(e){return {wrong:{},prog:{},set:{}}}}
-var D=load(),S=D.set;S.mode=S.mode||'sort';S.acc=S.acc||'uk';S.book=S.book||'4s';
-function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
-/* 发音 */
-var au=null;
-function say(w){
-  try{if(au){au.pause();au=null}}catch(e){}
-  var u='https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(w)+'&type='+(S.acc==='us'?2:1);
-  try{au=new Audio(u);var p=au.play();if(p&&p.catch)p.catch(function(){tts(w)});au.onerror=function(){tts(w)}}catch(e){tts(w)}
-}
-function tts(w){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();var m=new SpeechSynthesisUtterance(w);m.lang=S.acc==='us'?'en-US':'en-GB';m.rate=.85;speechSynthesis.speak(m)}catch(e){}}
+var KEY='hub.sentences',BOOKS=[],$=function(i){return document.getElementById(i)},app=$('app'),kb=$('kb'),esc=Study.esc,shuf=Study.shuf;
+var D=Study.load(KEY),S=D.set;S.mode=S.mode||'sort';S.acc=S.acc||'uk';S.book=S.book||'4s';
+function save(){Study.save(KEY,D)}
+function say(w){Study.say(w,S.acc)}
 function bookOf(id){return BOOKS.filter(function(b){return b.id===id})[0]||BOOKS[0]}
-function stars(a){return a>=95?3:a>=80?2:a>0?1:0}
+var R=null,RES=null;
 /* 首页 */
 function home(){
-  kb.blur();R=null;var b=bookOf(S.book),wn=Object.keys(D.wrong).length;
-  var h='<div class="panel"><div class="chips"><b>课本</b>'+BOOKS.map(function(x){return '<button class="chip'+(x.id===b.id?' on':'')+'" data-bk="'+x.id+'">'+x.name+'</button>'}).join('')+'</div>'
+  kb.blur();R=null;var b=bookOf(S.book),wn=Object.keys(D.wrong).length,due=Study.due(D).length,learned=Object.keys(D.cards).length;
+  var h='<div class="sp-hero"><h2>🧩 英语句子练习</h2><p>拼句子、打句子，练熟课本里的常用句型 · 人教 PEP 四年级</p><div class="sp-pills">'
+   +'<div class="sp-pill"><b>'+Study.today(D)+'</b><small>今天练了（句）</small></div>'
+   +'<div class="sp-pill"><b>'+Study.streak(D)+'</b><small>连续练习（天）</small></div>'
+   +'<div class="sp-pill"><b>'+learned+'</b><small>已学过（句）</small></div></div></div>';
+  if(due)h+='<div class="sp-rv"><div class="ic">🔁</div><div><b>今天有 '+due+' 句该复习了</b><small>按遗忘规律安排，趁还记得，几分钟就能搞定</small></div><button class="btn" id="rv">开始复习</button></div>';
+  h+='<div class="panel"><div class="chips"><b>课本</b>'+BOOKS.map(function(x){return '<button class="chip'+(x.id===b.id?' on':'')+'" data-bk="'+x.id+'">'+x.name+'</button>'}).join('')+'</div>'
    +'<div class="chips"><b>方式</b><button class="chip'+(S.mode==='sort'?' on':'')+'" data-md="sort">🧩 点词排序</button><button class="chip'+(S.mode==='type'?' on':'')+'" data-md="type">⌨️ 打字默写</button>'
    +'<b style="margin-left:10px">发音</b><button class="chip'+(S.acc==='uk'?' on':'')+'" data-ac="uk">英音</button><button class="chip'+(S.acc==='us'?' on':'')+'" data-ac="us">美音</button></div>'
-   +'<p class="note" style="margin:0">按人教 PEP（三年级起点）各单元的主题和常见句型编写，<b>不是课本原文</b>，用来练句型和拼写。点词排序：按顺序点单词拼成句子；打字默写：听句子，把整句打出来（大小写不用管）。</p></div>';
-  h+='<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><b style="font-size:18px">'+b.name+'</b><button class="btn ghost" id="wb"'+(wn?'':' disabled')+'>📕 错句本 '+wn+'</button></div><div class="cg">'
-   +b.units.map(function(u,i){var p=D.prog[b.id+'-'+i]||{};
-     return '<button class="cc" data-u="'+i+'"><span class="st">'+(p.acc?'★'.repeat(stars(p.acc))+'☆'.repeat(3-stars(p.acc)):'')+'</span><b>'+esc(u.t)+'</b><small>'+esc(u.zh)+' · '+u.s.length+' 句</small><small>'+(p.acc?'最好 '+p.acc+'%':'未练习')+'</small></button>'}).join('')
-   +'</div></div><div class="foot"><button id="clr">清除英语句子练习的本机数据</button></div>';
+   +'<p class="note" style="margin:0">句子按人教 PEP（三年级起点）各单元的主题和常见句型编写，<b>不是课本原文</b>，用来练句型和拼写。点词排序：按顺序点单词拼成句子；打字默写：听句子，把整句打出来（大小写不用管）。</p></div>';
+  h+='<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:12px"><b style="font-size:19px">'+b.name+'</b><button class="btn ghost" id="wb"'+(wn?'':' disabled')+'>📕 错句本 '+wn+'</button></div><div class="cg">'
+   +b.units.map(function(u,i){var p=D.prog[b.id+'-'+i]||{},ln=u.s.filter(function(q){return D.cards[q[0]]}).length,s=Study.stars(p.acc||0,95);
+     return '<button class="cc" data-u="'+i+'"><span class="no">'+(i+1)+'</span><span class="st">'+(p.acc?'★'.repeat(s)+'☆'.repeat(3-s):'☆☆☆')+'</span><b>'+esc(u.t.replace(/^Unit \d+ /,''))+'</b><small>'+esc(u.zh)+'</small><small>已学 '+ln+'/'+u.s.length+(p.acc?' · 最好 '+p.acc+'%':'')+'</small><span class="bar"><i style="width:'+Math.round(ln/u.s.length*100)+'%"></i></span></button>'}).join('')
+   +'</div></div><div class="foot"><button id="clr">清除英语句子练习的本机数据</button><div class="note" style="margin-top:8px">复习算法思路参考 keykey 的轻量 FSRS · 发音：有道词典</div></div>';
   app.innerHTML=h;
 }
 /* 练习 */
-var R=null;
 function start(list,title,meta){
-  R={list:list,title:title,meta:meta,i:0,right:0,bad:{},lock:false,t0:Date.now()};
-  app.innerHTML='<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>'+esc(R.title)+'</b><span id="cnt" style="color:var(--sub)"></span><button class="btn ghost" id="ex" style="min-height:40px;font-size:15px;padding:0 14px">退出</button></div><div class="prog"><i id="pg"></i></div>'
-   +'<div class="stage" id="stage"><div class="zh" id="zh"></div><div id="body"></div><button class="sound" id="snd" aria-label="再听一遍">🔊</button><div class="hint" id="hint"></div></div></div>'
+  R={list:list,title:title,meta:meta,i:0,right:0,bad:{},clean:0,lock:false,t0:Date.now(),combo:0,best:0};
+  app.innerHTML='<div class="panel"><div class="sp-top"><button class="mini" id="ex">← 退出</button><span class="t">'+esc(title)+'</span><span class="cnt" id="cnt"></span><span class="combo" id="combo"></span></div><div class="prog"><i id="pg"></i></div>'
+   +'<div class="stg" id="stage"><div class="say" id="say"></div><div class="zh" id="zh"></div><div id="body"></div><div><span class="tag" id="tag"></span></div>'
+   +'<div class="sp-act"><button class="sound" id="snd" aria-label="再听一遍">🔊</button>'+(S.mode==='type'?'<button class="mini" id="tip">💡 提示一下</button>':'')+'</div></div></div>'
    +(S.mode==='type'?'<p class="note" style="text-align:center">请用英文输入法 · 点一下上面的方块可以呼出键盘 · 回车键 = 再听一遍</p>':'');
   nextQ();
 }
 function cur(){return R.list[R.i]}
+function setSay(t){var e=$('say');if(e)e.textContent=t}
 function nextQ(){
-  var q=cur();R.lock=false;R.err=0;R.pos=0;R.reveal=false;
-  $('stage').className='stage';$('zh').textContent=q[1];
+  var q=cur();R.lock=false;R.err=0;R.pos=0;R.reveal=false;R.hint=false;R.qs=Date.now();
+  $('stage').className='stg';$('zh').textContent=q[1];$('tag').textContent='';$('tag').className='tag';
   $('cnt').textContent=(R.i+1)+' / '+R.list.length;$('pg').style.width=(R.i/R.list.length*100)+'%';
+  setSay(R.combo>=3?'🔥 连击中，继续！':S.mode==='sort'?'🧩 按顺序点单词，拼成句子':'👂 听发音，把句子打出来');
   if(S.mode==='sort'){
-    var toks=q[0].split(' '),bank;
-    var tries=0;do{bank=shuf(toks.map(function(t,k){return {t:t,k:k}}));tries++}while(bank.map(function(x){return x.t}).join(' ')===q[0]&&tries<10);
-    R.bank=bank;R.ans=[];$('hint').textContent='按顺序点单词，拼成英文句子';drawSort();
-  }else{drawType();$('hint').textContent='听发音，把句子打出来';focus()}
+    var toks=q[0].split(' '),bank,n=0;
+    do{bank=shuf(toks.map(function(t){return {t:t}}));n++}while(bank.map(function(x){return x.t}).join(' ')===q[0]&&n<10);
+    R.bank=bank;R.ans=[];drawSort();
+  }else{drawType();focus()}
   say(q[0]);
 }
 function drawSort(){
-  $('body').innerHTML='<div class="ans" id="ans">'+R.ans.map(function(x,i){return '<button class="tk" data-a="'+i+'">'+esc(x.t)+'</button>'}).join('')+'</div><div class="bank">'+R.bank.map(function(x,i){return '<button class="tk" data-b="'+i+'">'+esc(x.t)+'</button>'}).join('')+'</div>';
+  $('body').innerHTML='<div class="ans">'+R.ans.map(function(x,i){return '<button class="tk" data-a="'+i+'">'+esc(x.t)+'</button>'}).join('')+'</div><div class="bank">'+R.bank.map(function(x,i){return '<button class="tk" data-b="'+i+'">'+esc(x.t)+'</button>'}).join('')+'</div>';
 }
-function checkSort(){
-  var q=cur()[0];
-  if(R.ans.map(function(x){return x.t}).join(' ')===q)return win();
-  lose();
-}
+function checkSort(){if(R.ans.map(function(x){return x.t}).join(' ')===cur()[0])win();else lose()}
 function lose(){
-  R.err++;R.bad[R.i]=1;var q=cur();D.wrong[q[0]]={zh:q[1]};save();
-  var st=$('stage');st.classList.remove('bad');void st.offsetWidth;st.classList.add('bad');Hub.beep(false);
+  R.err++;R.bad[R.i]=1;R.combo=0;$('combo').textContent='';var q=cur();D.wrong[q[0]]={zh:q[1]};save();
+  setSay('差一点，再试试 💪');var st=$('stage');st.classList.remove('bad');void st.offsetWidth;st.classList.add('bad');Hub.beep(false);
+}
+function grade(){
+  if(R.hint)return 1;if(R.err===0){var spc=(Date.now()-R.qs)/1000/Math.max(1,cur()[0].length);return S.mode==='type'&&spc<0.9?4:3}
+  return 2;
 }
 function win(){
-  R.lock=true;Hub.beep(true);if(R.err===0)R.right++;
-  $('stage').classList.add('good');
-  R.i++;setTimeout(function(){R.i>=R.list.length?finish():nextQ()},S.mode==='sort'?900:600);
+  var q=cur(),rt=grade(),out=Study.rate(D,q[0],rt,{zh:q[1]});
+  R.lock=true;Hub.beep(true);Study.log(D,1);$('stage').classList.add('good');
+  var clean=R.err===0&&!R.hint;
+  if(clean){R.right++;R.combo++;if(R.combo>R.best)R.best=R.combo;var c=$('combo');c.textContent='🔥 '+R.combo;c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop')}
+  var tg=$('tag');tg.className='tag '+(clean?'ok':'rough');tg.textContent=(clean?'✓ 一次做对':'再多练练')+' · 下次复习 '+Study.label(rt,out.days);
+  save();R.i++;
+  setTimeout(function(){if(R)R.i>=R.list.length?finish():nextQ()},S.mode==='sort'?1100:850);
 }
 /* 打字模式 */
 function drawType(){
@@ -146,28 +114,27 @@ kb.addEventListener('keydown',function(e){
   if(!R)return;if(e.key==='Enter'){e.preventDefault();say(cur()[0])}else if(e.key==='Escape'){home()}
 });
 /* 结算 */
-var RES=null;
 function finish(){
-  var n=R.list.length,acc=Math.round(R.right/n*100),sec=Math.max(1,Math.round((Date.now()-R.t0)/1000)),bad=Object.keys(R.bad).map(Number);
-  if(R.meta.type==='wrong'){R.list.forEach(function(q,i){if(!R.bad[i])delete D.wrong[q[0]]})}
-  else{var k=R.meta.key,p=D.prog[k]||{};if(acc>(p.acc||0))p.acc=acc;D.prog[k]=p;Hub.star('sentences',stars(acc))}
+  var n=R.list.length,acc=Math.round(R.right/n*100),sec=Math.max(1,Math.round((Date.now()-R.t0)/1000)),bad=Object.keys(R.bad).map(Number),t=R.meta.type;
+  if(t==='wrong'){R.list.forEach(function(q,i){if(!R.bad[i])delete D.wrong[q[0]]})}
+  else if(t==='unit'){var k=R.meta.key,p=D.prog[k]||{};if(acc>(p.acc||0))p.acc=acc;D.prog[k]=p;Hub.star('sentences',Study.stars(acc,95))}
   save();kb.blur();
   RES={list:R.list,title:R.title,meta:R.meta,badList:bad.map(function(i){return R.list[i]})};
-  var h='<div class="panel" style="text-align:center"><div style="font-size:44px">'+(acc>=95?'🏆':acc>=80?'🎉':'💪')+'</div><div class="big">'+esc(R.title)+' 完成！</div>'
-   +'<div class="sum"><div><b>'+acc+'%</b><small>一次做对</small></div><div><b>'+(sec>=60?Math.floor(sec/60)+"'"+('0'+sec%60).slice(-2)+'"':sec+' 秒')+'</b><small>用时</small></div><div><b>'+bad.length+'</b><small>做错的句子</small></div></div>';
-  if(bad.length)h+='<div><b>这几句要多练练：</b><div class="wl">'+RES.badList.map(function(q){return '<div><b>'+esc(q[0])+'</b><small>'+esc(q[1])+'</small></div>'}).join('')+'</div></div>';
+  var h='<div class="panel res"><div class="em">'+(acc>=95?'🏆':acc>=80?'🎉':'💪')+'</div><div class="big">'+esc(R.title)+' 完成！</div>'
+   +'<div class="sum"><div><b>'+acc+'%</b><small>一次做对</small></div><div><b>'+(sec>=60?Math.floor(sec/60)+"'"+('0'+sec%60).slice(-2)+'"':sec+' 秒')+'</b><small>用时</small></div><div><b>'+R.best+'</b><small>最高连击</small></div></div>';
+  if(bad.length)h+='<div style="text-align:left"><b>这几句要多练练（'+bad.length+'）：</b><div class="wl" style="grid-template-columns:1fr">'+RES.badList.map(function(q){return '<div><b>'+esc(q[0])+'</b><small>'+esc(q[1])+'</small></div>'}).join('')+'</div></div>';
   else h+='<p style="color:var(--ok);font-weight:700;font-size:18px">全部一次做对，太棒了！</p>';
-  h+='<div class="row" style="justify-content:center;margin-top:10px">';
+  h+='<div class="row" style="justify-content:center;margin-top:12px">';
   if(bad.length)h+='<button class="btn" id="again-bad">练做错的句子</button>';
-  h+='<button class="btn ghost" id="again">再来一遍</button>';
-  if(R.meta.type==='unit'&&R.meta.next!=null)h+='<button class="btn ok" id="nextu">下一单元 ▶</button>';
+  if(t==='unit')h+='<button class="btn ghost" id="again">再来一遍</button>';
+  if(t==='unit'&&R.meta.next!=null)h+='<button class="btn ok" id="nextu">下一单元 ▶</button>';
   h+='<button class="btn ghost" id="back">回首页</button></div></div>';
-  app.innerHTML=h;
+  app.innerHTML=h;if(acc>=80)Study.confetti(app.firstChild);
 }
-function startUnit(bk,i){var u=bk.units[i];start(shuf(u.s),bk.name+' · '+u.t,{type:'unit',key:bk.id+'-'+i,book:bk.id,idx:i,next:i+1<bk.units.length?i+1:null})}
+function startUnit(bk,i){var u=bk.units[i];start(shuf(u.s),u.t.replace(/^Unit (\d+) /,'U$1 ')+' · '+u.zh,{type:'unit',key:bk.id+'-'+i,book:bk.id,idx:i,next:i+1<bk.units.length?i+1:null})}
 document.addEventListener('click',function(e){
   var t=e.target.closest('button,#stage');if(!t)return;
-  if(t.id==='stage'){if(S.mode==='type')focus();return}
+  if(t.id==='stage'){if(R&&S.mode==='type')focus();return}
   var d=t.dataset,b=bookOf(S.book);
   if(d.bk){S.book=d.bk;save();home()}
   else if(d.md){S.mode=d.md;save();home()}
@@ -176,12 +143,14 @@ document.addEventListener('click',function(e){
   else if(d.b!==undefined&&R&&!R.lock){var x=R.bank.splice(+d.b,1)[0];R.ans.push(x);drawSort();if(!R.bank.length)checkSort()}
   else if(d.a!==undefined&&R&&!R.lock){var y=R.ans.splice(+d.a,1)[0];R.bank.push(y);drawSort()}
   else if(t.id==='wb'){var l=Object.keys(D.wrong).map(function(k){return [k,D.wrong[k].zh]});if(l.length)start(shuf(l),'错句本',{type:'wrong'})}
+  else if(t.id==='rv'){var ks=Study.due(D).slice(0,15);start(shuf(ks.map(function(k){return [k,D.cards[k].z||'']})),'今日复习',{type:'review'})}
   else if(t.id==='ex'||t.id==='back')home();
   else if(t.id==='snd'){say(cur()[0]);if(S.mode==='type')focus()}
+  else if(t.id==='tip'&&R&&!R.lock){R.hint=true;R.reveal=true;R.lock=true;drawType();setTimeout(function(){if(!R)return;R.reveal=false;R.lock=false;drawType();focus()},1800)}
   else if(t.id==='again')start(shuf(RES.list),RES.title,RES.meta);
   else if(t.id==='again-bad')start(shuf(RES.badList),'做错的句子',{type:'wrong'});
-  else if(t.id==='nextu'){var bk=bookOf(RES.meta.book);startUnit(bk,RES.meta.next)}
-  else if(t.id==='clr'){if(confirm('清除英语句子练习的进度和错句本？（单词练习、数学星星不受影响）')){D={wrong:{},prog:{},set:S};save();home()}}
+  else if(t.id==='nextu'){startUnit(bookOf(RES.meta.book),RES.meta.next)}
+  else if(t.id==='clr'){if(confirm('清除英语句子练习的进度、错句本和复习记录？（单词练习、数学星星不受影响）')){D={wrong:{},prog:{},set:S,cards:{},days:{}};save();home()}}
 });
 fetch('/sentences/dict.json').then(function(r){return r.json()}).then(function(j){BOOKS=j;home()}).catch(function(){app.innerHTML='<div class="panel">句子数据加载失败，请刷新重试</div>'});
 })();

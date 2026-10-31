@@ -61,4 +61,4 @@ services:
 
 ## 致谢
 
-`/words/` 的单词数据（`public/words/dict.json`）整理自 [qwerty-learner](https://github.com/RealKai42/qwerty-learner)（GPL-3.0）的人教版词库，发音来自有道词典。
+`/words/` 的单词数据（`public/words/dict.json`）整理自 [qwerty-learner](https://github.com/RealKai42/qwerty-learner)（GPL-3.0）的人教版词库，发音来自有道词典。间隔复习的调度思路参考 keykey 的轻量 FSRS（`public/js/study.js`），数据只存在浏览器里。
