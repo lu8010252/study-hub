@@ -12,27 +12,30 @@
 <script>
 Hub.bar('英语单词练习');
 (function(){
-var KEY='hub.words',CH=10,BOOKS=[],$=function(i){return document.getElementById(i)},app=$('app'),kb=$('kb'),esc=Study.esc,shuf=Study.shuf;
+var KEY='hub.words',BOOKS=[],$=function(i){return document.getElementById(i)},app=$('app'),kb=$('kb'),esc=Study.esc,shuf=Study.shuf;
 var D=Study.load(KEY),S=D.set;S.mode=S.mode||'copy';S.acc=S.acc||'uk';S.book=S.book||'4s';
 function save(){Study.save(KEY,D)}
 function say(w){Study.say(w,S.acc)}
 function ph(p){p=(p||'').split(';')[0].trim();return p?'/'+p.replace(/^\/|\/$/g,'')+'/':''}
 function bookOf(id){return BOOKS.filter(function(b){return b.id===id})[0]||BOOKS[0]}
-function chapters(b){var n=Math.ceil(b.words.length/CH),r=[];for(var i=0;i<n;i++)r.push(b.words.slice(i*CH,i*CH+CH));return r}
+function csz(b){return b.words.length>200?20:10}
+function chapters(b){var CH=csz(b),n=Math.ceil(b.words.length/CH),r=[];for(var i=0;i<n;i++)r.push(b.words.slice(i*CH,i*CH+CH));return r}
 function key(w){return w}
 var R=null,RES=null;
 /* ---------- 首页 ---------- */
 function home(){
   kb.blur();R=null;var b=bookOf(S.book),wn=Object.keys(D.wrong).length,due=Study.due(D).length,learned=Object.keys(D.cards).length;
-  var h='<div class="sp-hero"><h2>⌨️ 单词打字练习</h2><p>边听边打，把单词敲进肌肉记忆 · 人教 PEP 三年级起点</p><div class="sp-pills">'
+  var gs=[];BOOKS.forEach(function(x){if(gs.indexOf(x.g)<0)gs.push(x.g)});var ts=BOOKS.filter(function(x){return x.g===b.g});
+  var h='<div class="sp-hero"><h2>⌨️ 单词打字练习</h2><p>边听边打，把单词敲进肌肉记忆 · 人教 PEP 3～9 年级</p><div class="sp-pills">'
    +'<div class="sp-pill"><b>'+Study.today(D)+'</b><small>今天练了（词）</small></div>'
    +'<div class="sp-pill"><b>'+Study.streak(D)+'</b><small>连续练习（天）</small></div>'
    +'<div class="sp-pill"><b>'+learned+'</b><small>已学过（词）</small></div></div></div>';
   if(due)h+='<div class="sp-rv"><div class="ic">🔁</div><div><b>今天有 '+due+' 个词该复习了</b><small>按遗忘规律安排，趁还记得，几分钟就能搞定</small></div><button class="btn" id="rv">开始复习</button></div>';
-  h+='<div class="panel"><div class="chips"><b>课本</b>'+BOOKS.map(function(x){return '<button class="chip'+(x.id===b.id?' on':'')+'" data-bk="'+x.id+'">'+x.name+'</button>'}).join('')+'</div>'
+  h+='<div class="panel"><div class="chips"><b>年级</b>'+gs.map(function(g){var x=BOOKS.filter(function(y){return y.g===g})[0];return '<button class="chip'+(g===b.g?' on':'')+'" data-gr="'+g+'">'+x.name.slice(0,3)+'</button>'}).join('')+'</div>'
+   +(ts.length>1?'<div class="chips"><b>学期</b>'+ts.map(function(x){return '<button class="chip'+(x.id===b.id?' on':'')+'" data-bk="'+x.id+'">'+(x.t==='s'?'上册':'下册')+'</button>'}).join('')+'</div>':'')
    +'<div class="chips"><b>方式</b><button class="chip'+(S.mode==='copy'?' on':'')+'" data-md="copy">👀 看词跟打</button><button class="chip'+(S.mode==='dict'?' on':'')+'" data-md="dict">✍️ 听音默写</button>'
    +'<b style="margin-left:10px">发音</b><button class="chip'+(S.acc==='uk'?' on':'')+'" data-ac="uk">英音</button><button class="chip'+(S.acc==='us'?' on':'')+'" data-ac="us">美音</button></div>'
-   +'<p class="note" style="margin:0">每章 '+CH+' 个词。打错一个字母，这个词要重新打；打错的词进错词本，练过的词会按遗忘规律安排复习。</p></div>';
+   +'<p class="note" style="margin:0">每章 '+csz(b)+' 个词。打错一个字母，这个词要重新打；打错的词进错词本，练过的词会按遗忘规律安排复习。</p></div>';
   h+='<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:12px"><b style="font-size:19px">'+b.name+'<span style="color:var(--sub);font-weight:500;font-size:14px">　共 '+b.words.length+' 词</span></b>'
    +'<button class="btn ghost" id="wb"'+(wn?'':' disabled')+'>📕 错词本 '+wn+'</button></div><div class="cg">'
    +chapters(b).map(function(c,i){var p=D.prog[b.id+'-'+i]||{},ln=c.filter(function(w){return D.cards[key(w[0])]}).length,s=Study.stars(p.acc||0);
@@ -137,7 +140,8 @@ document.addEventListener('click',function(e){
   var t=e.target.closest('button,#stage');if(!t)return;
   if(t.id==='stage'){if(R)focus();return}
   var d=t.dataset,b=bookOf(S.book);
-  if(d.bk){S.book=d.bk;save();home()}
+  if(d.gr){var gg=BOOKS.filter(function(x){return x.g===+d.gr}),same=gg.filter(function(x){return x.t===b.t})[0];S.book=(same||gg[0]).id;save();home()}
+  else if(d.bk){S.book=d.bk;save();home()}
   else if(d.md){S.mode=d.md;save();home()}
   else if(d.ac){S.acc=d.ac;save();home()}
   else if(d.ch!==undefined)startCh(b,+d.ch);
