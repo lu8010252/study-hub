@@ -1952,6 +1952,21 @@
   "color": "#bae6fd"
  },
  {
+  "id": "sentences",
+  "cat": "english",
+  "kind": "practice",
+  "href": "/sentences/",
+  "grades": [
+   4
+  ],
+  "topic": "英语",
+  "icon": "🧩",
+  "name": "英语句子练习",
+  "desc": "人教PEP四年级句型 · 点词排序 · 打字默写",
+  "kw": "英语 句子 句型 排序 造句 拼句 默写 人教 PEP",
+  "color": "#bbf7d0"
+ },
+ {
   "id": "homework",
   "cat": "homework",
   "kind": "tool",
