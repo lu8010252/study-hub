@@ -1936,42 +1936,6 @@
   "color": "#fecaca"
  },
  {
-  "id": "words",
-  "cat": "english",
-  "kind": "practice",
-  "href": "/words/",
-  "grades": [
-   3,
-   4,
-   5,
-   6,
-   7,
-   8,
-   9
-  ],
-  "topic": "英语",
-  "icon": "⌨️",
-  "name": "英语单词打字练习",
-  "desc": "人教PEP 3～9年级 · 听音拼写 · 错词本 · 间隔复习",
-  "kw": "英语 单词 打字 拼写 默写 背单词 错词 人教 PEP",
-  "color": "#bae6fd"
- },
- {
-  "id": "sentences",
-  "cat": "english",
-  "kind": "practice",
-  "href": "/sentences/",
-  "grades": [
-   4
-  ],
-  "topic": "英语",
-  "icon": "🧩",
-  "name": "英语句子练习",
-  "desc": "人教PEP四年级句型 · 点词排序 · 打字默写",
-  "kw": "英语 句子 句型 排序 造句 拼句 默写 人教 PEP",
-  "color": "#bbf7d0"
- },
- {
   "id": "homework",
   "cat": "homework",
   "kind": "tool",

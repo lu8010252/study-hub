@@ -45,8 +45,6 @@ services:
 | `/` | 首页 |
 | `/math/<id>/` | 数学小工具（纯前端） |
 | `/english/` | 英语语法小课堂（带服务端存档） |
-| `/sentences/` | 英语句子练习（人教 PEP 四年级各单元句型，自编；点词排序 / 打字默写；纯前端） |
-| `/words/` | 英语单词打字练习（人教 PEP 3～9 年级；纯前端，进度和错词本存浏览器） |
 | `/homework/` | 作业小伙伴(星星姐姐):语数英作业引导,只引导不给答案;需配置 `LLM_BASE_URL` / `LLM_API_KEY` / `LLM_MODEL` |
 
 ## 加一个新工具
@@ -61,4 +59,3 @@ services:
 
 ## 致谢
 
-`/words/` 的单词数据（`public/words/dict.json`）整理自 [qwerty-learner](https://github.com/RealKai42/qwerty-learner)（GPL-3.0）的人教版词库，发音来自有道词典。间隔复习的调度思路参考 keykey 的轻量 FSRS（`public/js/study.js`），数据只存在浏览器里。
